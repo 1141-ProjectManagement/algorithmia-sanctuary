@@ -8,7 +8,7 @@ const Hero = () => {
       behavior: 'smooth'
     });
   };
-  return <section className="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero introduction">
+  return <section id="hero-section" className="relative h-screen flex items-center justify-center overflow-hidden" aria-label="Hero introduction">
       {/* Radial gradient background */}
       <div className="absolute inset-0 z-0" style={{
       background: 'radial-gradient(ellipse at center, hsl(30, 20%, 8%) 0%, hsl(0, 0%, 4%) 100%)'
