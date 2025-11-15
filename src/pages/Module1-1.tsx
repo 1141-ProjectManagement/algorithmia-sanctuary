@@ -9,7 +9,13 @@ import DemoBlock from "@/components/module1-1/DemoBlock";
 import TestBlock from "@/components/module1-1/TestBlock";
 import stoneTablet from "@/assets/stone-tablet.jpg";
 
-const Module1_1 = () => {
+interface Module1_1Props {
+  onGateComplete?: () => void;
+  onBadgeEarn?: () => void;
+  returnPath?: string;
+}
+
+const Module1_1 = ({ onGateComplete, onBadgeEarn, returnPath = "/" }: Module1_1Props = {}) => {
   const navigate = useNavigate();
   const [completedSections, setCompletedSections] = useState<string[]>([]);
   const [earnedBadge, setEarnedBadge] = useState(false);
@@ -22,6 +28,8 @@ const Module1_1 = () => {
 
   const handleBadgeEarned = () => {
     setEarnedBadge(true);
+    onBadgeEarn?.();
+    onGateComplete?.();
   };
 
   const progress = (completedSections.length / 3) * 100;
@@ -39,10 +47,10 @@ const Module1_1 = () => {
           <Button
             variant="ghost"
             className="mb-4 text-primary hover:text-primary/80"
-            onClick={() => navigate("/")}
+            onClick={() => navigate(returnPath)}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            返回首頁
+            返回{returnPath === "/" ? "首頁" : "章節"}
           </Button>
           
           <motion.div

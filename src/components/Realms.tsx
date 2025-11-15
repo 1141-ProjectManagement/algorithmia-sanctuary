@@ -18,7 +18,7 @@ const realms = [
     englishName: "Sanctuary of Origins",
     icon: Circle,
     description: "探索演算法的根基與基礎概念",
-    link: "/realm/1-1",
+    link: "/chapter1",
     available: true,
   },
   {
