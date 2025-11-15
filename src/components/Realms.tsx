@@ -1,5 +1,6 @@
 import { Circle, Clock, GitBranch, Network, GitFork, Database, Layers } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 const realms = [
   {
@@ -87,7 +88,18 @@ const Realms = () => {
           {realms.map((realm, index) => {
             const Icon = realm.icon;
             return (
-              <Card
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ 
+                  duration: 0.8, 
+                  ease: "easeOut",
+                  delay: index * 0.1 
+                }}
+              >
+                <Card
                 key={index}
                 className="bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer"
                 style={{
@@ -131,6 +143,7 @@ const Realms = () => {
                   </p>
                 </div>
               </Card>
+              </motion.div>
             );
           })}
         </div>
