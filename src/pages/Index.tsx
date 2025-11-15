@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import Realms from "@/components/Realms";
 import About from "@/components/About";
 import ScrollNav from "@/components/ScrollNav";
+import Navbar from "@/components/Navbar";
 
 const sections = ["Introduction", "Realms", "About"];
 
@@ -61,19 +62,26 @@ const Index = () => {
   };
 
   return (
-    <main 
-      className="h-screen bg-background text-foreground overflow-y-scroll overflow-x-hidden snap-y snap-mandatory"
-      style={{ 
-        scrollBehavior: "smooth",
-        scrollPaddingTop: "0px",
-      }}
-    >
-      {/* Scroll Navigation */}
-      <ScrollNav 
-        sections={sections} 
-        currentSection={currentSection} 
+    <>
+      {/* Top Navigation Bar */}
+      <Navbar 
+        currentSection={currentSection}
         onNavigate={navigateToSection}
       />
+
+      <main 
+        className="h-screen bg-background text-foreground overflow-y-scroll overflow-x-hidden snap-y snap-mandatory"
+        style={{ 
+          scrollBehavior: "smooth",
+          scrollPaddingTop: "0px",
+        }}
+      >
+        {/* Scroll Navigation Indicator */}
+        <ScrollNav 
+          sections={sections} 
+          currentSection={currentSection} 
+          onNavigate={navigateToSection}
+        />
 
       {/* Section dividers with golden line effect */}
       <style>{`
@@ -120,7 +128,8 @@ const Index = () => {
 
       {/* Section 3: About */}
       <About />
-    </main>
+      </main>
+    </>
   );
 };
 
