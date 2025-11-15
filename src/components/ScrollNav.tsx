@@ -21,7 +21,7 @@ const ScrollNav = ({ sections, currentSection, onNavigate }: ScrollNavProps) => 
 
   return (
     <nav 
-      className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col items-center gap-6"
+      className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 z-40 flex flex-col items-center gap-6"
       aria-label="Section navigation"
       role="navigation"
     >
