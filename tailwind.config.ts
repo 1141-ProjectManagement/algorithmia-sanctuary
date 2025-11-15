@@ -47,6 +47,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        temple: {
+          black: "hsl(var(--temple-black))",
+          gold: "hsl(var(--temple-gold))",
+          'gold-dark': "hsl(var(--temple-gold-dark))",
+        },
+        lapis: "hsl(var(--lapis-blue))",
+        jade: "hsl(var(--jade-green))",
+        amber: "hsl(var(--amber-glow))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,6 +70,10 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        'cinzel': ['Cinzel', 'serif'],
+        'inter': ['Inter', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {
@@ -80,10 +92,40 @@ export default {
             height: "0",
           },
         },
+        "pulse-glow": {
+          "0%, 100%": {
+            boxShadow: "0 0 10px hsla(43, 74%, 53%, 0.5), 0 0 20px hsla(43, 74%, 53%, 0.3), 0 0 30px hsla(43, 74%, 53%, 0.1)",
+          },
+          "50%": {
+            boxShadow: "0 0 20px hsla(45, 100%, 50%, 0.8), 0 0 40px hsla(45, 100%, 50%, 0.4), 0 0 60px hsla(45, 100%, 50%, 0.2)",
+          },
+        },
+        "float-gentle": {
+          "0%, 100%": { transform: "translateY(0px)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        "fade-in-up": {
+          from: {
+            opacity: "0",
+            transform: "translateY(20px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        "float-gentle": "float-gentle 4s ease-in-out infinite",
+        "fade-in-up": "fade-in-up 0.6s ease-out",
+      },
+      boxShadow: {
+        'glow-gold': '0 0 10px hsla(43, 74%, 53%, 0.5), 0 0 20px hsla(43, 74%, 53%, 0.3), 0 0 30px hsla(43, 74%, 53%, 0.1)',
+        'glow-gold-intense': '0 0 20px hsla(45, 100%, 50%, 0.8), 0 0 40px hsla(45, 100%, 50%, 0.4)',
+        'glow-amber': '0 0 10px hsla(45, 100%, 50%, 0.8), 0 0 20px hsla(45, 100%, 50%, 0.4)',
       },
     },
   },
