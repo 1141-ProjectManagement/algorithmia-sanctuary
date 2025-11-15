@@ -31,6 +31,7 @@ const features = [
 const About = () => {
   return (
     <section 
+      id="about-section"
       className="h-screen flex items-center justify-center px-6 relative overflow-hidden"
       aria-label="About Algorithmia Expedition"
     >
