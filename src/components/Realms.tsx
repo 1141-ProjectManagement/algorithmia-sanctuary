@@ -91,7 +91,7 @@ const Realms = () => {
                 key={index}
                 className="bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer"
                 style={{
-                  boxShadow: '0 0 10px hsla(43, 74%, 53%, 0.3), 0 0 20px hsla(43, 74%, 53%, 0.1)',
+                  boxShadow: '0 0 20px rgba(212, 175, 55, 0.3)',
                   borderImage: 'linear-gradient(135deg, hsl(43, 74%, 53%), hsl(43, 74%, 40%)) 1',
                 }}
               >
@@ -99,7 +99,7 @@ const Realms = () => {
                 <div 
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                   style={{
-                    boxShadow: '0 0 20px hsla(45, 100%, 50%, 0.6), 0 0 40px hsla(45, 100%, 50%, 0.3)'
+                    boxShadow: '0 0 30px rgba(212, 175, 55, 0.6), 0 0 50px rgba(212, 175, 55, 0.4)'
                   }}
                 />
                 
