@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Hero from "@/components/Hero";
 import Realms from "@/components/Realms";
 import About from "@/components/About";
@@ -9,21 +9,52 @@ const sections = ["Introduction", "Realms", "About"];
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
+  const sectionsRef = useRef<HTMLElement[]>([]);
 
+  // Intersection Observer for accurate section tracking
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 100; // Offset for navbar
-      const windowHeight = window.innerHeight;
-      const sectionIndex = Math.round(scrollPosition / windowHeight);
-      setCurrentSection(Math.min(Math.max(sectionIndex, 0), sections.length - 1));
+    const observerOptions = {
+      root: null,
+      rootMargin: "-50% 0px -50% 0px",
+      threshold: 0,
     };
 
-    const debouncedHandleScroll = () => {
-      requestAnimationFrame(handleScroll);
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionElement = entry.target as HTMLElement;
+          const sectionId = sectionElement.id;
+
+          let index = 0;
+          if (sectionId === "hero-section") index = 0;
+          else if (sectionId === "realms-section") index = 1;
+          else if (sectionId === "about-section") index = 2;
+
+          setCurrentSection(index);
+        }
+      });
     };
 
-    window.addEventListener("scroll", debouncedHandleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", debouncedHandleScroll);
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions,
+    );
+
+    // Observe only page sections (exclude notification sections)
+    const allSections = document.querySelectorAll(
+      "section#hero-section, section#realms-section, section#about-section",
+    );
+    sectionsRef.current = Array.from(allSections) as HTMLElement[];
+
+    sectionsRef.current.forEach((section) => {
+      observer.observe(section);
+    });
+
+    return () => {
+      sectionsRef.current.forEach((section) => {
+        observer.unobserve(section);
+      });
+    };
   }, []);
 
   useEffect(() => {
@@ -32,20 +63,26 @@ const Index = () => {
       if (["ArrowDown", "ArrowUp", " "].includes(e.key)) {
         // Don't interfere with carousel navigation
         const target = e.target as HTMLElement;
-        if (target.closest('[role="region"][aria-roledescription="carousel"]')) {
+        if (
+          target.closest('[role="region"][aria-roledescription="carousel"]')
+        ) {
           return;
         }
-        
+
         e.preventDefault();
-        
+
         if (e.key === "ArrowDown" || e.key === " ") {
           if (currentSection < sections.length - 1) {
-            const nextSection = document.querySelectorAll("section")[currentSection + 1];
+            const nextSection = document.querySelectorAll(
+              "section#hero-section, section#realms-section, section#about-section",
+            )[currentSection + 1];
             nextSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         } else if (e.key === "ArrowUp") {
           if (currentSection > 0) {
-            const prevSection = document.querySelectorAll("section")[currentSection - 1];
+            const prevSection = document.querySelectorAll(
+              "section#hero-section, section#realms-section, section#about-section",
+            )[currentSection - 1];
             prevSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         }
@@ -57,42 +94,45 @@ const Index = () => {
   }, [currentSection]);
 
   const navigateToSection = (index: number) => {
-    const allSections = document.querySelectorAll("section");
+    const allSections = document.querySelectorAll(
+      "section#hero-section, section#realms-section, section#about-section",
+    );
     allSections[index]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
     <>
       {/* Top Navigation Bar */}
-      <Navbar 
-        currentSection={currentSection}
-        onNavigate={navigateToSection}
-      />
+      <Navbar currentSection={currentSection} onNavigate={navigateToSection} />
 
-      <main 
+      <main
         className="h-screen bg-background text-foreground overflow-y-scroll overflow-x-hidden snap-y snap-mandatory"
-        style={{ 
+        style={{
           scrollBehavior: "smooth",
           scrollPaddingTop: "0px",
         }}
       >
         {/* Scroll Navigation Indicator */}
-        <ScrollNav 
-          sections={sections} 
-          currentSection={currentSection} 
+        <ScrollNav
+          sections={sections}
+          currentSection={currentSection}
           onNavigate={navigateToSection}
         />
 
-      {/* Section dividers with golden line effect */}
-      <style>{`
-        section {
+        {/* Section dividers with golden line effect */}
+        <style>{`
+        section#hero-section,
+        section#realms-section,
+        section#about-section {
           scroll-snap-align: start;
           scroll-snap-stop: always;
           position: relative;
           min-height: 100vh;
         }
-        
-        section::after {
+
+        section#hero-section::after,
+        section#realms-section::after,
+        section#about-section::after {
           content: '';
           position: absolute;
           bottom: 0;
@@ -103,8 +143,8 @@ const Index = () => {
           background: linear-gradient(90deg, transparent, hsl(43, 74%, 53%, 0.4) 20%, hsl(43, 74%, 53%, 0.6) 50%, hsl(43, 74%, 53%, 0.4) 80%, transparent);
           box-shadow: 0 0 15px hsla(43, 74%, 53%, 0.4), 0 2px 8px hsla(0, 0%, 0%, 0.3);
         }
-        
-        section:last-child::after {
+
+        section#about-section::after {
           display: none;
         }
 
@@ -120,14 +160,14 @@ const Index = () => {
         }
       `}</style>
 
-      {/* Section 1: Hero/Introduction */}
-      <Hero />
+        {/* Section 1: Hero/Introduction */}
+        <Hero />
 
-      {/* Section 2: Seven Realms Carousel */}
-      <Realms />
+        {/* Section 2: Seven Realms Carousel */}
+        <Realms />
 
-      {/* Section 3: About */}
-      <About />
+        {/* Section 3: About */}
+        <About />
       </main>
     </>
   );
