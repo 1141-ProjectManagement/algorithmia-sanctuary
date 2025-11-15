@@ -73,7 +73,11 @@ const Realms = () => {
   }, [api]);
 
   return (
-    <section id="realms-section" className="h-screen flex items-center justify-center px-6 relative">
+    <section 
+      id="realms-section" 
+      className="h-screen flex items-center justify-center px-6 relative"
+      aria-label="Seven Sacred Temples"
+    >
       {/* Background subtle gradient */}
       <div 
         className="absolute inset-0 opacity-30"
@@ -82,9 +86,15 @@ const Realms = () => {
         }}
       />
       
-      <div className="max-w-7xl mx-auto relative z-10 w-full">
+      <div className="max-w-7xl mx-auto relative z-10 w-full py-20">
         {/* Section title */}
-        <div className="text-center mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center mb-16"
+        >
           <h2 
             className="font-cinzel text-4xl md:text-6xl font-bold mb-4 inline-block relative"
             style={{
@@ -105,7 +115,7 @@ const Realms = () => {
           <p className="font-inter text-lg text-foreground/70 mt-6">
             Seven Sacred Temples of Algorithmic Wisdom
           </p>
-        </div>
+        </motion.div>
         
         {/* Carousel */}
         <Carousel
@@ -113,7 +123,7 @@ const Realms = () => {
           opts={{
             align: "start",
             loop: true,
-            dragFree: true,
+            dragFree: false,
           }}
           className="w-full max-w-full"
         >
@@ -125,7 +135,7 @@ const Realms = () => {
               return (
                 <CarouselItem 
                   key={index}
-                  className="pl-4 basis-[83%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                  className="pl-4 basis-[85%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
                 >
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -136,18 +146,23 @@ const Realms = () => {
                       ease: "easeOut",
                       delay: index * 0.1 
                     }}
-                    animate={{ scale: isActive ? 1.05 : 1 }}
-                    className="transition-all duration-400"
+                    animate={{ 
+                      scale: isActive ? 1.08 : 1,
+                    }}
+                    className="transition-all duration-400 h-full"
                   >
                     <Card
-                      className="bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer h-full"
+                      className="bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer h-full min-h-[320px]"
                       style={{
                         boxShadow: isActive 
-                          ? '0 0 30px rgba(212, 175, 55, 0.6), 0 0 50px rgba(212, 175, 55, 0.4)'
+                          ? '0 0 35px rgba(212, 175, 55, 0.7), 0 0 60px rgba(212, 175, 55, 0.5), 0 4px 20px rgba(0, 0, 0, 0.4)'
                           : '0 0 20px rgba(212, 175, 55, 0.3)',
                         borderImage: 'linear-gradient(135deg, hsl(43, 74%, 53%), hsl(43, 74%, 40%)) 1',
-                        transition: 'box-shadow 400ms ease-out',
+                        transition: 'all 400ms ease-out',
                       }}
+                      tabIndex={0}
+                      role="article"
+                      aria-label={`${realm.name} - ${realm.englishName}`}
                     >
                       {/* Hover glow effect */}
                       <div 
@@ -194,40 +209,44 @@ const Realms = () => {
           {/* Navigation arrows - desktop only */}
           <div className="hidden lg:block">
             <CarouselPrevious 
-              className="text-temple-gold border-temple-gold/50 hover:bg-temple-gold/10 hover:text-temple-gold"
+              className="text-temple-gold border-temple-gold/50 hover:bg-temple-gold/10 hover:text-temple-gold hover:border-temple-gold transition-all duration-300 -left-4 xl:-left-12"
               style={{
                 boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)',
               }}
+              aria-label="View previous realm"
             />
             <CarouselNext 
-              className="text-temple-gold border-temple-gold/50 hover:bg-temple-gold/10 hover:text-temple-gold"
+              className="text-temple-gold border-temple-gold/50 hover:bg-temple-gold/10 hover:text-temple-gold hover:border-temple-gold transition-all duration-300 -right-4 xl:-right-12"
               style={{
                 boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)',
               }}
+              aria-label="View next realm"
             />
           </div>
         </Carousel>
 
         {/* Dot indicators */}
-        <div className="flex justify-center gap-2 mt-8">
+        <div className="flex justify-center gap-2 mt-10" role="tablist" aria-label="Realm slides">
           {Array.from({ length: count }).map((_, index) => (
             <button
               key={index}
               onClick={() => api?.scrollTo(index)}
-              className="transition-all duration-400"
+              className="transition-all duration-400 focus:outline-none focus:ring-2 focus:ring-temple-gold focus:ring-offset-2 focus:ring-offset-background rounded-full"
               style={{
-                width: current === index ? '24px' : '8px',
-                height: '8px',
-                borderRadius: '4px',
+                width: current === index ? '28px' : '10px',
+                height: '10px',
+                borderRadius: '5px',
                 background: current === index 
                   ? 'hsl(43, 74%, 53%)'
                   : 'hsl(43, 74%, 53%, 0.3)',
                 boxShadow: current === index 
-                  ? '0 0 10px rgba(212, 175, 55, 0.6)'
+                  ? '0 0 12px rgba(212, 175, 55, 0.7), 0 0 20px rgba(212, 175, 55, 0.4)'
                   : 'none',
                 transition: 'all 400ms ease-out',
               }}
-              aria-label={`Go to slide ${index + 1}`}
+              role="tab"
+              aria-label={`Go to realm ${index + 1}`}
+              aria-selected={current === index}
             />
           ))}
         </div>

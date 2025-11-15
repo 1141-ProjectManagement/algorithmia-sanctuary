@@ -30,7 +30,10 @@ const features = [
 
 const About = () => {
   return (
-    <section className="h-screen flex items-center justify-center px-6 relative overflow-hidden">
+    <section 
+      className="h-screen flex items-center justify-center px-6 relative overflow-hidden"
+      aria-label="About Algorithmia Expedition"
+    >
       {/* Background gradient */}
       <div 
         className="absolute inset-0 opacity-20"
@@ -55,14 +58,14 @@ const About = () => {
         }}
       />
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-10 py-20">
         {/* Section title */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
           <h2 
             className="font-cinzel text-4xl md:text-6xl font-bold mb-4 inline-block relative"
@@ -92,7 +95,7 @@ const About = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
           <p className="font-inter text-xl md:text-2xl text-foreground/90 leading-relaxed max-w-3xl mx-auto mb-4">
             踏上一場穿越七座神聖聖殿的史詩之旅，在每座神殿中解鎖古老的演算法智慧。
@@ -103,7 +106,7 @@ const About = () => {
         </motion.div>
 
         {/* Features grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
@@ -120,10 +123,13 @@ const About = () => {
                 className="relative group"
               >
                 <div 
-                  className="bg-card/30 backdrop-blur-sm border border-temple-gold/20 rounded-lg p-6 h-full transition-all duration-500 hover:border-temple-gold/50 hover:scale-105"
+                  className="bg-card/30 backdrop-blur-sm border border-temple-gold/20 rounded-lg p-6 h-full transition-all duration-500 hover:border-temple-gold/50 hover:scale-105 focus-within:border-temple-gold/60 min-h-[200px]"
                   style={{
                     boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)',
                   }}
+                  tabIndex={0}
+                  role="article"
+                  aria-label={feature.title}
                 >
                   {/* Hover glow */}
                   <div 
