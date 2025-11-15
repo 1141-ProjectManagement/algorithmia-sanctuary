@@ -169,6 +169,83 @@ All colors MUST be HSL.
             -20px 0px;
     }
 
+    /* 神殿主題捲軸樣式 - Temple Theme Scrollbar */
+    /* Webkit browsers (Chrome, Safari, Edge) */
+    ::-webkit-scrollbar {
+        width: 14px;
+        height: 14px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: linear-gradient(
+            to right,
+            hsl(0 0% 6%) 0%,
+            hsl(0 0% 8%) 50%,
+            hsl(0 0% 6%) 100%
+        );
+        border-left: 1px solid hsl(43 30% 20%);
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+            180deg,
+            hsl(43 74% 45%) 0%,
+            hsl(43 74% 53%) 50%,
+            hsl(43 74% 45%) 100%
+        );
+        border-radius: 2px;
+        border: 2px solid hsl(0 0% 6%);
+        box-shadow:
+            0 0 6px hsla(43 74% 53% / 0.5),
+            inset 0 1px 0 hsla(43 100% 70% / 0.3),
+            inset 0 -1px 0 hsla(43 74% 30% / 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+            180deg,
+            hsl(43 74% 55%) 0%,
+            hsl(45 100% 50%) 50%,
+            hsl(43 74% 55%) 100%
+        );
+        box-shadow:
+            0 0 12px hsla(45 100% 50% / 0.8),
+            0 0 20px hsla(45 100% 50% / 0.4),
+            inset 0 1px 0 hsla(43 100% 70% / 0.5),
+            inset 0 -1px 0 hsla(43 74% 30% / 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb:active {
+        background: linear-gradient(
+            180deg,
+            hsl(43 74% 40%) 0%,
+            hsl(43 74% 48%) 50%,
+            hsl(43 74% 40%) 100%
+        );
+    }
+
+    /* Scrollbar corner */
+    ::-webkit-scrollbar-corner {
+        background: hsl(0 0% 6%);
+    }
+
+    /* Firefox scrollbar */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: hsl(43 74% 53%) hsl(0 0% 8%);
+    }
+
+    /* 為特定容器提供更細的捲軸 - Thinner scrollbar for specific containers */
+    .thin-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    .thin-scrollbar::-webkit-scrollbar-thumb {
+        border: 1px solid hsl(0 0% 6%);
+    }
+
     /* 確保全域通知組件不佔據頁面空間 */
     /* Ensure global notification components don't take up page space */
     .toaster,
