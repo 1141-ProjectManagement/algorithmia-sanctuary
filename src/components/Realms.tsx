@@ -106,11 +106,11 @@ const Realms = () => {
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center text-center h-full">
                   {/* Icon */}
-                  <div className="mb-6 group-hover:animate-float-gentle">
+                  <div className="mb-6">
                     <Icon 
-                      className="w-16 h-16 text-temple-gold" 
+                      className="w-16 h-16 text-temple-gold transition-all duration-500 group-hover:rotate-[5deg]" 
                       style={{
-                        filter: 'drop-shadow(0 0 8px hsla(43, 74%, 53%, 0.8))'
+                        filter: 'drop-shadow(0 0 12px hsla(43, 74%, 53%, 0.9)) drop-shadow(0 0 20px hsla(43, 74%, 53%, 0.5))'
                       }}
                     />
                   </div>
