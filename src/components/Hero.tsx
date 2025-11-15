@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Circle, Triangle } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
@@ -36,9 +37,12 @@ const Hero = () => {
       />
       
       {/* Main content */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto animate-fade-in-up">
+      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         {/* Title with gold gradient effect */}
-        <h1 
+        <motion.h1
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="font-cinzel text-6xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-wider"
           style={{
             background: 'linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)',
@@ -50,7 +54,7 @@ const Hero = () => {
           ALGORITHMIA
           <br />
           EXPEDITION
-        </h1>
+        </motion.h1>
         
         {/* Decorative line */}
         <div className="flex items-center justify-center gap-4 mb-6">
