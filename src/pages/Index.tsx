@@ -12,7 +12,7 @@ const Index = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollPosition = window.scrollY;
+      const scrollPosition = window.scrollY + 100; // Offset for navbar
       const windowHeight = window.innerHeight;
       const sectionIndex = Math.round(scrollPosition / windowHeight);
       setCurrentSection(Math.min(Math.max(sectionIndex, 0), sections.length - 1));
