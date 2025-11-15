@@ -9,9 +9,9 @@ interface NavbarProps {
 }
 
 const navItems = [
-  { label: "首頁", section: 0 },
-  { label: "課程", section: 1 },
-  { label: "介紹", section: 2 },
+  { label: "首頁", section: 0, ariaLabel: "Navigate to hero introduction" },
+  { label: "課程", section: 1, ariaLabel: "Navigate to seven temples" },
+  { label: "介紹", section: 2, ariaLabel: "Navigate to about section" },
 ];
 
 const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
@@ -69,6 +69,7 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
                 <button
                   key={item.section}
                   onClick={() => handleNavClick(item.section)}
+                  aria-label={item.ariaLabel}
                   className={`font-inter text-sm font-medium transition-all duration-300 relative group ${
                     currentSection === item.section
                       ? "text-temple-gold"
