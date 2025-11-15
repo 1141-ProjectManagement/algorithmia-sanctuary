@@ -1,6 +1,7 @@
-import { Circle, Clock, GitBranch, Network, GitFork, Database, Layers } from "lucide-react";
+import { Circle, Clock, GitBranch, Network, GitFork, Database, Layers, Lock } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Carousel,
   CarouselContent,
@@ -17,49 +18,70 @@ const realms = [
     englishName: "Sanctuary of Origins",
     icon: Circle,
     description: "探索演算法的根基與基礎概念",
+    link: "/realm/1-1",
+    available: true,
   },
   {
     name: "時序神殿",
     englishName: "Temple of Chronos",
     icon: Clock,
     description: "掌握排序與時間複雜度的奧秘",
+    link: null,
+    available: false,
   },
   {
     name: "迴聲神殿",
     englishName: "Temple of Echoes",
     icon: GitBranch,
     description: "習得遞迴與分治的智慧",
+    link: null,
+    available: false,
   },
   {
     name: "織徑神殿",
     englishName: "Temple of Woven Paths",
     icon: Network,
     description: "穿梭圖論與路徑探索之道",
+    link: null,
+    available: false,
   },
   {
     name: "抉擇神殿",
     englishName: "Temple of Judgment",
     icon: GitFork,
     description: "洞悉動態規劃與最優決策",
+    link: null,
+    available: false,
   },
   {
     name: "記憶神殿",
     englishName: "Temple of Akasha",
     icon: Database,
     description: "領悟記憶化與緩存策略",
+    link: null,
+    available: false,
   },
   {
     name: "整合神殿",
     englishName: "Temple of Unity",
     icon: Layers,
     description: "融合所有知識，達至圓滿",
+    link: null,
+    available: false,
   },
 ];
 
 const Realms = () => {
+  const navigate = useNavigate();
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
+
+  const handleRealmClick = (realm: typeof realms[0]) => {
+    if (realm.available && realm.link) {
+      navigate(realm.link);
+    }
+  };
 
   useEffect(() => {
     if (!api) return;
@@ -152,7 +174,12 @@ const Realms = () => {
                     className="transition-all duration-400 h-full"
                   >
                     <Card
-                      className="bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group hover:scale-105 transition-all duration-300 cursor-pointer h-full min-h-[320px]"
+                      onClick={() => handleRealmClick(realm)}
+                      className={`bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group transition-all duration-300 h-full min-h-[320px] ${
+                        realm.available 
+                          ? 'hover:scale-105 cursor-pointer' 
+                          : 'opacity-60 cursor-not-allowed'
+                      }`}
                       style={{
                         boxShadow: isActive 
                           ? '0 0 35px rgba(212, 175, 55, 0.7), 0 0 60px rgba(212, 175, 55, 0.5), 0 4px 20px rgba(0, 0, 0, 0.4)'
@@ -162,22 +189,34 @@ const Realms = () => {
                       }}
                       tabIndex={0}
                       role="article"
-                      aria-label={`${realm.name} - ${realm.englishName}`}
+                      aria-label={`${realm.name} - ${realm.englishName}${!realm.available ? ' - 即將推出' : ''}`}
                     >
                       {/* Hover glow effect */}
-                      <div 
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                        style={{
-                          boxShadow: '0 0 30px rgba(212, 175, 55, 0.6), 0 0 50px rgba(212, 175, 55, 0.4)'
-                        }}
-                      />
+                      {realm.available && (
+                        <div 
+                          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                          style={{
+                            boxShadow: '0 0 30px rgba(212, 175, 55, 0.6), 0 0 50px rgba(212, 175, 55, 0.4)'
+                          }}
+                        />
+                      )}
+                      
+                      {/* Locked overlay for unavailable realms */}
+                      {!realm.available && (
+                        <div className="absolute top-4 right-4 z-20">
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-muted/80 backdrop-blur-sm rounded-full border border-border">
+                            <Lock className="w-3 h-3 text-muted-foreground" />
+                            <span className="text-xs text-muted-foreground font-medium">即將推出</span>
+                          </div>
+                        </div>
+                      )}
                       
                       {/* Content */}
                       <div className="relative z-10 flex flex-col items-center text-center h-full">
                         {/* Icon */}
                         <div className="mb-6">
                           <Icon 
-                            className="w-16 h-16 text-temple-gold transition-all duration-500 group-hover:rotate-[5deg]" 
+                            className={`w-16 h-16 text-temple-gold transition-all duration-500 ${realm.available ? 'group-hover:rotate-[5deg]' : ''}`}
                             style={{
                               filter: 'drop-shadow(0 0 12px hsla(43, 74%, 53%, 0.9)) drop-shadow(0 0 20px hsla(43, 74%, 53%, 0.5))'
                             }}
@@ -198,6 +237,23 @@ const Realms = () => {
                         <p className="font-inter text-sm text-foreground/80 leading-relaxed flex-grow">
                           {realm.description}
                         </p>
+
+                        {/* Available indicator */}
+                        {realm.available && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="mt-4 text-xs text-primary font-medium flex items-center gap-1"
+                          >
+                            <span>點擊進入探索</span>
+                            <motion.span
+                              animate={{ x: [0, 4, 0] }}
+                              transition={{ duration: 1.5, repeat: Infinity }}
+                            >
+                              →
+                            </motion.span>
+                          </motion.div>
+                        )}
                       </div>
                     </Card>
                   </motion.div>
