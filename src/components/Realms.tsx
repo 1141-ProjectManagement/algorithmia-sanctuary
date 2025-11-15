@@ -86,7 +86,7 @@ const Realms = () => {
         }}
       />
       
-      <div className="max-w-7xl mx-auto relative z-10 w-full py-20">
+      <div className="max-w-7xl mx-auto relative z-10 w-full py-20 pr-16 md:pr-20">
         {/* Section title */}
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
