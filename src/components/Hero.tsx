@@ -9,7 +9,10 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section 
+      className="relative h-screen flex items-center justify-center overflow-hidden"
+      aria-label="Hero introduction"
+    >
       {/* Radial gradient background */}
       <div 
         className="absolute inset-0 z-0"

@@ -14,26 +14,39 @@ const Index = () => {
       const scrollPosition = window.scrollY;
       const windowHeight = window.innerHeight;
       const sectionIndex = Math.round(scrollPosition / windowHeight);
-      setCurrentSection(Math.min(sectionIndex, sections.length - 1));
+      setCurrentSection(Math.min(Math.max(sectionIndex, 0), sections.length - 1));
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const debouncedHandleScroll = () => {
+      requestAnimationFrame(handleScroll);
+    };
+
+    window.addEventListener("scroll", debouncedHandleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", debouncedHandleScroll);
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowDown" || e.key === " ") {
-        e.preventDefault();
-        if (currentSection < sections.length - 1) {
-          const nextSection = document.querySelectorAll("section")[currentSection + 1];
-          nextSection?.scrollIntoView({ behavior: "smooth" });
+      // Prevent default only for our navigation keys
+      if (["ArrowDown", "ArrowUp", " "].includes(e.key)) {
+        // Don't interfere with carousel navigation
+        const target = e.target as HTMLElement;
+        if (target.closest('[role="region"][aria-roledescription="carousel"]')) {
+          return;
         }
-      } else if (e.key === "ArrowUp") {
+        
         e.preventDefault();
-        if (currentSection > 0) {
-          const prevSection = document.querySelectorAll("section")[currentSection - 1];
-          prevSection?.scrollIntoView({ behavior: "smooth" });
+        
+        if (e.key === "ArrowDown" || e.key === " ") {
+          if (currentSection < sections.length - 1) {
+            const nextSection = document.querySelectorAll("section")[currentSection + 1];
+            nextSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        } else if (e.key === "ArrowUp") {
+          if (currentSection > 0) {
+            const prevSection = document.querySelectorAll("section")[currentSection - 1];
+            prevSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         }
       }
     };
@@ -44,13 +57,16 @@ const Index = () => {
 
   const navigateToSection = (index: number) => {
     const allSections = document.querySelectorAll("section");
-    allSections[index]?.scrollIntoView({ behavior: "smooth" });
+    allSections[index]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
     <main 
-      className="min-h-screen bg-background text-foreground overflow-y-scroll overflow-x-hidden snap-y snap-mandatory"
-      style={{ scrollBehavior: "smooth" }}
+      className="h-screen bg-background text-foreground overflow-y-scroll overflow-x-hidden snap-y snap-mandatory"
+      style={{ 
+        scrollBehavior: "smooth",
+        scrollPaddingTop: "0px",
+      }}
     >
       {/* Scroll Navigation */}
       <ScrollNav 
@@ -65,6 +81,7 @@ const Index = () => {
           scroll-snap-align: start;
           scroll-snap-stop: always;
           position: relative;
+          min-height: 100vh;
         }
         
         section::after {
@@ -73,14 +90,25 @@ const Index = () => {
           bottom: 0;
           left: 50%;
           transform: translateX(-50%);
-          width: 80%;
-          height: 2px;
-          background: linear-gradient(90deg, transparent, hsl(43, 74%, 53%, 0.3), transparent);
-          box-shadow: 0 0 10px hsla(43, 74%, 53%, 0.3);
+          width: 90%;
+          height: 3px;
+          background: linear-gradient(90deg, transparent, hsl(43, 74%, 53%, 0.4) 20%, hsl(43, 74%, 53%, 0.6) 50%, hsl(43, 74%, 53%, 0.4) 80%, transparent);
+          box-shadow: 0 0 15px hsla(43, 74%, 53%, 0.4), 0 2px 8px hsla(0, 0%, 0%, 0.3);
         }
         
         section:last-child::after {
           display: none;
+        }
+
+        /* Smooth scroll behavior optimization */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Focus styles for accessibility */
+        *:focus-visible {
+          outline: 2px solid hsl(43, 74%, 53%);
+          outline-offset: 4px;
         }
       `}</style>
 
