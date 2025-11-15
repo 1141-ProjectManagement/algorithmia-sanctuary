@@ -39,12 +39,12 @@ const Hero = () => {
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto animate-fade-in-up">
         {/* Title with gold gradient effect */}
         <h1 
-          className="font-cinzel text-5xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-wider"
+          className="font-cinzel text-6xl md:text-7xl lg:text-8xl font-bold mb-6 tracking-wider"
           style={{
             background: 'linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            textShadow: '0 0 20px hsla(45, 100%, 50%, 0.3)',
+            textShadow: '0 0 10px hsla(45, 100%, 50%, 0.8), 0 0 20px hsla(45, 100%, 50%, 0.5), 0 0 40px hsla(45, 100%, 50%, 0.3), 0 0 60px hsla(45, 100%, 50%, 0.2)',
           }}
         >
           ALGORITHMIA
