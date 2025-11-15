@@ -10,6 +10,8 @@ const sections = ["Introduction", "Realms", "About"];
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const sectionsRef = useRef<HTMLElement[]>([]);
+  const mainRef = useRef<HTMLElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Intersection Observer for accurate section tracking
   useEffect(() => {
@@ -57,6 +59,15 @@ const Index = () => {
     };
   }, []);
 
+  // Cleanup scroll timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Prevent default only for our navigation keys
@@ -94,10 +105,50 @@ const Index = () => {
   }, [currentSection]);
 
   const navigateToSection = (index: number) => {
+    if (!mainRef.current) return;
+
     const allSections = document.querySelectorAll(
       "section#hero-section, section#realms-section, section#about-section",
     );
-    allSections[index]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const targetSection = allSections[index] as HTMLElement;
+    if (!targetSection) return;
+
+    // Clear any existing scroll timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+
+    // Temporarily disable snap for smooth transition
+    mainRef.current.style.scrollSnapType = "none";
+
+    // Use requestAnimationFrame for smoother disable
+    requestAnimationFrame(() => {
+      targetSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // Detect scroll end to re-enable snap
+      const detectScrollEnd = () => {
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+
+        scrollTimeoutRef.current = setTimeout(() => {
+          if (mainRef.current) {
+            mainRef.current.style.scrollSnapType = "y mandatory";
+          }
+        }, 150);
+      };
+
+      // Listen for scroll events to detect when scrolling ends
+      const scrollHandler = () => detectScrollEnd();
+      mainRef.current?.addEventListener("scroll", scrollHandler, {
+        passive: true,
+      });
+
+      // Cleanup listener after snap is re-enabled
+      setTimeout(() => {
+        mainRef.current?.removeEventListener("scroll", scrollHandler);
+      }, 1200);
+    });
   };
 
   return (
@@ -106,10 +157,12 @@ const Index = () => {
       <Navbar currentSection={currentSection} onNavigate={navigateToSection} />
 
       <main
+        ref={mainRef}
         className="h-screen bg-background text-foreground overflow-y-scroll overflow-x-hidden snap-y snap-mandatory"
         style={{
           scrollBehavior: "smooth",
-          scrollPaddingTop: "0px",
+          scrollPaddingTop: "4rem",
+          transition: "scroll-snap-type 0.1s ease",
         }}
       >
         {/* Scroll Navigation Indicator */}
