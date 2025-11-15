@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { Circle, Triangle } from "lucide-react";
+import { Circle, Triangle, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Hero = () => {
+  const scrollToRealms = () => {
+    const realmsSection = document.getElementById('realms-section');
+    realmsSection?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Radial gradient background */}
       <div 
         className="absolute inset-0 z-0"
@@ -64,24 +69,67 @@ const Hero = () => {
         </div>
         
         {/* Subtitle */}
-        <p className="font-inter text-xl md:text-2xl text-foreground/80 mb-12 tracking-wide">
-          穿越神殿之門，習得古老智慧
-        </p>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+          className="font-inter text-lg md:text-xl text-foreground/70 mb-12 max-w-2xl mx-auto leading-relaxed"
+        >
+          探索演算法的古老智慧，穿越七座神聖聖殿，解鎖計算思維的奧秘
+        </motion.p>
         
         {/* CTA Button */}
-        <Button 
-          size="lg"
-          className="font-cinzel text-lg px-12 py-6 bg-transparent border-2 border-temple-gold text-temple-gold hover:bg-temple-gold hover:text-temple-black transition-all duration-300 shadow-glow-gold hover:shadow-glow-gold-intense"
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
         >
-          啟封神殿
-        </Button>
-        
-        {/* Bottom decorative elements */}
-        <div className="mt-20 flex items-center justify-center gap-8 opacity-50">
-          <div className="w-px h-16 bg-gradient-to-b from-temple-gold to-transparent" />
-          <Circle className="w-2 h-2 text-temple-gold" />
-          <div className="w-px h-16 bg-gradient-to-b from-temple-gold to-transparent" />
-        </div>
+          <Button 
+            size="lg"
+            onClick={scrollToRealms}
+            className="font-cinzel text-lg px-10 py-7 relative group overflow-hidden border-0"
+            style={{
+              background: 'linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)',
+              boxShadow: '0 0 30px rgba(212, 175, 55, 0.4), 0 10px 30px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            {/* Animated glow effect */}
+            <div 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              style={{
+                background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.2), transparent)',
+                animation: 'pulse 2s ease-in-out infinite',
+              }}
+            />
+            
+            <span className="relative z-10 flex items-center gap-3 text-background font-semibold">
+              <Sparkles className="w-5 h-5" />
+              開始探索之旅
+              <span className="text-sm font-inter ml-2">Start Your Expedition</span>
+            </span>
+          </Button>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1, ease: "easeOut" }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        >
+          <span className="font-inter text-xs text-foreground/50 uppercase tracking-wider">Scroll to Explore</span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="w-6 h-10 border-2 rounded-full flex items-start justify-center p-2"
+            style={{ borderColor: 'hsl(43, 74%, 53%, 0.5)' }}
+          >
+            <motion.div 
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: 'hsl(43, 74%, 53%)' }}
+            />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

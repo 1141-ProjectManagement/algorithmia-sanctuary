@@ -73,7 +73,7 @@ const Realms = () => {
   }, [api]);
 
   return (
-    <section className="py-32 px-6 relative">
+    <section id="realms-section" className="h-screen flex items-center justify-center px-6 relative">
       {/* Background subtle gradient */}
       <div 
         className="absolute inset-0 opacity-30"
@@ -82,9 +82,9 @@ const Realms = () => {
         }}
       />
       
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 w-full">
         {/* Section title */}
-        <div className="text-center mb-20">
+        <div className="text-center mb-12">
           <h2 
             className="font-cinzel text-4xl md:text-6xl font-bold mb-4 inline-block relative"
             style={{
