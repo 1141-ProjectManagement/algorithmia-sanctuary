@@ -26,8 +26,8 @@ const realms = [
     englishName: "Temple of Chronos",
     icon: Clock,
     description: "掌握排序與時間複雜度的奧秘",
-    link: null,
-    available: false,
+    link: "/chapter2",
+    available: true,
   },
   {
     name: "迴聲神殿",
