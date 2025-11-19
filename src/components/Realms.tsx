@@ -42,8 +42,8 @@ const realms = [
     englishName: "Temple of Woven Paths",
     icon: Network,
     description: "穿梭圖論與路徑探索之道",
-    link: null,
-    available: false,
+    link: "/chapter4",
+    available: true,
   },
   {
     name: "抉擇神殿",
