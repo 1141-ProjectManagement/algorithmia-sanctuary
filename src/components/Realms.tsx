@@ -54,20 +54,12 @@ const realms = [
     available: true,
   },
   {
-    name: "記憶神殿",
-    englishName: "Temple of Akasha",
-    icon: Database,
-    description: "領悟記憶化與緩存策略",
-    link: null,
-    available: false,
-  },
-  {
     name: "整合神殿",
     englishName: "Temple of Unity",
     icon: Layers,
     description: "融合所有知識，達至圓滿",
-    link: null,
-    available: false,
+    link: "/chapter6",
+    available: true,
   },
 ];
 
