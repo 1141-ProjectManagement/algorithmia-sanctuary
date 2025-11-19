@@ -180,7 +180,7 @@ export function logoutUser(): void {
 }
 
 export async function createAdminUser(): Promise<User | null> {
-  const adminEmail = 'admin@algorithmia.dev';
+  const adminEmail = 'admin@admin.com';
   
   // Check if admin already exists
   const existingAdmin = await getUserByEmail(adminEmail);
@@ -188,8 +188,8 @@ export async function createAdminUser(): Promise<User | null> {
     return existingAdmin;
   }
   
-  // Create new admin user
-  return createUser(adminEmail, '管理員', 'admin');
+  // Create new admin user (注意：當前系統沒有密碼驗證，只有 email 和 nickname)
+  return createUser(adminEmail, '系統管理員', 'admin');
 }
 
 export async function isUserAdmin(): Promise<boolean> {

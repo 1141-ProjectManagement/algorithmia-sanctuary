@@ -23,7 +23,8 @@ export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => 
   const handleAdminLogin = async () => {
     setIsLoading(true);
     try {
-      const adminUser = await createAdminUser();
+      // 直接使用已創建的管理員帳號登入
+      const adminUser = await getUserByEmail('admin@admin.com');
       if (adminUser) {
         setCurrentUser(adminUser.email);
         toast({
