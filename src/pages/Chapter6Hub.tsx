@@ -13,33 +13,27 @@ const Chapter6Hub = () => {
   const gates = [
     {
       id: "gate1",
-      title: "整合挑戰 I",
-      description: "即將推出",
+      title: "並查集",
+      description: "高效管理群組關係，以近乎 O(1) 的效率進行合併與查詢操作",
       route: "/chapter6/gate1",
     },
     {
       id: "gate2",
-      title: "整合挑戰 II",
-      description: "即將推出",
+      title: "位元操作",
+      description: "探索電腦運算的最小單位，利用位元級操作實現極致效能",
       route: "/chapter6/gate2",
     },
     {
       id: "gate3",
-      title: "整合挑戰 III",
-      description: "即將推出",
+      title: "隨機化演算法",
+      description: "理解隨機性在演算法中的力量，簡化問題或找到近似最優解",
       route: "/chapter6/gate3",
     },
     {
       id: "gate4",
-      title: "整合挑戰 IV",
-      description: "即將推出",
+      title: "綜合挑戰與 Boss 戰",
+      description: "檢驗知識的遷移與應用能力，挑戰綜合性難題",
       route: "/chapter6/gate4",
-    },
-    {
-      id: "gate5",
-      title: "終極試煉",
-      description: "即將推出",
-      route: "/chapter6/gate5",
     },
   ];
 
