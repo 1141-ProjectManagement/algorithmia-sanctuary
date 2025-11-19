@@ -7,6 +7,7 @@ export interface User {
   email: string;
   nickname: string;
   created_at: string;
+  role: 'user' | 'admin';
 }
 
 export interface Progress {
@@ -41,7 +42,8 @@ export async function initDatabase(): Promise<Database> {
         email TEXT UNIQUE NOT NULL,
         nickname TEXT NOT NULL,
         created_at TEXT NOT NULL,
-        auth_provider TEXT DEFAULT 'local'
+        auth_provider TEXT DEFAULT 'local',
+        role TEXT DEFAULT 'user' CHECK(role IN ('user', 'admin'))
       );
     `);
 
@@ -72,13 +74,13 @@ export function saveDatabase(): void {
   localStorage.setItem('algorithmia_db', JSON.stringify(buffer));
 }
 
-export async function createUser(email: string, nickname: string): Promise<User | null> {
+export async function createUser(email: string, nickname: string, role: 'user' | 'admin' = 'user'): Promise<User | null> {
   const database = await initDatabase();
   
   try {
     database.run(
-      'INSERT INTO users (email, nickname, created_at) VALUES (?, ?, ?)',
-      [email, nickname, new Date().toISOString()]
+      'INSERT INTO users (email, nickname, created_at, role) VALUES (?, ?, ?, ?)',
+      [email, nickname, new Date().toISOString(), role]
     );
     saveDatabase();
 
@@ -90,6 +92,7 @@ export async function createUser(email: string, nickname: string): Promise<User 
         email: row[1] as string,
         nickname: row[2] as string,
         created_at: row[3] as string,
+        role: (row[5] as string) as 'user' | 'admin',
       };
     }
   } catch (error) {
@@ -112,6 +115,7 @@ export async function getUserByEmail(email: string): Promise<User | null> {
       email: row[1] as string,
       nickname: row[2] as string,
       created_at: row[3] as string,
+      role: (row[5] as string) as 'user' | 'admin',
     };
   }
   
@@ -173,4 +177,22 @@ export function setCurrentUser(email: string): void {
 
 export function logoutUser(): void {
   localStorage.removeItem('current_user_email');
+}
+
+export async function createAdminUser(): Promise<User | null> {
+  const adminEmail = 'admin@algorithmia.dev';
+  
+  // Check if admin already exists
+  const existingAdmin = await getUserByEmail(adminEmail);
+  if (existingAdmin) {
+    return existingAdmin;
+  }
+  
+  // Create new admin user
+  return createUser(adminEmail, '管理員', 'admin');
+}
+
+export async function isUserAdmin(): Promise<boolean> {
+  const user = await getCurrentUser();
+  return user?.role === 'admin';
 }

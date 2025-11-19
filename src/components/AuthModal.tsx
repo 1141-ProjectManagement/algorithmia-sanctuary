@@ -3,9 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { createUser, getUserByEmail, setCurrentUser } from "@/lib/database";
+import { createUser, getUserByEmail, setCurrentUser, createAdminUser } from "@/lib/database";
 import { useToast } from "@/hooks/use-toast";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ShieldCheck } from "lucide-react";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 interface AuthModalProps {
   open: boolean;
@@ -18,6 +19,31 @@ export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => 
   const [nickname, setNickname] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+
+  const handleAdminLogin = async () => {
+    setIsLoading(true);
+    try {
+      const adminUser = await createAdminUser();
+      if (adminUser) {
+        setCurrentUser(adminUser.email);
+        toast({
+          title: "管理員登入成功",
+          description: "已解鎖所有課程關卡",
+        });
+        onSuccess();
+        onOpenChange(false);
+      }
+    } catch (error) {
+      console.error('Admin login error:', error);
+      toast({
+        title: "錯誤",
+        description: "管理員登入失敗",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,11 +115,34 @@ export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md bg-background border-temple-gold/20">
         <DialogHeader>
-          <div className="flex items-center justify-center gap-2 mb-4">
+          <div className="flex items-center justify-center gap-2 mb-4 relative">
             <Sparkles className="w-6 h-6 text-temple-gold animate-pulse-glow" />
             <DialogTitle className="font-cinzel text-2xl text-temple-gold">
               開始探險
             </DialogTitle>
+            
+            {/* Admin Icon */}
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <button
+                  type="button"
+                  onClick={handleAdminLogin}
+                  disabled={isLoading}
+                  className="absolute right-0 p-2 rounded-lg hover:bg-temple-gold/10 transition-all duration-300 group"
+                  aria-label="管理員登入"
+                >
+                  <ShieldCheck className="w-5 h-5 text-temple-gold/50 group-hover:text-temple-gold group-hover:scale-110 transition-all" />
+                </button>
+              </HoverCardTrigger>
+              <HoverCardContent className="w-64 bg-background border-temple-gold/20">
+                <div className="space-y-2">
+                  <h4 className="text-sm font-cinzel text-temple-gold font-semibold">管理員快速登入</h4>
+                  <p className="text-xs text-foreground/70">
+                    點擊此圖標可創建並登入管理員帳號，自動解鎖所有課程關卡。
+                  </p>
+                </div>
+              </HoverCardContent>
+            </HoverCard>
           </div>
           <DialogDescription className="text-center text-foreground/70">
             輸入你的資料以追蹤學習進度
