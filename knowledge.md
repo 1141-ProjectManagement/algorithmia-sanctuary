@@ -1,6 +1,5 @@
 # 只使用 lovable 和 nanobanana 進行美術設計，沒有專業人員的方案  
   
-# Answer (Claude 4.5 Sonnet):  
 沒有專業美術人員，僅以 **Lovable**（低代碼AI UI設計）和 **nanobanana**（主打快速AI生成插圖/貼圖/裝飾icon等）兩種AI工具，也能打造出具有明顯主題感且現代、精緻的課程頁面。以下是適合這種資源限制的最佳方案建議：
 
 ***
