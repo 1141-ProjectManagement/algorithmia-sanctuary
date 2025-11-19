@@ -54,20 +54,12 @@ const realms = [
     available: true,
   },
   {
-    name: "記憶神殿",
-    englishName: "Temple of Akasha",
-    icon: Database,
-    description: "領悟記憶化與緩存策略",
-    link: null,
-    available: false,
-  },
-  {
     name: "整合神殿",
     englishName: "Temple of Unity",
     icon: Layers,
     description: "融合所有知識，達至圓滿",
-    link: null,
-    available: false,
+    link: "/chapter6",
+    available: true,
   },
 ];
 
@@ -77,7 +69,7 @@ const Realms = () => {
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
 
-  const handleRealmClick = (realm: typeof realms[0]) => {
+  const handleRealmClick = (realm: (typeof realms)[0]) => {
     if (realm.available && realm.link) {
       navigate(realm.link);
     }
@@ -95,50 +87,48 @@ const Realms = () => {
   }, [api]);
 
   return (
-    <section 
-      id="realms-section" 
+    <section
+      id="realms-section"
       className="h-screen flex items-center justify-center px-6 relative"
       aria-label="Seven Sacred Temples"
     >
       {/* Background subtle gradient */}
-      <div 
+      <div
         className="absolute inset-0 opacity-30"
         style={{
-          background: 'radial-gradient(ellipse at top, hsl(30, 20%, 6%) 0%, transparent 50%)'
+          background: "radial-gradient(ellipse at top, hsl(30, 20%, 6%) 0%, transparent 50%)",
         }}
       />
-      
+
       <div className="max-w-7xl mx-auto relative z-10 w-full py-20 pr-16 md:pr-20">
         {/* Section title */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-16"
         >
-          <h2 
+          <h2
             className="font-cinzel text-4xl md:text-6xl font-bold mb-4 inline-block relative"
             style={{
-              background: 'linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              background: "linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
             }}
           >
-            七座聖殿
+            六座聖殿
           </h2>
-          <div 
+          <div
             className="h-1 w-32 mx-auto mt-4 rounded-full"
             style={{
-              background: 'linear-gradient(90deg, transparent, hsl(43, 74%, 53%), transparent)',
-              boxShadow: '0 0 20px hsla(45, 100%, 50%, 0.5)'
+              background: "linear-gradient(90deg, transparent, hsl(43, 74%, 53%), transparent)",
+              boxShadow: "0 0 20px hsla(45, 100%, 50%, 0.5)",
             }}
           />
-          <p className="font-inter text-lg text-foreground/70 mt-6">
-            Seven Sacred Temples of Algorithmic Wisdom
-          </p>
+          <p className="font-inter text-lg text-foreground/70 mt-6">Six Sacred Temples of Algorithmic Wisdom</p>
         </motion.div>
-        
+
         {/* Carousel */}
         <Carousel
           setApi={setApi}
@@ -153,22 +143,19 @@ const Realms = () => {
             {realms.map((realm, index) => {
               const Icon = realm.icon;
               const isActive = current === index;
-              
+
               return (
-                <CarouselItem 
-                  key={index}
-                  className="pl-4 basis-[85%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-                >
+                <CarouselItem key={index} className="pl-4 basis-[85%] sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
-                    transition={{ 
-                      duration: 0.8, 
+                    transition={{
+                      duration: 0.8,
                       ease: "easeOut",
-                      delay: index * 0.1 
+                      delay: index * 0.1,
                     }}
-                    animate={{ 
+                    animate={{
                       scale: isActive ? 1.08 : 1,
                     }}
                     className="transition-all duration-400 h-full"
@@ -176,31 +163,29 @@ const Realms = () => {
                     <Card
                       onClick={() => handleRealmClick(realm)}
                       className={`bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group transition-all duration-300 h-full min-h-[320px] ${
-                        realm.available 
-                          ? 'hover:scale-105 cursor-pointer' 
-                          : 'opacity-60 cursor-not-allowed'
+                        realm.available ? "hover:scale-105 cursor-pointer" : "opacity-60 cursor-not-allowed"
                       }`}
                       style={{
-                        boxShadow: isActive 
-                          ? '0 0 35px rgba(212, 175, 55, 0.7), 0 0 60px rgba(212, 175, 55, 0.5), 0 4px 20px rgba(0, 0, 0, 0.4)'
-                          : '0 0 20px rgba(212, 175, 55, 0.3)',
-                        borderImage: 'linear-gradient(135deg, hsl(43, 74%, 53%), hsl(43, 74%, 40%)) 1',
-                        transition: 'all 400ms ease-out',
+                        boxShadow: isActive
+                          ? "0 0 35px rgba(212, 175, 55, 0.7), 0 0 60px rgba(212, 175, 55, 0.5), 0 4px 20px rgba(0, 0, 0, 0.4)"
+                          : "0 0 20px rgba(212, 175, 55, 0.3)",
+                        borderImage: "linear-gradient(135deg, hsl(43, 74%, 53%), hsl(43, 74%, 40%)) 1",
+                        transition: "all 400ms ease-out",
                       }}
                       tabIndex={0}
                       role="article"
-                      aria-label={`${realm.name} - ${realm.englishName}${!realm.available ? ' - 即將推出' : ''}`}
+                      aria-label={`${realm.name} - ${realm.englishName}${!realm.available ? " - 即將推出" : ""}`}
                     >
                       {/* Hover glow effect */}
                       {realm.available && (
-                        <div 
+                        <div
                           className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                           style={{
-                            boxShadow: '0 0 30px rgba(212, 175, 55, 0.6), 0 0 50px rgba(212, 175, 55, 0.4)'
+                            boxShadow: "0 0 30px rgba(212, 175, 55, 0.6), 0 0 50px rgba(212, 175, 55, 0.4)",
                           }}
                         />
                       )}
-                      
+
                       {/* Locked overlay for unavailable realms */}
                       {!realm.available && (
                         <div className="absolute top-4 right-4 z-20">
@@ -210,29 +195,26 @@ const Realms = () => {
                           </div>
                         </div>
                       )}
-                      
+
                       {/* Content */}
                       <div className="relative z-10 flex flex-col items-center text-center h-full">
                         {/* Icon */}
                         <div className="mb-6">
-                          <Icon 
-                            className={`w-16 h-16 text-temple-gold transition-all duration-500 ${realm.available ? 'group-hover:rotate-[5deg]' : ''}`}
+                          <Icon
+                            className={`w-16 h-16 text-temple-gold transition-all duration-500 ${realm.available ? "group-hover:rotate-[5deg]" : ""}`}
                             style={{
-                              filter: 'drop-shadow(0 0 12px hsla(43, 74%, 53%, 0.9)) drop-shadow(0 0 20px hsla(43, 74%, 53%, 0.5))'
+                              filter:
+                                "drop-shadow(0 0 12px hsla(43, 74%, 53%, 0.9)) drop-shadow(0 0 20px hsla(43, 74%, 53%, 0.5))",
                             }}
                           />
                         </div>
-                        
+
                         {/* Chinese name */}
-                        <h3 className="font-cinzel text-xl font-semibold text-temple-gold mb-2">
-                          {realm.name}
-                        </h3>
-                        
+                        <h3 className="font-cinzel text-xl font-semibold text-temple-gold mb-2">{realm.name}</h3>
+
                         {/* English name */}
-                        <p className="font-inter text-sm text-foreground/60 mb-4 italic">
-                          {realm.englishName}
-                        </p>
-                        
+                        <p className="font-inter text-sm text-foreground/60 mb-4 italic">{realm.englishName}</p>
+
                         {/* Description */}
                         <p className="font-inter text-sm text-foreground/80 leading-relaxed flex-grow">
                           {realm.description}
@@ -246,10 +228,7 @@ const Realms = () => {
                             className="mt-4 text-xs text-primary font-medium flex items-center gap-1"
                           >
                             <span>點擊進入探索</span>
-                            <motion.span
-                              animate={{ x: [0, 4, 0] }}
-                              transition={{ duration: 1.5, repeat: Infinity }}
-                            >
+                            <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
                               →
                             </motion.span>
                           </motion.div>
@@ -261,20 +240,20 @@ const Realms = () => {
               );
             })}
           </CarouselContent>
-          
+
           {/* Navigation arrows - desktop only */}
           <div className="hidden lg:block">
-            <CarouselPrevious 
+            <CarouselPrevious
               className="text-temple-gold border-temple-gold/50 hover:bg-temple-gold/10 hover:text-temple-gold hover:border-temple-gold transition-all duration-300 -left-4 xl:-left-12"
               style={{
-                boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)',
+                boxShadow: "0 0 15px rgba(212, 175, 55, 0.3)",
               }}
               aria-label="View previous realm"
             />
-            <CarouselNext 
+            <CarouselNext
               className="text-temple-gold border-temple-gold/50 hover:bg-temple-gold/10 hover:text-temple-gold hover:border-temple-gold transition-all duration-300 -right-4 xl:-right-12"
               style={{
-                boxShadow: '0 0 15px rgba(212, 175, 55, 0.3)',
+                boxShadow: "0 0 15px rgba(212, 175, 55, 0.3)",
               }}
               aria-label="View next realm"
             />
@@ -289,16 +268,13 @@ const Realms = () => {
               onClick={() => api?.scrollTo(index)}
               className="transition-all duration-400 focus:outline-none focus:ring-2 focus:ring-temple-gold focus:ring-offset-2 focus:ring-offset-background rounded-full"
               style={{
-                width: current === index ? '28px' : '10px',
-                height: '10px',
-                borderRadius: '5px',
-                background: current === index 
-                  ? 'hsl(43, 74%, 53%)'
-                  : 'hsl(43, 74%, 53%, 0.3)',
-                boxShadow: current === index 
-                  ? '0 0 12px rgba(212, 175, 55, 0.7), 0 0 20px rgba(212, 175, 55, 0.4)'
-                  : 'none',
-                transition: 'all 400ms ease-out',
+                width: current === index ? "28px" : "10px",
+                height: "10px",
+                borderRadius: "5px",
+                background: current === index ? "hsl(43, 74%, 53%)" : "hsl(43, 74%, 53%, 0.3)",
+                boxShadow:
+                  current === index ? "0 0 12px rgba(212, 175, 55, 0.7), 0 0 20px rgba(212, 175, 55, 0.4)" : "none",
+                transition: "all 400ms ease-out",
               }}
               role="tab"
               aria-label={`Go to realm ${index + 1}`}
