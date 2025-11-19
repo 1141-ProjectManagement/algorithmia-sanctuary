@@ -174,3 +174,32 @@ export function setCurrentUser(email: string): void {
 export function logoutUser(): void {
   localStorage.removeItem('current_user_email');
 }
+
+// Define all chapters and gates
+const ALL_GATES = [
+  { chapterId: 'chapter1', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5'] },
+  { chapterId: 'chapter2', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5', 'gate6', 'gate7', 'gate8'] },
+  { chapterId: 'chapter3', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5', 'gate6', 'gate7', 'gate8', 'gate9', 'gate10'] },
+  { chapterId: 'chapter4', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5', 'gate6', 'gate7', 'gate8', 'gate9', 'gate10', 'gate11', 'gate12'] },
+  { chapterId: 'chapter5', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5', 'gate6', 'gate7', 'gate8'] },
+  { chapterId: 'chapter6', gates: ['gate1', 'gate2', 'gate3', 'gate4'] },
+];
+
+export async function unlockAllGates(userId: number): Promise<void> {
+  const database = await initDatabase();
+  
+  try {
+    for (const chapter of ALL_GATES) {
+      for (const gateId of chapter.gates) {
+        database.run(
+          `INSERT OR REPLACE INTO progress (user_id, chapter_id, gate_id, completed, completed_at)
+           VALUES (?, ?, ?, ?, ?)`,
+          [userId, chapter.chapterId, gateId, 1, new Date().toISOString()]
+        );
+      }
+    }
+    saveDatabase();
+  } catch (error) {
+    console.error('Error unlocking all gates:', error);
+  }
+}

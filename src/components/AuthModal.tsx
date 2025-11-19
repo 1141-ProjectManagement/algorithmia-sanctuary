@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { createUser, getUserByEmail, setCurrentUser } from "@/lib/database";
+import { createUser, getUserByEmail, setCurrentUser, unlockAllGates } from "@/lib/database";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles } from "lucide-react";
 
@@ -16,6 +16,7 @@ interface AuthModalProps {
 export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => {
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
+  const [masterKey, setMasterKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -51,19 +52,39 @@ export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => 
       if (existingUser) {
         // User exists, login
         setCurrentUser(email);
-        toast({
-          title: "歡迎回來！",
-          description: `${existingUser.nickname}，很高興再次見到你`,
-        });
+        
+        // Check master key and unlock all gates if correct
+        if (masterKey === "ABAB") {
+          await unlockAllGates(existingUser.id);
+          toast({
+            title: "🔓 通關密鑰已驗證！",
+            description: "所有關卡已解鎖，盡情探索吧！",
+          });
+        } else {
+          toast({
+            title: "歡迎回來！",
+            description: `${existingUser.nickname}，很高興再次見到你`,
+          });
+        }
       } else {
         // Create new user
         const newUser = await createUser(email, nickname);
         if (newUser) {
           setCurrentUser(email);
-          toast({
-            title: "註冊成功！",
-            description: `歡迎 ${nickname} 加入 Algorithmia 探險之旅`,
-          });
+          
+          // Check master key and unlock all gates if correct
+          if (masterKey === "ABAB") {
+            await unlockAllGates(newUser.id);
+            toast({
+              title: "🔓 通關密鑰已驗證！",
+              description: "所有關卡已解鎖，開始你的冒險吧！",
+            });
+          } else {
+            toast({
+              title: "註冊成功！",
+              description: `歡迎 ${nickname} 加入 Algorithmia 探險之旅`,
+            });
+          }
         } else {
           throw new Error("創建用戶失敗");
         }
@@ -73,6 +94,7 @@ export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => 
       onOpenChange(false);
       setEmail("");
       setNickname("");
+      setMasterKey("");
     } catch (error) {
       console.error("Auth error:", error);
       toast({
@@ -127,6 +149,22 @@ export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => 
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               className="border-temple-gold/30 focus:border-temple-gold bg-background/50"
+              disabled={isLoading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="masterKey" className="text-foreground flex items-center gap-2">
+              <span>🔑 通關密鑰</span>
+              <span className="text-xs text-foreground/50">(選填)</span>
+            </Label>
+            <Input
+              id="masterKey"
+              type="text"
+              placeholder="輸入通關密鑰解鎖所有關卡"
+              value={masterKey}
+              onChange={(e) => setMasterKey(e.target.value)}
+              className="border-temple-gold/30 focus:border-temple-gold bg-background/50 font-mono"
               disabled={isLoading}
             />
           </div>
