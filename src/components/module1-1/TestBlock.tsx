@@ -38,10 +38,9 @@ const complexities = ["O(1)", "O(n)", "O(n²)"];
 
 interface TestBlockProps {
   onComplete: () => void;
-  onBadgeEarned: () => void;
 }
 
-const TestBlock = ({ onComplete, onBadgeEarned }: TestBlockProps) => {
+const TestBlock = ({ onComplete }: TestBlockProps) => {
   const [currentChallenge, setCurrentChallenge] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
@@ -75,13 +74,12 @@ const TestBlock = ({ onComplete, onBadgeEarned }: TestBlockProps) => {
           setIsCorrect(null);
           setShowHint(false);
         } else {
-          // All challenges completed - award badge
+          // All challenges completed
           setShowBadge(true);
           onComplete();
-          onBadgeEarned();
           toast({
             title: "🎉 恭喜通關！",
-            description: "你已獲得 Big O 光芒徽章！",
+            description: "你已完成所有挑戰！",
           });
         }
       }, 2000);

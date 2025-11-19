@@ -1,13 +1,11 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Lock, CheckCircle2, Award, Eye } from "lucide-react";
+import { ArrowLeft, Lock, CheckCircle2, Award } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useChapterProgress } from "@/hooks/useChapterProgress";
 import stoneTablet from "@/assets/stone-tablet.jpg";
 import lockedGate from "@/assets/locked-gate.png";
-import foundationBadge from "@/assets/foundation-explorer-badge.png";
-import efficiencyBadge from "@/assets/efficiency-eye-badge.png";
 
 const gates = [
   {
@@ -61,7 +59,6 @@ const Chapter1Hub = () => {
     isGateUnlocked,
     getCompletedGatesCount,
     isChapterCompleted,
-    hasBadge,
   } = useChapterProgress("chapter-1");
 
   const completedCount = getCompletedGatesCount();
@@ -157,73 +154,6 @@ const Chapter1Hub = () => {
 
       {/* Content */}
       <div className="container mx-auto px-4 py-12">
-        {/* Badge Shelf */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <h2 className="text-2xl font-['Cinzel'] text-primary mb-6 text-center">
-            徽章收藏
-          </h2>
-          <div className="flex justify-center gap-8">
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              className={`text-center ${
-                hasBadge("foundation-explorer") ? "opacity-100" : "opacity-30"
-              }`}
-            >
-              <div className="relative">
-                <img
-                  src={foundationBadge}
-                  alt="基石探索者徽章"
-                  className={`w-24 h-24 object-contain mx-auto ${
-                    hasBadge("foundation-explorer")
-                      ? "drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]"
-                      : ""
-                  }`}
-                />
-                {!hasBadge("foundation-explorer") && (
-                  <Lock className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-muted-foreground" />
-                )}
-              </div>
-              <p className="text-sm mt-2 text-foreground/80">基石探索者</p>
-            </motion.div>
-
-            <motion.div
-              whileHover={{ scale: 1.1 }}
-              className={`text-center ${
-                hasBadge("efficiency-eye") ? "opacity-100" : "opacity-30"
-              }`}
-            >
-              <div className="relative">
-                <img
-                  src={efficiencyBadge}
-                  alt="效率之眼徽章"
-                  className={`w-24 h-24 object-contain mx-auto ${
-                    hasBadge("efficiency-eye")
-                      ? "drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]"
-                      : ""
-                  }`}
-                />
-                {!hasBadge("efficiency-eye") && (
-                  <Lock className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-muted-foreground" />
-                )}
-              </div>
-              <p className="text-sm mt-2 text-foreground/80">效率之眼</p>
-            </motion.div>
-          </div>
-          {chapterComplete && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center mt-6 text-primary"
-            >
-              🎉 恭喜獲得所有徽章！
-            </motion.p>
-          )}
-        </motion.div>
-
         {/* Gates Grid */}
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl font-['Cinzel'] text-primary mb-8 text-center">

@@ -11,14 +11,12 @@ import stoneTablet from "@/assets/stone-tablet.jpg";
 
 interface Module1_1Props {
   onGateComplete?: () => void;
-  onBadgeEarn?: () => void;
   returnPath?: string;
 }
 
-const Module1_1 = ({ onGateComplete, onBadgeEarn, returnPath = "/" }: Module1_1Props = {}) => {
+const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) => {
   const navigate = useNavigate();
   const [completedSections, setCompletedSections] = useState<string[]>([]);
-  const [earnedBadge, setEarnedBadge] = useState(false);
 
   const handleSectionComplete = (section: string) => {
     if (!completedSections.includes(section)) {
@@ -26,9 +24,7 @@ const Module1_1 = ({ onGateComplete, onBadgeEarn, returnPath = "/" }: Module1_1P
     }
   };
 
-  const handleBadgeEarned = () => {
-    setEarnedBadge(true);
-    onBadgeEarn?.();
+  const handleAllComplete = () => {
     onGateComplete?.();
   };
 
@@ -77,14 +73,14 @@ const Module1_1 = ({ onGateComplete, onBadgeEarn, returnPath = "/" }: Module1_1P
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-muted-foreground">學習進度</span>
-            {earnedBadge && (
+            {completedSections.length === 3 && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 className="flex items-center gap-2 text-primary"
               >
                 <Award className="h-5 w-5" />
-                <span className="text-sm font-medium">Big O 光芒徽章已獲得！</span>
+                <span className="text-sm font-medium">關卡完成！</span>
               </motion.div>
             )}
           </div>
@@ -159,8 +155,10 @@ const Module1_1 = ({ onGateComplete, onBadgeEarn, returnPath = "/" }: Module1_1P
               </AccordionTrigger>
               <AccordionContent className="px-6 pb-6">
                 <TestBlock 
-                  onComplete={() => handleSectionComplete('test')} 
-                  onBadgeEarned={handleBadgeEarned}
+                  onComplete={() => {
+                    handleSectionComplete('test');
+                    handleAllComplete();
+                  }}
                 />
               </AccordionContent>
             </AccordionItem>
