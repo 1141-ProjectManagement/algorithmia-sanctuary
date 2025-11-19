@@ -34,8 +34,8 @@ const realms = [
     englishName: "Temple of Echoes",
     icon: GitBranch,
     description: "習得遞迴與分治的智慧",
-    link: null,
-    available: false,
+    link: "/chapter3",
+    available: true,
   },
   {
     name: "織徑神殿",
