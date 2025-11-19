@@ -50,8 +50,8 @@ const realms = [
     englishName: "Temple of Judgment",
     icon: GitFork,
     description: "洞悉動態規劃與最優決策",
-    link: null,
-    available: false,
+    link: "/chapter5",
+    available: true,
   },
   {
     name: "記憶神殿",
