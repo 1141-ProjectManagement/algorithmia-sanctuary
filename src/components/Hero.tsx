@@ -21,12 +21,8 @@ const Hero = () => {
       <div className="absolute right-8 md:right-20 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-temple-gold to-transparent opacity-30" />
 
       {/* Geometric decorations */}
-      <div className="absolute top-20 left-1/4 w-16 h-16 opacity-20">
-        
-      </div>
-      <div className="absolute bottom-32 right-1/4 w-12 h-12 opacity-20">
-        
-      </div>
+      
+      
 
       {/* Glowing orb - center top */}
       <div className="absolute top-20 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full opacity-40 blur-3xl" style={{
