@@ -1,60 +1,87 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Award, Play, Trash2, Plus } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { useChapterProgress } from "@/hooks/useChapterProgress";
-import arrayPillars from "@/assets/array-pillars.png";
-import linkedBeads from "@/assets/linked-beads.png";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import TeachBlock from "@/components/chapter1-gate2/TeachBlock";
+import DemoBlock from "@/components/chapter1-gate2/DemoBlock";
+import TestBlock from "@/components/chapter1-gate2/TestBlock";
+import ScrollNav from "@/components/ScrollNav";
 import stoneTablet from "@/assets/stone-tablet.jpg";
 
 const Chapter1Gate2 = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-  const { completeGate, isGateCompleted } = useChapterProgress("chapter-1");
-  
-  const [arrayItems, setArrayItems] = useState([1, 2, 3, 4, 5]);
-  const [linkedItems, setLinkedItems] = useState([1, 2, 3, 4, 5]);
-  const [arrayTime, setArrayTime] = useState(0);
-  const [linkedTime, setLinkedTime] = useState(0);
-  const [completed, setCompleted] = useState(isGateCompleted("gate-2"));
+  const { completeGate } = useChapterProgress("chapter-1");
 
-  const insertArray = (index: number) => {
-    const start = Date.now();
-    const newItems = [...arrayItems];
-    newItems.splice(index, 0, Math.floor(Math.random() * 100));
-    setArrayItems(newItems);
-    setArrayTime(Date.now() - start + Math.random() * 50); // Simulate O(n)
+  // Dialog states
+  const [showStory, setShowStory] = useState(true);
+  const [showTeach, setShowTeach] = useState(false);
+  const [storyCompleted, setStoryCompleted] = useState(false);
+  const [teachCompleted, setTeachCompleted] = useState(false);
+  const [demoCompleted, setDemoCompleted] = useState(false);
+  const [testCompleted, setTestCompleted] = useState(false);
+
+  // Scroll navigation
+  const [currentSection, setCurrentSection] = useState(0);
+  const demoRef = useRef<HTMLDivElement>(null);
+  const testRef = useRef<HTMLDivElement>(null);
+  const sections = ["互動演示", "實戰挑戰"];
+
+  const handleStoryComplete = () => {
+    setStoryCompleted(true);
+    setShowStory(false);
+    setShowTeach(true);
   };
 
-  const insertLinked = () => {
-    const start = Date.now();
-    const newItems = [Math.floor(Math.random() * 100), ...linkedItems];
-    setLinkedItems(newItems);
-    setLinkedTime(Date.now() - start + 5); // Simulate O(1)
+  const handleTeachComplete = () => {
+    setTeachCompleted(true);
+    setShowTeach(false);
   };
 
-  const handleComplete = () => {
-    if (!completed) {
-      completeGate("gate-2");
-      setCompleted(true);
-      toast({
-        title: "🎉 關卡完成！",
-        description: "你已理解陣列與鏈結串列的差異！",
-      });
-    }
+  const handleDemoComplete = () => {
+    setDemoCompleted(true);
+  };
+
+  const handleTestComplete = () => {
+    setTestCompleted(true);
+    completeGate("gate-2");
     setTimeout(() => navigate("/chapter1"), 1500);
   };
 
+  const handleNavigate = (index: number) => {
+    const refs = [demoRef, testRef];
+    refs[index].current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const demoTop = demoRef.current?.getBoundingClientRect().top ?? 0;
+      const testTop = testRef.current?.getBoundingClientRect().top ?? 0;
+      const windowHeight = window.innerHeight;
+
+      if (testTop < windowHeight / 2) {
+        setCurrentSection(1);
+      } else if (demoTop < windowHeight / 2) {
+        setCurrentSection(0);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* Header */}
       <div
         className="relative h-[30vh] flex items-center justify-center bg-cover bg-center"
         style={{ backgroundImage: `url(${stoneTablet})` }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
-        
+
         <div className="relative z-10 container mx-auto px-4">
           <Button
             variant="ghost"
@@ -64,7 +91,7 @@ const Chapter1Gate2 = () => {
             <ArrowLeft className="mr-2 h-4 w-4" />
             返回章節
           </Button>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -78,162 +105,121 @@ const Chapter1Gate2 = () => {
         </div>
       </div>
 
+      {/* Story Dialog */}
+      <Dialog open={showStory} onOpenChange={setShowStory}>
+        <DialogContent className="max-w-2xl max-h-[80vh] p-0 bg-card/95 backdrop-blur border-2 border-primary/30">
+          <DialogTitle className="sr-only">容器遺跡故事</DialogTitle>
+          <ScrollArea className="max-h-[80vh] p-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="space-y-6"
+            >
+              <div className="text-center mb-6">
+                <h2 className="font-['Cinzel'] text-3xl text-primary mb-3 drop-shadow-[0_0_15px_rgba(212,175,55,0.6)]">
+                  容器遺跡的秘密
+                </h2>
+                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-primary to-transparent mx-auto" />
+              </div>
+
+              <div className="space-y-4 text-foreground/80 leading-relaxed">
+                <p>
+                  在古老神殿的深處，你發現了一個被遺忘的儲藏室。牆上刻著古老的銘文：
+                </p>
+
+                <div className="bg-primary/10 p-4 rounded-lg border-l-4 border-primary italic">
+                  「智者選擇容器，如同工匠選擇工具。石柱堅固整齊，珠鍊靈活自如。
+                  理解其性，方能駕馭其力。」
+                </div>
+
+                <p>
+                  你看見兩種截然不同的容器：
+                </p>
+
+                <ul className="space-y-3 pl-4">
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">▸</span>
+                    <span>
+                      <strong className="text-primary">石柱陣列：</strong>
+                      整齊排列的石柱，每根都有固定位置。你可以瞬間找到任意一根，
+                      但要在中間插入新柱，必須移動後面所有的石柱。
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-primary mt-1">▸</span>
+                    <span>
+                      <strong className="text-primary">珠鍊串列：</strong>
+                      水晶珠透過金色絲線連結。要找到特定珠子需從頭開始數，
+                      但插入新珠只需解開一條線、接上即可。
+                    </span>
+                  </li>
+                </ul>
+
+                <p>
+                  神殿的守護者告訴你：「每種容器都有其適合的場景。理解它們的本質，
+                  才能在正確的時刻做出明智的選擇。」
+                </p>
+
+                <div className="bg-card/60 p-4 rounded-lg border border-border">
+                  <p className="text-sm text-foreground/70 text-center">
+                    💡 提示：這兩種容器代表了資料結構中最基礎的兩種形式——
+                    <strong className="text-primary">連續記憶體</strong> 與 
+                    <strong className="text-primary">鏈式結構</strong>
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex justify-center pt-4">
+                <Button onClick={handleStoryComplete} size="lg">
+                  進入知識殿堂
+                </Button>
+              </div>
+            </motion.div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Teach Dialog */}
+      <Dialog open={showTeach} onOpenChange={setShowTeach}>
+        <DialogContent className="max-w-4xl max-h-[85vh] p-0 bg-card/95 backdrop-blur border-2 border-primary/30">
+          <DialogTitle className="sr-only">容器知識講解</DialogTitle>
+          <ScrollArea className="max-h-[85vh]">
+            <TeachBlock onComplete={handleTeachComplete} />
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+
+      {/* Main Content - Demo & Test Sections */}
       <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="mb-8 p-6 bg-card/40 rounded-lg border border-border">
-          <h2 className="text-xl font-['Cinzel'] text-primary mb-3">遺跡故事</h2>
-          <p className="text-foreground/80 leading-relaxed">
-            在古老的神殿中，探險家發現兩種截然不同的寶石容器：一種是整齊排列的石柱（陣列），
-            另一種是靈活連結的水晶珠鍊（鏈結串列）。每種容器都有其獨特的優勢與限制...
-          </p>
-        </div>
+        {/* Demo Section */}
+        <section
+          ref={demoRef}
+          className="min-h-screen flex items-center justify-center mb-20"
+        >
+          <div className="w-full max-w-5xl bg-card/40 rounded-lg border border-primary/20 p-8">
+            <DemoBlock onComplete={handleDemoComplete} />
+          </div>
+        </section>
 
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {/* Array */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="p-6 bg-card/30 rounded-lg border border-primary/20"
-          >
-            <h3 className="text-2xl font-['Cinzel'] text-primary mb-4 text-center">
-              石柱陣列 Array
-            </h3>
-            <img
-              src={arrayPillars}
-              alt="Array representation"
-              className="w-full h-32 object-cover rounded mb-4 opacity-80"
-            />
-            
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">存取速度</span>
-                <span className="text-primary font-bold">O(1) ⚡ 極快</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">插入/刪除</span>
-                <span className="text-destructive font-bold">O(n) 🐌 較慢</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">記憶體</span>
-                <span className="text-secondary">連續配置</span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-4 min-h-[80px]">
-              {arrayItems.map((item, index) => (
-                <motion.div
-                  key={`${item}-${index}`}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-12 h-12 bg-gradient-to-br from-primary/30 to-amber-glow/20 rounded border border-primary/50 flex items-center justify-center text-primary font-bold"
-                >
-                  {item}
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              <Button
-                onClick={() => insertArray(0)}
-                className="w-full bg-primary/20 hover:bg-primary/30 text-primary"
-                size="sm"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                插入到開頭（需移動全部）
-              </Button>
-              {arrayTime > 0 && (
-                <p className="text-xs text-center text-muted-foreground">
-                  耗時: {arrayTime.toFixed(1)}ms
-                </p>
-              )}
-            </div>
-          </motion.div>
-
-          {/* Linked List */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="p-6 bg-card/30 rounded-lg border border-secondary/20"
-          >
-            <h3 className="text-2xl font-['Cinzel'] text-secondary mb-4 text-center">
-              珠鍊串列 Linked List
-            </h3>
-            <img
-              src={linkedBeads}
-              alt="Linked List representation"
-              className="w-full h-32 object-cover rounded mb-4 opacity-80"
-            />
-            
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">存取速度</span>
-                <span className="text-destructive font-bold">O(n) 🐌 較慢</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">插入/刪除</span>
-                <span className="text-primary font-bold">O(1) ⚡ 極快</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">記憶體</span>
-                <span className="text-secondary">分散配置</span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-4 min-h-[80px]">
-              {linkedItems.map((item, index) => (
-                <motion.div
-                  key={`${item}-${index}`}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="relative"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-secondary/30 to-lapis-blue/20 rounded-full border border-secondary/50 flex items-center justify-center text-secondary font-bold">
-                    {item}
-                  </div>
-                  {index < linkedItems.length - 1 && (
-                    <div className="absolute top-1/2 -right-2 w-2 h-0.5 bg-secondary/50" />
-                  )}
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="space-y-2">
-              <Button
-                onClick={insertLinked}
-                className="w-full bg-secondary/20 hover:bg-secondary/30 text-secondary"
-                size="sm"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                插入到開頭（只改指標）
-              </Button>
-              {linkedTime > 0 && (
-                <p className="text-xs text-center text-muted-foreground">
-                  耗時: {linkedTime.toFixed(1)}ms
-                </p>
-              )}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Key Insights */}
-        <div className="p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg border border-border mb-8">
-          <h3 className="text-xl font-['Cinzel'] text-primary mb-4">關鍵洞察</h3>
-          <ul className="space-y-2 text-foreground/80">
-            <li>✅ <strong>陣列</strong>：隨機存取快速，但插入刪除需要移動元素</li>
-            <li>✅ <strong>鏈結串列</strong>：插入刪除靈活，但存取需要循序遍歷</li>
-            <li>💡 <strong>選擇策略</strong>：根據操作頻率選擇合適的資料結構</li>
-          </ul>
-        </div>
-
-        <div className="flex justify-center">
-          <Button
-            onClick={handleComplete}
-            size="lg"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-gold"
-          >
-            {completed ? "返回章節" : "完成挑戰"}
-          </Button>
-        </div>
+        {/* Test Section */}
+        <section
+          ref={testRef}
+          className="min-h-screen flex items-center justify-center"
+        >
+          <div className="w-full max-w-5xl bg-card/40 rounded-lg border border-primary/20 p-8">
+            <TestBlock onComplete={handleTestComplete} />
+          </div>
+        </section>
       </div>
+
+      {/* Scroll Navigation */}
+      {teachCompleted && (
+        <ScrollNav
+          sections={sections}
+          currentSection={currentSection}
+          onNavigate={handleNavigate}
+        />
+      )}
     </div>
   );
 };
