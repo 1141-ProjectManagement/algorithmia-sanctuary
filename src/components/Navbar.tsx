@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AuthModal } from "@/components/AuthModal";
+import { getCurrentUser, logoutUser } from "@/lib/database";
 
 interface NavbarProps {
   currentSection: number;
@@ -21,6 +23,8 @@ const navItems = [
 const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<{ email: string; nickname: string } | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,9 +35,30 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Check for current user on mount
+    getCurrentUser().then(user => {
+      if (user) {
+        setCurrentUser({ email: user.email, nickname: user.nickname });
+      }
+    });
+  }, []);
+
   const handleNavClick = (index: number) => {
     onNavigate(index);
     setMobileMenuOpen(false);
+  };
+
+  const handleAuthSuccess = async () => {
+    const user = await getCurrentUser();
+    if (user) {
+      setCurrentUser({ email: user.email, nickname: user.nickname });
+    }
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    setCurrentUser(null);
   };
 
   return (
@@ -103,14 +128,32 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
                 </button>
               ))}
 
-              {/* Login Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                className="font-cinzel border-temple-gold/50 text-temple-gold hover:bg-temple-gold/10 hover:border-temple-gold transition-all duration-300"
-              >
-                登入/註冊
-              </Button>
+              {/* Login/User Button */}
+              {currentUser ? (
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-temple-gold font-cinzel">
+                    {currentUser.nickname}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleLogout}
+                    className="font-cinzel border-temple-gold/50 text-temple-gold hover:bg-temple-gold/10 hover:border-temple-gold transition-all duration-300"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    登出
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setAuthModalOpen(true)}
+                  className="font-cinzel border-temple-gold/50 text-temple-gold hover:bg-temple-gold/10 hover:border-temple-gold transition-all duration-300"
+                >
+                  登入/註冊
+                </Button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -160,19 +203,46 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
                 </button>
               ))}
 
-              <Button
-                variant="outline"
-                className="w-full font-cinzel text-lg py-6 border-2 border-temple-gold text-temple-gold hover:bg-temple-gold/20 transition-all duration-300"
-                style={{
-                  boxShadow: "0 0 20px hsla(43, 74%, 53%, 0.3)",
-                }}
-              >
-                登入/註冊
-              </Button>
+              {currentUser ? (
+                <div className="space-y-3">
+                  <div className="text-center text-temple-gold font-cinzel text-lg">
+                    {currentUser.nickname}
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={handleLogout}
+                    className="w-full font-cinzel text-lg py-6 border-2 border-temple-gold text-temple-gold hover:bg-temple-gold/20 transition-all duration-300"
+                    style={{
+                      boxShadow: "0 0 20px hsla(43, 74%, 53%, 0.3)",
+                    }}
+                  >
+                    <LogOut className="w-5 h-5 mr-2" />
+                    登出
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  onClick={() => setAuthModalOpen(true)}
+                  className="w-full font-cinzel text-lg py-6 border-2 border-temple-gold text-temple-gold hover:bg-temple-gold/20 transition-all duration-300"
+                  style={{
+                    boxShadow: "0 0 20px hsla(43, 74%, 53%, 0.3)",
+                  }}
+                >
+                  登入/註冊
+                </Button>
+              )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        onSuccess={handleAuthSuccess}
+      />
     </>
   );
 };
