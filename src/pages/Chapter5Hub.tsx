@@ -1,0 +1,129 @@
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { Lock, CheckCircle2, ArrowLeft } from "lucide-react";
+import { useChapterProgress } from "@/hooks/useChapterProgress";
+
+const Chapter5Hub = () => {
+  const { isGateCompleted, isGateUnlocked } = useChapterProgress("chapter5");
+
+  const gates = [
+    {
+      id: "gate1",
+      title: "Gate 1: 貪婪演算法",
+      description: "學習「活在當下」的決策策略",
+      detail: "在每一步都做出當前看起來最好的選擇，適用於部分最佳化問題，如活動安排、找零錢等。",
+      link: "/chapter5/gate1",
+    },
+    {
+      id: "gate2",
+      title: "Gate 2: 動態規劃",
+      description: "掌握解決複雜問題的終極武器",
+      detail: "透過「拆分問題」與「記錄結果」，避免重複計算，解決如背包問題、最長公共子序列等具有重疊子問題的最佳化難題。",
+      link: "/chapter5/gate2",
+    },
+    {
+      id: "gate3",
+      title: "Gate 3: 回溯法",
+      description: "學習一種「暴力美學」的系統性搜索法",
+      detail: "透過深度優先的遞迴，窮盡所有可能性，並在走不通時「回頭」，常用於解決排列組合、N皇后、數獨等問題。",
+      link: "/chapter5/gate3",
+    },
+    {
+      id: "gate4",
+      title: "Gate 4: 分治法",
+      description: "深化「化繁為簡」的核心思想",
+      detail: "將一個大問題遞迴地分解成多個相同或相似的子問題，直到問題規模小到可以輕易解決，最終再將子問題的解合併。",
+      link: "/chapter5/gate4",
+    },
+  ];
+
+  const gateOrder = gates.map(g => g.id);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Header with back button */}
+      <div className="container mx-auto px-4 py-8">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors mb-8"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span className="font-cinzel">返回首頁</span>
+        </Link>
+
+        {/* Chapter Title */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h1 className="font-cinzel text-5xl md:text-6xl text-primary mb-4 drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]">
+            抉擇神殿
+          </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground">
+            第五章：高級策略與動態規劃
+          </p>
+          <p className="text-sm md:text-base text-muted-foreground mt-2 max-w-3xl mx-auto">
+            學習更高層次的「問題解決思想」，在面對複雜約束和龐大選擇時，如何做出全局最優的決策
+          </p>
+        </motion.div>
+
+        {/* Gates Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {gates.map((gate, index) => {
+            const completed = isGateCompleted(gate.id);
+            const unlocked = isGateUnlocked(gate.id, gateOrder);
+
+            return (
+              <motion.div
+                key={gate.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+              >
+                {unlocked ? (
+                  <Link to={gate.link}>
+                    <div className="relative group bg-card border-2 border-primary/30 rounded-lg p-6 hover:border-primary hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all duration-300 h-full">
+                      {completed && (
+                        <div className="absolute top-4 right-4">
+                          <CheckCircle2 className="w-8 h-8 text-primary" />
+                        </div>
+                      )}
+                      <h3 className="font-cinzel text-2xl text-primary mb-3">
+                        {gate.title}
+                      </h3>
+                      <p className="text-lg text-foreground mb-2 font-semibold">
+                        {gate.description}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {gate.detail}
+                      </p>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="relative bg-card/50 border-2 border-muted rounded-lg p-6 opacity-60 cursor-not-allowed h-full">
+                    <div className="absolute top-4 right-4">
+                      <Lock className="w-8 h-8 text-muted-foreground" />
+                    </div>
+                    <h3 className="font-cinzel text-2xl text-muted-foreground mb-3">
+                      {gate.title}
+                    </h3>
+                    <p className="text-lg text-muted-foreground mb-2 font-semibold">
+                      {gate.description}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      完成前一個關卡以解鎖
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Chapter5Hub;
