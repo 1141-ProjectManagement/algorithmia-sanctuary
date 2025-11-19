@@ -11,6 +11,7 @@ import Chapter1Gate2 from "./pages/Chapter1Gate2";
 import Chapter1Gate3 from "./pages/Chapter1Gate3";
 import Chapter1Gate4 from "./pages/Chapter1Gate4";
 import Chapter1Gate5 from "./pages/Chapter1Gate5";
+import Chapter2Hub from "./pages/Chapter2Hub";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/chapter1/gate3" element={<Chapter1Gate3 />} />
           <Route path="/chapter1/gate4" element={<Chapter1Gate4 />} />
           <Route path="/chapter1/gate5" element={<Chapter1Gate5 />} />
+          <Route path="/chapter2" element={<Chapter2Hub />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
