@@ -11,7 +11,7 @@ import stoneTablet from "@/assets/stone-tablet.jpg";
 const Chapter1Gate5 = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { completeGate, isGateCompleted, addBadge } = useChapterProgress("chapter-1");
+  const { completeGate, isGateCompleted } = useChapterProgress("chapter-1");
   
   const slabs = Array.from({ length: 16 }, (_, i) => ({ id: i, value: i + 1 }));
   const [targetValue] = useState(13);
@@ -34,9 +34,11 @@ const Chapter1Gate5 = () => {
   const handleComplete = () => {
     if (!completed) {
       completeGate("gate-5");
-      addBadge("foundation-explorer");
-      addBadge("efficiency-eye");
       setCompleted(true);
+      toast({
+        title: "🎉 章節完成！",
+        description: "你已完成起源聖殿的所有挑戰！",
+      });
     }
     setTimeout(() => navigate("/chapter1"), 2000);
   };

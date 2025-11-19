@@ -9,7 +9,6 @@ export interface GateProgress {
 export interface ChapterProgress {
   chapterId: string;
   gates: GateProgress[];
-  badges: string[];
   completedAt?: number;
 }
 
@@ -23,13 +22,11 @@ export const useChapterProgress = (chapterId: string) => {
       return allProgress[chapterId] || {
         chapterId,
         gates: [],
-        badges: [],
       };
     }
     return {
       chapterId,
       gates: [],
-      badges: [],
     };
   });
 
@@ -71,19 +68,6 @@ export const useChapterProgress = (chapterId: string) => {
     return isGateCompleted(previousGate);
   };
 
-  const addBadge = (badgeId: string) => {
-    if (progress.badges.includes(badgeId)) return;
-    
-    saveProgress({
-      ...progress,
-      badges: [...progress.badges, badgeId],
-    });
-  };
-
-  const hasBadge = (badgeId: string): boolean => {
-    return progress.badges.includes(badgeId);
-  };
-
   const getCompletedGatesCount = (): number => {
     return progress.gates.filter((g) => g.completed).length;
   };
@@ -97,8 +81,6 @@ export const useChapterProgress = (chapterId: string) => {
     completeGate,
     isGateCompleted,
     isGateUnlocked,
-    addBadge,
-    hasBadge,
     getCompletedGatesCount,
     isChapterCompleted,
   };
