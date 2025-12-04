@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Lock, CheckCircle2, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ChapterTheme } from "@/config/chapterThemes";
 
 export interface GateData {
   id: string;
@@ -18,10 +19,17 @@ interface GateCardProps {
   isCompleted: boolean;
   isUnlocked: boolean;
   onClick: () => void;
+  theme?: ChapterTheme;
 }
 
-const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick }: GateCardProps) => {
+const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: GateCardProps) => {
   const locked = !isUnlocked;
+  
+  // Default theme colors if not provided
+  const accentColor = theme?.accentColor || "hsl(43, 74%, 53%)";
+  const glowColor = theme?.glowColor || "rgba(212, 175, 55, 0.5)";
+  const gradientFrom = theme?.gradientFrom || "hsl(43, 74%, 53%)";
+  const gradientTo = theme?.gradientTo || "hsl(43, 74%, 40%)";
 
   return (
     <motion.div
@@ -32,10 +40,19 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick }: GateCardPro
       <Card
         className={`
           relative overflow-hidden transition-all duration-300 cursor-pointer group h-full
+          bg-card/60 backdrop-blur-sm
           ${locked ? "opacity-60 cursor-not-allowed" : "hover:shadow-xl hover:scale-[1.02]"}
-          ${isCompleted ? "border-primary/50 bg-primary/5" : ""}
-          ${isUnlocked && !isCompleted ? "border-accent/50 hover:border-accent" : ""}
         `}
+        style={{
+          borderColor: isCompleted 
+            ? `${accentColor}50` 
+            : isUnlocked 
+              ? `${accentColor}30` 
+              : undefined,
+          boxShadow: isCompleted 
+            ? `0 0 20px ${glowColor}` 
+            : undefined,
+        }}
         onClick={onClick}
       >
         {/* Status Badge */}
@@ -46,8 +63,11 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick }: GateCardPro
             </div>
           )}
           {isCompleted && (
-            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center backdrop-blur-sm animate-in fade-in zoom-in duration-500">
-              <CheckCircle2 className="w-6 h-6 text-primary" />
+            <div 
+              className="w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm animate-in fade-in zoom-in duration-500"
+              style={{ background: `${accentColor}20` }}
+            >
+              <CheckCircle2 className="w-6 h-6" style={{ color: accentColor }} />
             </div>
           )}
         </div>
@@ -56,11 +76,20 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick }: GateCardPro
         <div className="p-6 space-y-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-sm font-bold text-primary">
+              <div 
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold"
+                style={{ 
+                  background: `${accentColor}15`,
+                  color: accentColor,
+                }}
+              >
                 {index + 1}
               </div>
               {gate.algorithm && (
-                <div className="text-xs font-medium text-primary uppercase tracking-wider">
+                <div 
+                  className="text-xs font-medium uppercase tracking-wider"
+                  style={{ color: accentColor }}
+                >
                   {gate.algorithm}
                 </div>
               )}
@@ -88,14 +117,21 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick }: GateCardPro
             ) : isCompleted ? (
               <Button
                 variant="outline"
-                className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                className="w-full transition-colors"
+                style={{ 
+                  borderColor: `${accentColor}40`,
+                  color: accentColor,
+                }}
               >
                 重新挑戰
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             ) : (
               <Button
-                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+                className="w-full text-background"
+                style={{ 
+                  background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
+                }}
               >
                 開始探索
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -104,8 +140,13 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick }: GateCardPro
           </div>
         </div>
 
-        {/* Decorative gradient */}
-        <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        {/* Decorative gradient on hover */}
+        <div 
+          className="absolute inset-x-0 bottom-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{
+            background: `linear-gradient(90deg, transparent, ${accentColor}, transparent)`,
+          }}
+        />
       </Card>
     </motion.div>
   );

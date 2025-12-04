@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
+import { getChapterTheme } from "@/config/chapterThemes";
 
 const gates: GateData[] = [
   {
@@ -40,6 +41,7 @@ const gates: GateData[] = [
 ];
 
 const gateOrder = gates.map((g) => g.id);
+const theme = getChapterTheme(6);
 
 const Chapter6Hub = () => {
   const navigate = useNavigate();
@@ -147,6 +149,7 @@ const Chapter6Hub = () => {
           isCompleted={isGateCompleted(gate.id)}
           isUnlocked={isGateUnlocked(gate.id, gateOrder)}
           onClick={() => handleGateClick(gate)}
+          theme={theme}
         />
       ))}
     </ChapterHubLayout>

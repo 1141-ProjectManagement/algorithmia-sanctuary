@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
+import { getChapterTheme } from "@/config/chapterThemes";
 
 const gates: GateData[] = [
   {
@@ -48,6 +49,7 @@ const gates: GateData[] = [
 ];
 
 const gateOrder = gates.map((g) => g.id);
+const theme = getChapterTheme(3);
 
 const Chapter3Hub = () => {
   const navigate = useNavigate();
@@ -82,7 +84,7 @@ const Chapter3Hub = () => {
         一位長者現身。他的聲音在樹林中迴盪：
       </p>
       <blockquote className="border-l-4 border-primary pl-4 py-2 bg-primary/5 rounded-r-lg">
-        <p className="italic mb-2">「歡迎來到階層聖域。」</p>
+        <p className="italic mb-2">「歡迎來到迴聲神殿。」</p>
         <p className="italic mb-2">「你已經掌握了線性的秩序。但現實遠比一條直線複雜。」</p>
         <p className="italic mb-2">「在這裡，知識以樹的形式生長。每個節點都有父親與孩子。每條路徑都代表著不同的邏輯分支。」</p>
         <p className="italic">「要深入 Algorithmia 的秘密，你必須學會在樹的世界中導航。」</p>
@@ -107,7 +109,7 @@ const Chapter3Hub = () => {
       </div>
       
       <div className="pt-4 text-sm text-muted-foreground italic text-center">
-        — 階層聖域的警示 —
+        — 迴聲神殿的警示 —
       </div>
     </div>
   );
@@ -131,7 +133,7 @@ const Chapter3Hub = () => {
   return (
     <ChapterHubLayout
       chapterNumber={3}
-      templeName="階層聖域"
+      templeName="迴聲神殿"
       chapterTitle="結構與關係"
       chapterDescription="從線性到分層，管理「父子關係」與「優先級」。在樹的世界中導航，理解層次結構的力量與陷阱。"
       completedCount={completedCount}
@@ -144,7 +146,7 @@ const Chapter3Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《權力經——階層篇》"
-      completionTitle="階層聖域已被征服"
+      completionTitle="迴聲神殿已被征服"
       completionMessage={completionMessage}
     >
       {gates.map((gate, index) => (
@@ -155,6 +157,7 @@ const Chapter3Hub = () => {
           isCompleted={isGateCompleted(gate.id)}
           isUnlocked={isGateUnlocked(gate.id, gateOrder)}
           onClick={() => handleGateClick(gate)}
+          theme={theme}
         />
       ))}
     </ChapterHubLayout>

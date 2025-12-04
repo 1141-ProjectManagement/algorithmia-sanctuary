@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
+import { getChapterTheme } from "@/config/chapterThemes";
 
 const gates: GateData[] = [
   {
@@ -48,6 +49,7 @@ const gates: GateData[] = [
 ];
 
 const gateOrder = gates.map((g) => g.id);
+const theme = getChapterTheme(4);
 
 const Chapter4Hub = () => {
   const navigate = useNavigate();
@@ -73,7 +75,7 @@ const Chapter4Hub = () => {
   const storyContent = (
     <>
       <p className="text-lg">
-        走出階層聖域，景色再次變化。
+        走出迴聲神殿，景色再次變化。
       </p>
       <p>
         你不再面對整齊的樹林，而是一個錯綜複雜的網絡空間。無數的節點懸浮在虛空中，每個節點都用光線與其他節點相連。這些連接線互相交織，形成了一個密集而美麗的網絡。
@@ -82,7 +84,7 @@ const Chapter4Hub = () => {
         一位穿著長袍的網絡守護者緩緩走來。她的聲音帶著哲學家的深邃：
       </p>
       <blockquote className="border-l-4 border-primary pl-4 py-2 bg-primary/5 rounded-r-lg">
-        <p className="italic mb-2">「歡迎來到網絡聖殿。」</p>
+        <p className="italic mb-2">「歡迎來到織徑神殿。」</p>
         <p className="italic mb-2">「在前面的冒險中，你掌握了線性和樹形的世界。但現實遠比樹更複雜——在這裡，一切都可以連接一切。」</p>
         <p className="italic mb-2">「圖沒有根，沒有方向，甚至可能有環。」</p>
         <p className="italic">「在這個迷宮般的世界中，找到路徑不再是簡單的遍歷，而是全局視野的展現。」</p>
@@ -107,7 +109,7 @@ const Chapter4Hub = () => {
       </div>
       
       <div className="pt-4 text-sm text-muted-foreground italic text-center">
-        — 網絡聖殿的警示 —
+        — 織徑神殿的警示 —
       </div>
     </div>
   );
@@ -115,7 +117,7 @@ const Chapter4Hub = () => {
   const completionMessage = (
     <>
       <p>
-        網絡聖殿的所有謎題已被破解。當你成功地遍歷了圖、連接了島嶼、導航了星盤、排序了任務、計算了全域距離時，整個網絡空間泛起耀眼的光芒。
+        織徑神殿的所有謎題已被破解。當你成功地遍歷了圖、連接了島嶼、導航了星盤、排序了任務、計算了全域距離時，整個網絡空間泛起耀眼的光芒。
       </p>
       <blockquote className="border-l-4 border-primary pl-4 py-3 bg-primary/5 rounded-r-lg max-w-2xl mx-auto text-left mt-4">
         <p className="text-foreground/90 italic mb-2">
@@ -131,7 +133,7 @@ const Chapter4Hub = () => {
   return (
     <ChapterHubLayout
       chapterNumber={4}
-      templeName="網絡聖殿"
+      templeName="織徑神殿"
       chapterTitle="全局視野與路徑規劃"
       chapterDescription="超越樹，進入錯綜複雜的網絡空間。無數節點懸浮在虛空中，用光線互相連接，理解「全局最優」的真正意義。"
       completedCount={completedCount}
@@ -144,7 +146,7 @@ const Chapter4Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《網絡紀元錄》第四卷"
-      completionTitle="網絡聖殿已被征服"
+      completionTitle="織徑神殿已被征服"
       completionMessage={completionMessage}
     >
       {gates.map((gate, index) => (
@@ -155,6 +157,7 @@ const Chapter4Hub = () => {
           isCompleted={isGateCompleted(gate.id)}
           isUnlocked={isGateUnlocked(gate.id, gateOrder)}
           onClick={() => handleGateClick(gate)}
+          theme={theme}
         />
       ))}
     </ChapterHubLayout>
