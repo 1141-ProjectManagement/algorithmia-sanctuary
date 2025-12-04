@@ -1,5 +1,4 @@
-import { Circle, Clock, GitBranch, Network, GitFork, Layers, Lock } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Lock } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -12,54 +11,68 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
+// Temple background images
+import realm1Image from "@/assets/realm-1-origins.jpg";
+import realm2Image from "@/assets/realm-2-chronos.jpg";
+import realm3Image from "@/assets/realm-3-echoes.jpg";
+import realm4Image from "@/assets/realm-4-paths.jpg";
+import realm5Image from "@/assets/realm-5-judgment.jpg";
+import realm6Image from "@/assets/realm-6-unity.jpg";
+
 const realms = [
   {
     name: "起源聖殿",
     englishName: "Sanctuary of Origins",
-    icon: Circle,
+    image: realm1Image,
     description: "探索演算法的根基與基礎概念",
     link: "/chapter1",
     available: true,
+    chapter: 1,
   },
   {
     name: "時序神殿",
     englishName: "Temple of Chronos",
-    icon: Clock,
+    image: realm2Image,
     description: "掌握排序與時間複雜度的奧秘",
     link: "/chapter2",
     available: true,
+    chapter: 2,
   },
   {
     name: "迴聲神殿",
     englishName: "Temple of Echoes",
-    icon: GitBranch,
+    image: realm3Image,
     description: "習得遞迴與分治的智慧",
     link: "/chapter3",
     available: true,
+    chapter: 3,
   },
   {
     name: "織徑神殿",
     englishName: "Temple of Woven Paths",
-    icon: Network,
+    image: realm4Image,
     description: "穿梭圖論與路徑探索之道",
     link: "/chapter4",
     available: true,
+    chapter: 4,
   },
   {
     name: "抉擇神殿",
     englishName: "Temple of Judgment",
-    icon: GitFork,
+    image: realm5Image,
     description: "洞悉動態規劃與最優決策",
     link: "/chapter5",
     available: true,
+    chapter: 5,
   },
   {
     name: "整合神殿",
     englishName: "Temple of Unity",
-    icon: Layers,
+    image: realm6Image,
     description: "融合所有知識，達至圓滿",
     link: "/chapter6",
     available: true,
+    chapter: 6,
   },
 ];
 
@@ -211,7 +224,6 @@ const Realms = () => {
           onSlideChange={handleSlideChange}
         >
           {realms.map((realm, index) => {
-            const Icon = realm.icon;
             const isActive = activeIndex === index;
 
             return (
@@ -227,28 +239,53 @@ const Realms = () => {
                   }}
                   className="h-full"
                 >
-                  <Card
+                  <div
                     onClick={() => handleRealmClick(realm)}
-                    className={`bg-card/50 backdrop-blur-sm border-temple-gold/30 p-6 relative overflow-hidden group transition-all duration-300 h-full min-h-[340px] ${
+                    className={`relative overflow-hidden rounded-2xl group transition-all duration-300 h-[420px] ${
                       realm.available ? "hover:scale-[1.02] cursor-pointer" : "opacity-60 cursor-not-allowed"
                     }`}
                     style={{
                       boxShadow: isActive
-                        ? "0 0 35px rgba(212, 175, 55, 0.7), 0 0 60px rgba(212, 175, 55, 0.5), 0 4px 20px rgba(0, 0, 0, 0.4)"
-                        : "0 0 20px rgba(212, 175, 55, 0.3)",
-                      borderImage: "linear-gradient(135deg, hsl(43, 74%, 53%), hsl(43, 74%, 40%)) 1",
+                        ? "0 0 35px rgba(212, 175, 55, 0.5), 0 0 60px rgba(212, 175, 55, 0.3), 0 4px 20px rgba(0, 0, 0, 0.4)"
+                        : "0 0 20px rgba(212, 175, 55, 0.2)",
+                      border: "1px solid rgba(212, 175, 55, 0.3)",
                       transition: "all 400ms ease-out",
                     }}
                     tabIndex={0}
                     role="article"
                     aria-label={`${realm.name} - ${realm.englishName}${!realm.available ? " - 即將推出" : ""}`}
                   >
+                    {/* Background Image */}
+                    <div className="absolute inset-0">
+                      <img
+                        src={realm.image}
+                        alt={realm.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
+                    </div>
+
+                    {/* Chapter Number Badge */}
+                    <div className="absolute top-4 left-4 z-20">
+                      <div 
+                        className="w-12 h-12 rounded-full flex items-center justify-center font-cinzel text-xl font-bold"
+                        style={{
+                          background: "linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)",
+                          boxShadow: "0 0 15px rgba(212, 175, 55, 0.6)",
+                          color: "hsl(0, 0%, 5%)",
+                        }}
+                      >
+                        {realm.chapter}
+                      </div>
+                    </div>
+
                     {/* Hover glow effect */}
                     {realm.available && (
                       <div
-                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
                         style={{
-                          boxShadow: "0 0 30px rgba(212, 175, 55, 0.6), 0 0 50px rgba(212, 175, 55, 0.4)",
+                          boxShadow: "inset 0 0 30px rgba(212, 175, 55, 0.3)",
                         }}
                       />
                     )}
@@ -263,27 +300,24 @@ const Realms = () => {
                       </div>
                     )}
 
-                    {/* Content */}
-                    <div className="relative z-10 flex flex-col items-center text-center h-full">
-                      {/* Icon */}
-                      <div className="mb-6">
-                        <Icon
-                          className={`w-16 h-16 text-temple-gold transition-all duration-500 ${realm.available ? "group-hover:rotate-[5deg]" : ""}`}
-                          style={{
-                            filter:
-                              "drop-shadow(0 0 12px hsla(43, 74%, 53%, 0.9)) drop-shadow(0 0 20px hsla(43, 74%, 53%, 0.5))",
-                          }}
-                        />
-                      </div>
-
+                    {/* Content - positioned at bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6 z-10">
                       {/* Chinese name */}
-                      <h3 className="font-cinzel text-xl font-semibold text-temple-gold mb-2">{realm.name}</h3>
+                      <h3 
+                        className="font-cinzel text-2xl font-bold mb-1"
+                        style={{
+                          color: "hsl(43, 74%, 53%)",
+                          textShadow: "0 0 20px rgba(212, 175, 55, 0.5)",
+                        }}
+                      >
+                        {realm.name}
+                      </h3>
 
                       {/* English name */}
-                      <p className="font-inter text-sm text-foreground/60 mb-4 italic">{realm.englishName}</p>
+                      <p className="font-inter text-sm text-foreground/70 mb-3 italic">{realm.englishName}</p>
 
                       {/* Description */}
-                      <p className="font-inter text-sm text-foreground/80 leading-relaxed flex-grow">
+                      <p className="font-inter text-sm text-foreground/90 leading-relaxed mb-4">
                         {realm.description}
                       </p>
 
@@ -292,7 +326,8 @@ const Realms = () => {
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="mt-4 text-xs text-primary font-medium flex items-center gap-1"
+                          className="text-xs font-medium flex items-center gap-1"
+                          style={{ color: "hsl(43, 74%, 53%)" }}
                         >
                           <span>點擊進入探索</span>
                           <motion.span animate={{ x: [0, 4, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
@@ -301,7 +336,7 @@ const Realms = () => {
                         </motion.div>
                       )}
                     </div>
-                  </Card>
+                  </div>
                 </motion.div>
               </SwiperSlide>
             );
