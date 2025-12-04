@@ -11,30 +11,33 @@ interface ShaderBackgroundProps {
 
 const variantConfigs = {
   hero: {
-    primary: { colors: ["#080808", "#0d0a06", "#1a150a", "#0a0808"], speed: 0.08 },
-    secondary: { colors: ["#0a0a0a", "#8b7355", "#d4af37", "#1a1a2e"], speed: 0.05, opacity: "opacity-25" },
+    primary: { colors: ["#020202", "#050403", "#0a0806", "#030303"], speed: 0.12 },
+    secondary: { colors: ["#000000", "#b8860b", "#ffd700", "#1a1a3a"], speed: 0.08, opacity: "opacity-40" },
+    tertiary: { colors: ["#000000", "#8b6914", "#000000", "#2d1b00"], speed: 0.05, opacity: "opacity-25" },
     particles: 12,
     orbs: [
-      { position: "top-12 left-1/2 -translate-x-1/2", size: "w-72 h-72", opacity: "opacity-70" },
-      { position: "top-24 left-1/2 -translate-x-1/2", size: "w-40 h-40", opacity: "opacity-80", blur: "blur-2xl" },
+      { position: "top-12 left-1/2 -translate-x-1/2", size: "w-80 h-80", opacity: "opacity-60" },
+      { position: "top-20 left-1/2 -translate-x-1/2", size: "w-48 h-48", opacity: "opacity-70", blur: "blur-2xl" },
     ],
   },
   realms: {
-    primary: { colors: ["#080808", "#0a0808", "#120e08", "#080808"], speed: 0.06 },
-    secondary: { colors: ["#0a0a0a", "#6b5a3a", "#d4af37", "#1a1a2e"], speed: 0.04, opacity: "opacity-20" },
+    primary: { colors: ["#020202", "#040404", "#080604", "#020202"], speed: 0.10 },
+    secondary: { colors: ["#000000", "#a07830", "#e6be4d", "#12122a"], speed: 0.06, opacity: "opacity-35" },
+    tertiary: { colors: ["#000000", "#705010", "#000000", "#1a1000"], speed: 0.04, opacity: "opacity-20" },
     particles: 8,
     orbs: [
-      { position: "top-10 right-1/4", size: "w-48 h-48", opacity: "opacity-30" },
-      { position: "bottom-20 left-1/5", size: "w-40 h-40", opacity: "opacity-20" },
+      { position: "top-10 right-1/4", size: "w-56 h-56", opacity: "opacity-35" },
+      { position: "bottom-20 left-1/5", size: "w-48 h-48", opacity: "opacity-25" },
     ],
   },
   about: {
-    primary: { colors: ["#080808", "#0d0908", "#100c08", "#080808"], speed: 0.05 },
-    secondary: { colors: ["#0a0a0a", "#4a3f2a", "#c9a227", "#1e1e3e"], speed: 0.03, opacity: "opacity-15" },
+    primary: { colors: ["#020202", "#030302", "#060504", "#020202"], speed: 0.08 },
+    secondary: { colors: ["#000000", "#906820", "#daa520", "#151530"], speed: 0.05, opacity: "opacity-30" },
+    tertiary: { colors: ["#000000", "#604010", "#000000", "#150a00"], speed: 0.03, opacity: "opacity-18" },
     particles: 10,
     orbs: [
-      { position: "top-20 left-1/4", size: "w-56 h-56", opacity: "opacity-40" },
-      { position: "bottom-20 right-1/4", size: "w-72 h-72", opacity: "opacity-30" },
+      { position: "top-20 left-1/4", size: "w-64 h-64", opacity: "opacity-45" },
+      { position: "bottom-20 right-1/4", size: "w-80 h-80", opacity: "opacity-35" },
     ],
   },
 };
@@ -49,18 +52,25 @@ const ShaderBackground = ({
 
   return (
     <>
-      {/* Primary Mesh Gradient */}
+      {/* Primary Mesh Gradient - Deep base layer */}
       <MeshGradient
         className="absolute inset-0 w-full h-full"
         colors={config.primary.colors}
         speed={config.primary.speed}
       />
       
-      {/* Secondary Mesh Gradient */}
+      {/* Secondary Mesh Gradient - High contrast golden flow */}
       <MeshGradient
         className={`absolute inset-0 w-full h-full ${config.secondary.opacity}`}
         colors={config.secondary.colors}
         speed={config.secondary.speed}
+      />
+
+      {/* Tertiary Mesh Gradient - Additional depth layer */}
+      <MeshGradient
+        className={`absolute inset-0 w-full h-full ${config.tertiary.opacity}`}
+        colors={config.tertiary.colors}
+        speed={config.tertiary.speed}
       />
 
       {/* Floating Particles */}
@@ -68,34 +78,35 @@ const ShaderBackground = ({
         {[...Array(particles)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary/50 rounded-full"
+            className="absolute w-1.5 h-1.5 bg-primary/60 rounded-full"
             style={{
               left: `${10 + Math.random() * 80}%`,
               top: `${10 + Math.random() * 80}%`,
             }}
             animate={{
-              y: [-15, -35, -15],
-              x: [0, Math.random() * 20 - 10, 0],
-              opacity: [0.2, 0.6, 0.2],
-              scale: [0.5, 1, 0.5],
+              y: [-20, -45, -20],
+              x: [0, Math.random() * 25 - 12.5, 0],
+              opacity: [0.15, 0.7, 0.15],
+              scale: [0.4, 1.2, 0.4],
             }}
             transition={{
-              duration: 4 + Math.random() * 3,
+              duration: 5 + Math.random() * 3,
               repeat: Infinity,
-              delay: i * 0.3,
+              delay: i * 0.25,
               ease: "easeInOut",
             }}
           />
         ))}
       </div>
 
-      {/* Glowing Orbs */}
+      {/* Glowing Orbs - Enhanced intensity */}
       {showOrbs && config.orbs.map((orb, i) => (
         <div 
           key={i}
           className={`absolute ${orb.position} ${orb.size} rounded-full ${orb.opacity} ${orb.blur || 'blur-3xl'}`}
           style={{
-            background: "radial-gradient(circle, hsl(45, 100%, 55%) 0%, hsl(43, 74%, 45%) 30%, transparent 70%)",
+            background: "radial-gradient(circle, hsl(48, 100%, 60%) 0%, hsl(45, 90%, 50%) 25%, hsl(43, 74%, 40%) 50%, transparent 75%)",
+            boxShadow: "0 0 100px hsla(45, 100%, 50%, 0.4)",
           }} 
         />
       ))}
