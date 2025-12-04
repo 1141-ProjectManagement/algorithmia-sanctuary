@@ -9,30 +9,34 @@ const Chapter5Hub = () => {
   const gates = [
     {
       id: "gate1",
-      title: "Gate 1: 貪婪演算法",
-      description: "學習「活在當下」的決策策略",
-      detail: "在每一步都做出當前看起來最好的選擇，適用於部分最佳化問題，如活動安排、找零錢等。",
+      title: "貪婪試煉",
+      subtitle: "Greedy Algorithm",
+      description: "每一步都選擇當前最優——活在當下，不為未來擔憂。活動安排時選最早結束的，但背包問題中可能錯失全局最優。",
+      algorithm: "貪心策略",
       link: "/chapter5/gate1",
     },
     {
       id: "gate2",
-      title: "Gate 2: 動態規劃",
-      description: "掌握解決複雜問題的終極武器",
-      detail: "透過「拆分問題」與「記錄結果」，避免重複計算，解決如背包問題、最長公共子序列等具有重疊子問題的最佳化難題。",
+      title: "記憶水晶",
+      subtitle: "Dynamic Programming",
+      description: "把大問題拆成小問題，記錄每個答案避免重複計算。背包、LCS、編輯距離——以空間換時間的經典範例。",
+      algorithm: "動態規劃",
       link: "/chapter5/gate2",
     },
     {
       id: "gate3",
-      title: "Gate 3: 回溯法",
-      description: "學習一種「暴力美學」的系統性搜索法",
-      detail: "透過深度優先的遞迴，窮盡所有可能性，並在走不通時「回頭」，常用於解決排列組合、N皇后、數獨等問題。",
+      title: "回溯迷宮",
+      subtitle: "Backtracking",
+      description: "嘗試所有可能性，走錯就退回換條路。N皇后、數獨求解——智慧的暴力破解，當其他方法失效時的最後武器。",
+      algorithm: "回溯搜索",
       link: "/chapter5/gate3",
     },
     {
       id: "gate4",
-      title: "Gate 4: 分治法",
-      description: "深化「化繁為簡」的核心思想",
-      detail: "將一個大問題遞迴地分解成多個相同或相似的子問題，直到問題規模小到可以輕易解決，最終再將子問題的解合併。",
+      title: "分治戰場",
+      subtitle: "Divide & Conquer",
+      description: "分解、解決、合併——化繁為簡的終極體現。快速冪、大整數乘法，將 O(n²) 降到 O(n log n) 的優化範式。",
+      algorithm: "分治思想",
       link: "/chapter5/gate4",
     },
   ];
@@ -90,14 +94,17 @@ const Chapter5Hub = () => {
                           <CheckCircle2 className="w-8 h-8 text-primary" />
                         </div>
                       )}
-                      <h3 className="font-cinzel text-2xl text-primary mb-3">
+                      <span className="text-sm font-medium text-primary">
+                        {gate.algorithm}
+                      </span>
+                      <h3 className="font-cinzel text-2xl text-primary mt-1 mb-1">
                         {gate.title}
                       </h3>
-                      <p className="text-lg text-foreground mb-2 font-semibold">
+                      <span className="text-xs text-muted-foreground">
+                        {gate.subtitle}
+                      </span>
+                      <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
                         {gate.description}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {gate.detail}
                       </p>
                     </div>
                   </Link>
@@ -106,13 +113,16 @@ const Chapter5Hub = () => {
                     <div className="absolute top-4 right-4">
                       <Lock className="w-8 h-8 text-muted-foreground" />
                     </div>
-                    <h3 className="font-cinzel text-2xl text-muted-foreground mb-3">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {gate.algorithm}
+                    </span>
+                    <h3 className="font-cinzel text-2xl text-muted-foreground mt-1 mb-1">
                       {gate.title}
                     </h3>
-                    <p className="text-lg text-muted-foreground mb-2 font-semibold">
-                      {gate.description}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
+                      {gate.subtitle}
+                    </span>
+                    <p className="text-sm text-muted-foreground mt-3">
                       完成前一個關卡以解鎖
                     </p>
                   </div>
