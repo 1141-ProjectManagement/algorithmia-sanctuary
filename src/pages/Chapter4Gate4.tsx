@@ -31,8 +31,10 @@ const Chapter4Gate4 = () => {
   const progress = (completedSections.length / 3) * 100;
 
   const handleStoryComplete = () => {
+    console.log("handleStoryComplete called");
     setShowStoryDialog(false);
     setShowTeachDialog(true);
+    console.log("showTeachDialog should be true now");
   };
 
   const handleTeachComplete = () => {
@@ -104,13 +106,16 @@ const Chapter4Gate4 = () => {
               </div>
             </motion.div>
           </ScrollArea>
-          <Button
-            onClick={handleStoryComplete}
-            className="w-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/50"
-          >
-            <BookOpen className="w-4 h-4 mr-2" />
-            開始學習知識
-          </Button>
+          <div className="pt-4">
+            <Button
+              type="button"
+              onClick={handleStoryComplete}
+              className="w-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/50 relative z-10"
+            >
+              <BookOpen className="w-4 h-4 mr-2" />
+              開始學習知識
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
