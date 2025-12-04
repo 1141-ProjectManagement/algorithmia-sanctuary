@@ -1,38 +1,19 @@
 import { motion } from "framer-motion";
-import { Code2, Target, Zap, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, Code2, Target, Zap, Users } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const features = [
-  {
-    icon: Code2,
-    title: "演算法探索",
-    subtitle: "Algorithm Mastery",
-    description: "透過互動式學習，深入理解核心演算法概念"
-  },
-  {
-    icon: Target,
-    title: "實戰挑戰",
-    subtitle: "Real Challenges",
-    description: "在實際場景中應用所學，提升解題能力"
-  },
-  {
-    icon: Zap,
-    title: "漸進式學習",
-    subtitle: "Progressive Path",
-    description: "從基礎到進階，系統化的學習旅程"
-  },
-  {
-    icon: Users,
-    title: "社群協作",
-    subtitle: "Community Driven",
-    description: "與其他探索者分享經驗，共同成長"
-  }
-];
+// Images
+import heroImage from "@/assets/about/about-hero.jpg";
+import algorithmMasteryImage from "@/assets/about/card-algorithm-mastery.jpg";
+import challengesImage from "@/assets/about/card-challenges.jpg";
+import progressiveImage from "@/assets/about/card-progressive.jpg";
 
 const About = () => {
   return (
     <section 
       id="about-section"
-      className="h-screen flex items-center justify-center px-6 relative overflow-hidden"
+      className="min-h-screen flex flex-col justify-center px-6 py-16 md:py-24 relative overflow-hidden bg-background"
       aria-label="About Algorithmia Expedition"
     >
       {/* Background gradient */}
@@ -43,125 +24,243 @@ const About = () => {
         }}
       />
 
-      {/* Decorative elements */}
-      <div 
-        className="absolute top-20 left-1/4 w-64 h-64 rounded-full opacity-5"
-        style={{
-          background: 'radial-gradient(circle, hsl(43, 74%, 53%) 0%, transparent 70%)',
-          filter: 'blur(40px)'
-        }}
-      />
-      <div 
-        className="absolute bottom-20 right-1/4 w-96 h-96 rounded-full opacity-5"
-        style={{
-          background: 'radial-gradient(circle, hsl(43, 74%, 53%) 0%, transparent 70%)',
-          filter: 'blur(60px)'
-        }}
-      />
-
-      <div className="max-w-6xl mx-auto relative z-10 py-20">
-        {/* Section title */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-12"
-        >
-          <h2 
-            className="font-cinzel text-4xl md:text-6xl font-bold mb-4 inline-block relative"
-            style={{
-              background: 'linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
-            探索之旅
-          </h2>
-          <div 
-            className="h-1 w-32 mx-auto mt-4 rounded-full"
-            style={{
-              background: 'linear-gradient(90deg, transparent, hsl(43, 74%, 53%), transparent)',
-              boxShadow: '0 0 20px hsla(45, 100%, 50%, 0.5)'
-            }}
-          />
-          <p className="font-inter text-lg text-foreground/70 mt-6 max-w-2xl mx-auto">
-            Journey Through Ancient Algorithmic Wisdom
-          </p>
-        </motion.div>
-
-        {/* Mission statement */}
+      {/* Hero Section */}
+      <div className="mx-auto max-w-6xl space-y-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-          className="text-center mb-10"
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <p className="font-inter text-xl md:text-2xl text-foreground/90 leading-relaxed max-w-3xl mx-auto mb-4">
-            踏上一場穿越七座神聖聖殿的史詩之旅，在每座神殿中解鎖古老的演算法智慧。
-          </p>
-          <p className="font-inter text-lg text-foreground/70 leading-relaxed max-w-3xl mx-auto">
-            Embark on an epic journey through seven sacred temples, unlocking ancient algorithmic wisdom in each sanctuary. Master the art of computational thinking through gamified challenges and progressive learning paths.
+          <img
+            className="rounded-xl object-cover w-full h-[200px] md:h-[360px] shadow-2xl"
+            src={heroImage}
+            alt="Ancient temple with glowing algorithmic runes"
+            style={{
+              boxShadow: '0 0 40px rgba(212, 175, 55, 0.3)'
+            }}
+          />
+        </motion.div>
+
+        <div className="grid gap-6 md:grid-cols-2 md:gap-12">
+          <motion.h1 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-2xl md:text-4xl font-cinzel font-semibold leading-snug"
+          >
+            <span 
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage: 'linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)'
+              }}
+            >
+              探索之旅
+            </span>{" "}
+            <span className="text-foreground/60">
+              穿越七座神聖聖殿，解鎖古老的演算法智慧。
+            </span>
+          </motion.h1>
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="space-y-4 text-muted-foreground"
+          >
+            <p className="font-inter text-sm md:text-base leading-relaxed">
+              Algorithmia Expedition 是一個遊戲化的演算法學習平台，透過互動式挑戰與漸進式學習路徑，
+              讓你在古文明探險的主題中掌握計算思維的藝術。
+            </p>
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="gap-1 pr-1.5 border-temple-gold/50 text-temple-gold hover:bg-temple-gold/10 hover:border-temple-gold"
+            >
+              <Link to="/chapter1">
+                <span>開始探索</span>
+                <ChevronRight className="size-4" />
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Features Section with Cards */}
+      <div className="mx-auto max-w-6xl space-y-12 px-0 mt-16 relative z-10">
+        {/* Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="grid gap-6 text-center md:grid-cols-2 md:gap-12 md:text-left"
+        >
+          <h2 
+            className="text-3xl md:text-4xl font-cinzel font-semibold bg-clip-text text-transparent"
+            style={{
+              backgroundImage: 'linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)'
+            }}
+          >
+            核心特色
+          </h2>
+          <p className="text-muted-foreground font-inter">
+            透過精心設計的遊戲化機制，將複雜的演算法概念轉化為有趣的探險挑戰，讓學習成為一場冒險。
           </p>
         </motion.div>
 
-        {/* Features grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ 
-                  duration: 0.8, 
-                  ease: "easeOut",
-                  delay: 0.3 + index * 0.1 
-                }}
-                className="relative group"
-              >
-                <div 
-                  className="bg-card/30 backdrop-blur-sm border border-temple-gold/20 rounded-lg p-6 h-full transition-all duration-500 hover:border-temple-gold/50 hover:scale-105 focus-within:border-temple-gold/60 min-h-[200px]"
-                  style={{
-                    boxShadow: '0 0 15px rgba(212, 175, 55, 0.2)',
-                  }}
-                  tabIndex={0}
-                  role="article"
-                  aria-label={feature.title}
-                >
-                  {/* Hover glow */}
-                  <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-lg"
-                    style={{
-                      boxShadow: '0 0 25px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.2)'
-                    }}
+        {/* Cards Layout */}
+        <div className="flex flex-col md:flex-row gap-6">
+          
+          {/* LEFT BIG IMAGE - Algorithm Mastery */}
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="md:flex-1 relative group"
+          >
+            <div 
+              className="rounded-xl overflow-hidden h-[300px] sm:h-[360px] md:h-full relative"
+              style={{
+                boxShadow: '0 0 30px rgba(212, 175, 55, 0.2)'
+              }}
+            >
+              <img
+                src={algorithmMasteryImage}
+                alt="Algorithm Mastery - Mystical Library"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <div className="flex items-center gap-3 mb-2">
+                  <Code2 
+                    className="w-8 h-8 text-temple-gold"
+                    style={{ filter: 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.7))' }}
                   />
-
-                  <div className="relative z-10 flex flex-col items-center text-center">
-                    <Icon 
-                      className="w-12 h-12 text-temple-gold mb-4 transition-transform duration-500 group-hover:scale-110"
-                      style={{
-                        filter: 'drop-shadow(0 0 8px hsla(43, 74%, 53%, 0.7))'
-                      }}
-                    />
-                    <h3 className="font-cinzel text-lg font-semibold text-temple-gold mb-1">
-                      {feature.title}
-                    </h3>
-                    <p className="font-inter text-xs text-foreground/60 mb-3 italic">
-                      {feature.subtitle}
-                    </p>
-                    <p className="font-inter text-sm text-foreground/80 leading-relaxed">
-                      {feature.description}
-                    </p>
-                  </div>
+                  <h3 className="font-cinzel text-2xl font-bold text-temple-gold">演算法探索</h3>
                 </div>
-              </motion.div>
-            );
-          })}
+                <p className="text-xs text-temple-gold/70 italic mb-2">Algorithm Mastery</p>
+                <p className="text-sm text-gray-200 leading-relaxed">
+                  透過互動式學習，深入理解核心演算法概念。從基礎的排序搜尋到進階的圖論與動態規劃，
+                  每個概念都有專屬的視覺化演示。
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* RIGHT TWO CARDS */}
+          <div className="flex flex-col gap-6 md:flex-1">
+            {/* FIRST CARD - Real Challenges */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              whileHover={{ scale: 1.02 }}
+              className="relative overflow-hidden rounded-xl bg-card shadow-lg group"
+              style={{
+                boxShadow: '0 0 25px rgba(212, 175, 55, 0.15)'
+              }}
+            >
+              <div className="relative h-48 sm:h-52 w-full overflow-hidden">
+                <img
+                  src={challengesImage}
+                  alt="Real Challenges - Temple Arena"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute bottom-0 h-32 w-full bg-gradient-to-t from-card via-card/70 to-transparent" />
+              </div>
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-1">
+                  <Target 
+                    className="w-5 h-5 text-temple-gold"
+                    style={{ filter: 'drop-shadow(0 0 6px rgba(212, 175, 55, 0.6))' }}
+                  />
+                  <h3 className="font-cinzel text-lg font-bold text-temple-gold">實戰挑戰</h3>
+                </div>
+                <p className="text-xs text-temple-gold/60 italic mb-2">Real Challenges</p>
+                <p className="text-sm text-muted-foreground">
+                  在實際場景中應用所學，提升解題能力。每個關卡都設計了獨特的互動測驗。
+                </p>
+              </div>
+            </motion.div>
+
+            {/* SECOND CARD - Progressive Path */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              whileHover={{ scale: 1.02 }}
+              className="relative overflow-hidden rounded-xl shadow-lg group"
+              style={{
+                boxShadow: '0 0 25px rgba(212, 175, 55, 0.15)'
+              }}
+            >
+              <img
+                src={progressiveImage}
+                alt="Progressive Path - Golden Stairway"
+                className="h-full w-full object-cover min-h-[200px] sm:min-h-[220px] transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                <div className="flex items-center gap-2 mb-1">
+                  <Zap 
+                    className="w-5 h-5 text-temple-gold"
+                    style={{ filter: 'drop-shadow(0 0 6px rgba(212, 175, 55, 0.6))' }}
+                  />
+                  <h3 className="font-cinzel text-lg font-bold text-temple-gold">漸進式學習</h3>
+                </div>
+                <p className="text-xs text-temple-gold/60 italic mb-2">Progressive Path</p>
+                <p className="text-sm text-gray-200">
+                  從基礎到進階，系統化的學習旅程。六大章節循序漸進，層層解鎖新的知識領域。
+                </p>
+              </div>
+            </motion.div>
+          </div>
         </div>
+
+        {/* Community Feature Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="rounded-xl p-6 md:p-8 border border-temple-gold/20 bg-card/30 backdrop-blur-sm"
+          style={{
+            boxShadow: '0 0 30px rgba(212, 175, 55, 0.1)'
+          }}
+        >
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="flex-shrink-0">
+              <Users 
+                className="w-16 h-16 text-temple-gold"
+                style={{ filter: 'drop-shadow(0 0 12px rgba(212, 175, 55, 0.5))' }}
+              />
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <h3 className="font-cinzel text-xl font-bold text-temple-gold mb-1">社群協作</h3>
+              <p className="text-xs text-temple-gold/60 italic mb-3">Community Driven</p>
+              <p className="text-muted-foreground font-inter">
+                與其他探索者分享經驗，共同成長。在這個學習社群中，你可以交流心得、互相激勵，
+                一起揭開 Algorithmia 古文明的神秘面紗。
+              </p>
+            </div>
+            <Button
+              asChild
+              variant="outline"
+              className="border-temple-gold/50 text-temple-gold hover:bg-temple-gold/10 hover:border-temple-gold"
+            >
+              <Link to="/chapter1">
+                <span>加入探索</span>
+                <ChevronRight className="size-4 ml-1" />
+              </Link>
+            </Button>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
