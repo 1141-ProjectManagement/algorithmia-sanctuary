@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { useState } from "react";
+import { MeshGradient } from "@paper-design/shaders-react";
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -154,17 +155,63 @@ const Realms = () => {
   return (
     <section
       id="realms-section"
-      className="min-h-screen flex items-center justify-center px-4 md:px-6 relative py-12"
+      className="min-h-screen flex items-center justify-center px-4 md:px-6 relative py-12 overflow-hidden"
       aria-label="Six Sacred Temples"
     >
       <style>{swiperStyles}</style>
       
-      {/* Background subtle gradient */}
-      <div
-        className="absolute inset-0 opacity-30"
+      {/* Mesh Gradient Background */}
+      <MeshGradient
+        className="absolute inset-0 w-full h-full"
+        colors={["#080808", "#0a0808", "#120e08", "#080808"]}
+        speed={0.06}
+      />
+      
+      {/* Secondary mesh with golden hints */}
+      <MeshGradient
+        className="absolute inset-0 w-full h-full opacity-20"
+        colors={["#0a0a0a", "#6b5a3a", "#d4af37", "#1a1a2e"]}
+        speed={0.04}
+      />
+
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-primary/50 rounded-full"
+            style={{
+              left: `${15 + Math.random() * 70}%`,
+              top: `${15 + Math.random() * 70}%`,
+            }}
+            animate={{
+              y: [-15, -35, -15],
+              x: [0, Math.random() * 20 - 10, 0],
+              opacity: [0.2, 0.6, 0.2],
+              scale: [0.5, 1, 0.5],
+            }}
+            transition={{
+              duration: 5 + Math.random() * 2,
+              repeat: Infinity,
+              delay: i * 0.4,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Glowing orbs for depth */}
+      <div 
+        className="absolute top-10 right-1/4 w-48 h-48 rounded-full opacity-30 blur-3xl" 
         style={{
-          background: "radial-gradient(ellipse at top, hsl(30, 20%, 6%) 0%, transparent 50%)",
-        }}
+          background: "radial-gradient(circle, hsl(43, 74%, 50%) 0%, transparent 70%)",
+        }} 
+      />
+      <div 
+        className="absolute bottom-20 left-1/5 w-40 h-40 rounded-full opacity-20 blur-3xl" 
+        style={{
+          background: "radial-gradient(circle, hsl(43, 74%, 45%) 0%, transparent 70%)",
+        }} 
       />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
