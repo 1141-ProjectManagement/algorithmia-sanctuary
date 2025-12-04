@@ -175,14 +175,14 @@ export function logoutUser(): void {
   localStorage.removeItem('current_user_email');
 }
 
-// Define all chapters and gates (using hyphenated format to match useChapterProgress)
+// Define all chapters and gates (matching format used in ChapterHub pages)
 const ALL_GATES = [
-  { chapterId: 'chapter-1', gates: ['gate-1', 'gate-2', 'gate-3', 'gate-4', 'gate-5'] },
-  { chapterId: 'chapter-2', gates: ['gate-1', 'gate-2', 'gate-3', 'gate-4', 'gate-5', 'gate-6', 'gate-7', 'gate-8'] },
-  { chapterId: 'chapter-3', gates: ['gate-1', 'gate-2', 'gate-3', 'gate-4', 'gate-5', 'gate-6', 'gate-7', 'gate-8', 'gate-9', 'gate-10'] },
-  { chapterId: 'chapter-4', gates: ['gate-1', 'gate-2', 'gate-3', 'gate-4', 'gate-5', 'gate-6', 'gate-7', 'gate-8', 'gate-9', 'gate-10', 'gate-11', 'gate-12'] },
-  { chapterId: 'chapter-5', gates: ['gate-1', 'gate-2', 'gate-3', 'gate-4', 'gate-5', 'gate-6', 'gate-7', 'gate-8'] },
-  { chapterId: 'chapter-6', gates: ['gate-1', 'gate-2', 'gate-3', 'gate-4'] },
+  { chapterId: 'chapter1', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5'] },
+  { chapterId: 'chapter2', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5'] },
+  { chapterId: 'chapter3', gates: ['gate1', 'gate2'] },
+  { chapterId: 'chapter4', gates: ['gate1', 'gate2', 'gate3', 'gate4'] },
+  { chapterId: 'chapter5', gates: ['gate1', 'gate2', 'gate3', 'gate4'] },
+  { chapterId: 'chapter6', gates: ['gate1', 'gate2', 'gate3', 'gate4'] },
 ];
 
 export async function unlockAllGates(userId: number): Promise<void> {
