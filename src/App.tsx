@@ -21,6 +21,7 @@ import Chapter3Hub from "./pages/Chapter3Hub";
 import Chapter3Gate1 from "./pages/Chapter3Gate1";
 import Chapter3Gate2 from "./pages/Chapter3Gate2";
 import Chapter3Gate3 from "./pages/Chapter3Gate3";
+import Chapter3Gate4 from "./pages/Chapter3Gate4";
 import Chapter4Hub from "./pages/Chapter4Hub";
 import Chapter4Gate1 from "./pages/Chapter4Gate1";
 import Chapter4Gate2 from "./pages/Chapter4Gate2";
@@ -60,6 +61,7 @@ const App = () => (
           <Route path="/chapter3/gate1" element={<Chapter3Gate1 />} />
           <Route path="/chapter3/gate2" element={<Chapter3Gate2 />} />
           <Route path="/chapter3/gate3" element={<Chapter3Gate3 />} />
+          <Route path="/chapter3/gate4" element={<Chapter3Gate4 />} />
           <Route path="/chapter4" element={<Chapter4Hub />} />
           <Route path="/chapter4/gate1" element={<Chapter4Gate1 />} />
           <Route path="/chapter4/gate2" element={<Chapter4Gate2 />} />
