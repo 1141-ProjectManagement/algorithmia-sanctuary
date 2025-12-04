@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getChapterTheme, ChapterTheme } from "@/config/chapterThemes";
 
 interface ChapterHubLayoutProps {
   // Chapter Info
@@ -57,14 +58,21 @@ const ChapterHubLayout = ({
 }: ChapterHubLayoutProps) => {
   const navigate = useNavigate();
   const progressPercentage = (completedCount / totalGates) * 100;
+  const theme = getChapterTheme(chapterNumber);
 
   return (
     <div className="min-h-screen bg-background">
       {/* Opening Story Dialog */}
       <Dialog open={showStoryDialog} onOpenChange={setShowStoryDialog}>
-        <DialogContent className="max-w-2xl max-h-[80vh] bg-card/95 backdrop-blur-sm border-primary/30">
+        <DialogContent 
+          className="max-w-2xl max-h-[80vh] bg-card/95 backdrop-blur-sm"
+          style={{ borderColor: `${theme.accentColor}30` }}
+        >
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-2xl font-['Cinzel'] text-primary">
+            <DialogTitle 
+              className="flex items-center gap-3 text-2xl font-['Cinzel']"
+              style={{ color: theme.accentColor }}
+            >
               <Scroll className="w-7 h-7" />
               古老卷軸：{templeName}
             </DialogTitle>
@@ -78,7 +86,13 @@ const ChapterHubLayout = ({
             </div>
           </ScrollArea>
           <div className="flex justify-end pt-4">
-            <Button onClick={() => setShowStoryDialog(false)} className="bg-primary hover:bg-primary/90">
+            <Button 
+              onClick={() => setShowStoryDialog(false)} 
+              style={{ 
+                background: `linear-gradient(135deg, ${theme.gradientFrom}, ${theme.gradientTo})`,
+              }}
+              className="text-background hover:opacity-90"
+            >
               開始探索
             </Button>
           </div>
@@ -87,9 +101,15 @@ const ChapterHubLayout = ({
 
       {/* Lore Fragment Dialog */}
       <Dialog open={showLoreDialog} onOpenChange={setShowLoreDialog}>
-        <DialogContent className="max-w-3xl max-h-[85vh] bg-card/95 backdrop-blur-sm border-primary/30">
+        <DialogContent 
+          className="max-w-3xl max-h-[85vh] bg-card/95 backdrop-blur-sm"
+          style={{ borderColor: `${theme.accentColor}30` }}
+        >
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-2xl font-['Cinzel'] text-primary">
+            <DialogTitle 
+              className="flex items-center gap-3 text-2xl font-['Cinzel']"
+              style={{ color: theme.accentColor }}
+            >
               <BookOpen className="w-7 h-7" />
               {loreTitle}
             </DialogTitle>
@@ -110,17 +130,31 @@ const ChapterHubLayout = ({
         </DialogContent>
       </Dialog>
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background border-b border-border/50">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(212,175,55,0.1),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(40,50,194,0.08),transparent_50%)]" />
+      {/* Hero Section with Background Image */}
+      <div className="relative overflow-hidden border-b border-border/50">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src={theme.image} 
+            alt={templeName}
+            className="w-full h-full object-cover"
+          />
+          {/* Gradient overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/80 to-background" />
+          <div 
+            className="absolute inset-0 opacity-30"
+            style={{
+              background: `radial-gradient(ellipse at 30% 20%, ${theme.accentColor}20, transparent 50%)`,
+            }}
+          />
+        </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
           {/* Back Button */}
           <Button
             variant="ghost"
             onClick={() => navigate("/")}
-            className="absolute top-4 left-4 text-muted-foreground hover:text-foreground"
+            className="absolute top-4 left-4 text-foreground/70 hover:text-foreground bg-background/50 backdrop-blur-sm"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             返回首頁
@@ -132,16 +166,35 @@ const ChapterHubLayout = ({
             transition={{ duration: 0.8 }}
             className="text-center space-y-6"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-4">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">{templeName}</span>
+            {/* Chapter Badge */}
+            <div 
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-sm mb-4"
+              style={{ 
+                background: `${theme.accentColor}15`,
+                border: `1px solid ${theme.accentColor}30`,
+              }}
+            >
+              <Sparkles className="w-4 h-4" style={{ color: theme.accentColor }} />
+              <span className="text-sm font-medium" style={{ color: theme.accentColor }}>
+                {templeName}
+              </span>
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground font-['Cinzel']">
-              第{chapterNumber}章：{chapterTitle}
+              第{chapterNumber}章：
+              <span 
+                className="block sm:inline"
+                style={{
+                  background: `linear-gradient(135deg, ${theme.gradientFrom}, ${theme.gradientTo})`,
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                {chapterTitle}
+              </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">
               {chapterDescription}
             </p>
             
@@ -149,7 +202,11 @@ const ChapterHubLayout = ({
               <Button 
                 variant="outline" 
                 onClick={() => setShowStoryDialog(true)}
-                className="border-primary/30 hover:bg-primary/10"
+                className="backdrop-blur-sm"
+                style={{ 
+                  borderColor: `${theme.accentColor}40`,
+                  color: theme.accentColor,
+                }}
               >
                 <Scroll className="w-4 h-4 mr-2" />
                 閱讀開場故事
@@ -158,7 +215,7 @@ const ChapterHubLayout = ({
                 <Button 
                   variant="outline" 
                   onClick={() => setShowLoreDialog(true)}
-                  className="border-accent/30 hover:bg-accent/10"
+                  className="backdrop-blur-sm border-accent/30 hover:bg-accent/10"
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
                   查看古籍碎片
@@ -182,7 +239,18 @@ const ChapterHubLayout = ({
                   {completedCount} / {totalGates} 關卡完成
                 </span>
               </div>
-              <Progress value={progressPercentage} className="h-2" />
+              <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercentage}%` }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="absolute inset-y-0 left-0 rounded-full"
+                  style={{
+                    background: `linear-gradient(90deg, ${theme.gradientFrom}, ${theme.gradientTo})`,
+                    boxShadow: progressPercentage > 0 ? `0 0 10px ${theme.glowColor}` : 'none',
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -200,10 +268,17 @@ const ChapterHubLayout = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="mt-12 p-8 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 border-2 border-primary/30 text-center space-y-6"
+            className="mt-12 p-8 rounded-2xl text-center space-y-6"
+            style={{
+              background: `linear-gradient(135deg, ${theme.accentColor}10, ${theme.accentColor}05)`,
+              border: `2px solid ${theme.accentColor}30`,
+            }}
           >
-            <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 flex items-center justify-center animate-pulse">
-              <CheckCircle2 className="w-10 h-10 text-primary" />
+            <div 
+              className="w-16 h-16 mx-auto rounded-full flex items-center justify-center animate-pulse"
+              style={{ background: `${theme.accentColor}20` }}
+            >
+              <CheckCircle2 className="w-10 h-10" style={{ color: theme.accentColor }} />
             </div>
             <div className="space-y-3">
               <h3 className="text-2xl font-bold text-foreground font-['Cinzel']">
@@ -215,7 +290,10 @@ const ChapterHubLayout = ({
             </div>
             <Button
               onClick={() => setShowLoreDialog(true)}
-              className="bg-primary hover:bg-primary/90"
+              style={{ 
+                background: `linear-gradient(135deg, ${theme.gradientFrom}, ${theme.gradientTo})`,
+              }}
+              className="text-background hover:opacity-90"
             >
               <BookOpen className="w-4 h-4 mr-2" />
               閱讀古籍碎片

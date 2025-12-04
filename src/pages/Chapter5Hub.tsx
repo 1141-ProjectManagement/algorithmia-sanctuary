@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
+import { getChapterTheme } from "@/config/chapterThemes";
 
 const gates: GateData[] = [
   {
@@ -40,6 +41,7 @@ const gates: GateData[] = [
 ];
 
 const gateOrder = gates.map((g) => g.id);
+const theme = getChapterTheme(5);
 
 const Chapter5Hub = () => {
   const navigate = useNavigate();
@@ -65,7 +67,7 @@ const Chapter5Hub = () => {
   const storyContent = (
     <>
       <p className="text-lg">
-        穿越網絡聖殿後，你來到了一個完全不同的空間。
+        穿越織徑神殿後，你來到了一個完全不同的空間。
       </p>
       <p>
         這裡沒有具體的結構，沒有明確的道路。整個殿堂是由無數個閃爍的決策點組成的——每個決策點都有多個選擇，每個選擇都通往不同的未來。
@@ -74,7 +76,7 @@ const Chapter5Hub = () => {
         一位穿著白袍的智者出現在你面前。她的眼神深邃而平靜：
       </p>
       <blockquote className="border-l-4 border-primary pl-4 py-2 bg-primary/5 rounded-r-lg">
-        <p className="italic mb-2">「歡迎來到智慧殿堂。」</p>
+        <p className="italic mb-2">「歡迎來到抉擇神殿。」</p>
         <p className="italic mb-2">「在前面的冒險中，你學會了測量、排序、構建結構、導航網絡。但你還沒有真正面對最困難的問題——如何做出最佳決策。」</p>
         <p className="italic mb-2">「貪心策略有時有效，有時失敗。動態規劃總是正確，但代價高昂。回溯能窮舉一切，但速度緩慢。」</p>
         <p className="italic">「這裡沒有單一的『正確答案』。只有適應不同場景的『最優選擇』。」</p>
@@ -100,7 +102,7 @@ const Chapter5Hub = () => {
       </div>
       
       <div className="pt-4 text-sm text-muted-foreground italic text-center">
-        — 智慧殿堂的警示 —
+        — 抉擇神殿的警示 —
       </div>
     </div>
   );
@@ -108,7 +110,7 @@ const Chapter5Hub = () => {
   const completionMessage = (
     <>
       <p>
-        智慧殿堂的所有考驗已被完成。當你成功地運用了貪心、DP、回溯、分治，並理解了它們各自的適用場景時，整個殿堂爆發出耀眼的光芒。
+        抉擇神殿的所有考驗已被完成。當你成功地運用了貪心、DP、回溯、分治，並理解了它們各自的適用場景時，整個殿堂爆發出耀眼的光芒。
       </p>
       <blockquote className="border-l-4 border-primary pl-4 py-3 bg-primary/5 rounded-r-lg max-w-2xl mx-auto text-left mt-4">
         <p className="text-foreground/90 italic mb-2">
@@ -124,7 +126,7 @@ const Chapter5Hub = () => {
   return (
     <ChapterHubLayout
       chapterNumber={5}
-      templeName="智慧殿堂"
+      templeName="抉擇神殿"
       chapterTitle="決策與最優性"
       chapterDescription="這裡沒有具體的結構，沒有明確的道路。整個殿堂由無數閃爍的決策點組成——貪心、動態規劃、回溯、分治，尋求最佳決策的智慧考驗。"
       completedCount={completedCount}
@@ -137,7 +139,7 @@ const Chapter5Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《最優性悖論》第五卷"
-      completionTitle="智慧殿堂已被征服"
+      completionTitle="抉擇神殿已被征服"
       completionMessage={completionMessage}
     >
       {gates.map((gate, index) => (
@@ -148,6 +150,7 @@ const Chapter5Hub = () => {
           isCompleted={isGateCompleted(gate.id)}
           isUnlocked={isGateUnlocked(gate.id, gateOrder)}
           onClick={() => handleGateClick(gate)}
+          theme={theme}
         />
       ))}
     </ChapterHubLayout>
