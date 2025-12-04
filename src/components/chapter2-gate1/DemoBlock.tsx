@@ -2,8 +2,9 @@ import { useEffect, useCallback, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Pause, SkipBack, SkipForward, RotateCcw, Shuffle } from "lucide-react";
-import { useBubbleSortStore } from "@/stores/bubbleSortStore";
+import { useBubbleSortStore, SortAlgorithm } from "@/stores/bubbleSortStore";
 import GemScene from "./GemScene";
 import CodeDisplay from "./CodeDisplay";
 
@@ -18,12 +19,14 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
     isPlaying,
     speed,
     comparator,
+    algorithm,
     nextStep,
     prevStep,
     reset,
     setPlaying,
     setSpeed,
     setComparator,
+    setAlgorithm,
     generateSteps,
     setArray,
   } = useBubbleSortStore();
@@ -64,10 +67,18 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   };
 
   const getHighlightLine = useCallback(() => {
-    if (!currentStepData.comparing) return 0;
-    if (currentStepData.swapped) return 6;
-    return 5;
-  }, [currentStepData]);
+    if (algorithm === 'bubble') {
+      if (!currentStepData.comparing) return 0;
+      if (currentStepData.swapped) return 6;
+      return 5;
+    } else {
+      // Insertion sort
+      if (!currentStepData.comparing && currentStepData.insertingIndex !== undefined) return 4;
+      if (currentStepData.swapped) return 7;
+      if (currentStepData.comparing) return 6;
+      return 10;
+    }
+  }, [currentStepData, algorithm]);
 
   const shuffleArray = () => {
     const sizes = [5, 7, 10];
@@ -77,8 +88,51 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
     setHasCompleted(false);
   };
 
+  const handleAlgorithmChange = (algo: string) => {
+    setAlgorithm(algo as SortAlgorithm);
+    setHasCompleted(false);
+  };
+
   return (
     <div className="space-y-6">
+      {/* Algorithm Selector */}
+      <div className="flex justify-center">
+        <Tabs value={algorithm} onValueChange={handleAlgorithmChange}>
+          <TabsList className="bg-card/60 border border-primary/30">
+            <TabsTrigger value="bubble" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              🫧 Bubble Sort
+            </TabsTrigger>
+            <TabsTrigger value="insertion" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">
+              📥 Insertion Sort
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Algorithm Description */}
+      <motion.div
+        key={algorithm}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-4 bg-card/40 rounded-lg border border-primary/30"
+      >
+        {algorithm === 'bubble' ? (
+          <div className="text-center">
+            <h4 className="text-primary font-semibold mb-2">泡泡術 Bubble Sort</h4>
+            <p className="text-sm text-muted-foreground">
+              透過相鄰兩兩比較，將較大值不斷「推」向末端，就像氣泡上浮一樣
+            </p>
+          </div>
+        ) : (
+          <div className="text-center">
+            <h4 className="text-primary font-semibold mb-2">插入術 Insertion Sort</h4>
+            <p className="text-sm text-muted-foreground">
+              像整理撲克牌一樣，每次拿起一張牌插入已排序序列的正確位置
+            </p>
+          </div>
+        )}
+      </motion.div>
+
       {/* 3D Visualization */}
       <div className="h-[300px] md:h-[400px] rounded-lg overflow-hidden border border-primary/20">
         <GemScene
@@ -91,7 +145,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
 
       {/* Status Display */}
       <motion.div
-        key={currentStep}
+        key={`${algorithm}-${currentStep}`}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="p-4 bg-card/40 rounded-lg border border-primary/30 text-center"
@@ -152,6 +206,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
         highlightLine={getHighlightLine()}
         comparator={comparator}
         onComparatorChange={setComparator}
+        algorithm={algorithm}
       />
 
       {/* Legend */}
@@ -166,7 +221,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded bg-[#ff6b6b]" />
-          <span className="text-muted-foreground">交換</span>
+          <span className="text-muted-foreground">{algorithm === 'bubble' ? '交換' : '移動'}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 rounded bg-[#00a86b]" />
@@ -182,7 +237,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
           className="text-center p-4 bg-primary/20 rounded-lg border border-primary/40"
         >
           <p className="text-primary font-semibold">
-            ✨ 演示完成！你已觀察完整的 Bubble Sort 過程
+            ✨ 演示完成！你已觀察完整的 {algorithm === 'bubble' ? 'Bubble Sort' : 'Insertion Sort'} 過程
           </p>
         </motion.div>
       )}
