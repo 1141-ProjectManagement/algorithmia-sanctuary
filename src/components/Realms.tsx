@@ -5,7 +5,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { useState } from "react";
-import ShaderBackground from "./ShaderBackground";
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -155,13 +154,18 @@ const Realms = () => {
   return (
     <section
       id="realms-section"
-      className="min-h-screen flex items-center justify-center px-4 md:px-6 relative py-12 overflow-hidden"
+      className="min-h-screen flex items-center justify-center px-4 md:px-6 relative py-12"
       aria-label="Six Sacred Temples"
     >
       <style>{swiperStyles}</style>
       
-      {/* Shared Shader Background */}
-      <ShaderBackground variant="realms" />
+      {/* Background subtle gradient */}
+      <div
+        className="absolute inset-0 opacity-30"
+        style={{
+          background: "radial-gradient(ellipse at top, hsl(30, 20%, 6%) 0%, transparent 50%)",
+        }}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         {/* Section title */}

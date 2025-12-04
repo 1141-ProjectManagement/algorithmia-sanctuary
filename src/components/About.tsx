@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Code2, Target, Zap, Users } from "lucide-react";
-import ShaderBackground from "./ShaderBackground";
 
 const features = [
   {
@@ -36,8 +35,29 @@ const About = () => {
       className="h-screen flex items-center justify-center px-6 relative overflow-hidden"
       aria-label="About Algorithmia Expedition"
     >
-      {/* Shared Shader Background */}
-      <ShaderBackground variant="about" />
+      {/* Background gradient */}
+      <div 
+        className="absolute inset-0 opacity-20"
+        style={{
+          background: 'radial-gradient(ellipse at center, hsl(30, 20%, 8%) 0%, transparent 70%)'
+        }}
+      />
+
+      {/* Decorative elements */}
+      <div 
+        className="absolute top-20 left-1/4 w-64 h-64 rounded-full opacity-5"
+        style={{
+          background: 'radial-gradient(circle, hsl(43, 74%, 53%) 0%, transparent 70%)',
+          filter: 'blur(40px)'
+        }}
+      />
+      <div 
+        className="absolute bottom-20 right-1/4 w-96 h-96 rounded-full opacity-5"
+        style={{
+          background: 'radial-gradient(circle, hsl(43, 74%, 53%) 0%, transparent 70%)',
+          filter: 'blur(60px)'
+        }}
+      />
 
       <div className="max-w-6xl mx-auto relative z-10 py-20">
         {/* Section title */}
