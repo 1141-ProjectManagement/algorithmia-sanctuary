@@ -13,26 +13,34 @@ const Chapter6Hub = () => {
   const gates = [
     {
       id: "gate1",
-      title: "並查集",
-      description: "高效管理群組關係，以近乎 O(1) 的效率進行合併與查詢操作",
+      title: "聯合之印",
+      subtitle: "Union-Find",
+      description: "學習古老的『聯盟術』，以近乎 O(1) 的效率管理群組關係與連通性",
+      algorithm: "並查集 / 路徑壓縮",
       route: "/chapter6/gate1",
     },
     {
       id: "gate2",
-      title: "位元操作",
-      description: "探索電腦運算的最小單位，利用位元級操作實現極致效能",
+      title: "位元聖典",
+      subtitle: "Bit Manipulation",
+      description: "探索運算的最底層奧秘，用 0 與 1 的魔法實現極致效能",
+      algorithm: "位元運算 / 位元遮罩",
       route: "/chapter6/gate2",
     },
     {
       id: "gate3",
-      title: "隨機化演算法",
-      description: "理解隨機性在演算法中的力量，簡化問題或找到近似最優解",
+      title: "命運骰子",
+      subtitle: "Randomized Algorithms",
+      description: "擁抱不確定性的力量，讓隨機性成為解題的利器",
+      algorithm: "隨機演算法 / 蒙地卡羅",
       route: "/chapter6/gate3",
     },
     {
       id: "gate4",
-      title: "綜合挑戰與 Boss 戰",
-      description: "檢驗知識的遷移與應用能力，挑戰綜合性難題",
+      title: "終極審判",
+      subtitle: "Final Boss",
+      description: "融合所有知識，面對文明最後的考驗與真相的揭示",
+      algorithm: "綜合應用",
       route: "/chapter6/gate4",
     },
   ];
@@ -79,8 +87,8 @@ const Chapter6Hub = () => {
             >
               整合神殿
             </h1>
-            <p className="font-inter text-xl text-foreground/70 mb-2">Temple of Unity</p>
-            <p className="font-inter text-base text-foreground/60 max-w-2xl mx-auto">融合所有知識，達至圓滿</p>
+            <p className="font-inter text-xl text-foreground/70 mb-2">Temple of Final Truth</p>
+            <p className="font-inter text-base text-foreground/60 max-w-2xl mx-auto">穿越所有試煉，揭開 Algorithmia 文明的最終真相</p>
           </div>
 
           {/* Progress bar */}
@@ -136,8 +144,12 @@ const Chapter6Hub = () => {
 
                   {/* Content */}
                   <div className="space-y-3">
-                    <h3 className="font-cinzel text-2xl font-bold text-temple-gold">{gate.title}</h3>
+                    <div>
+                      <h3 className="font-cinzel text-2xl font-bold text-temple-gold">{gate.title}</h3>
+                      <p className="text-xs text-foreground/50 font-inter">{gate.subtitle}</p>
+                    </div>
                     <p className="font-inter text-sm text-foreground/70 line-clamp-2">{gate.description}</p>
+                    <p className="text-xs text-primary/70 font-mono">{gate.algorithm}</p>
 
                     {isUnlocked && !isCompleted && (
                       <motion.div
