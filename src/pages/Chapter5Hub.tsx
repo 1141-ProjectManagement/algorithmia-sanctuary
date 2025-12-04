@@ -11,7 +11,7 @@ const Chapter5Hub = () => {
       id: "gate1",
       title: "貪婪試煉",
       subtitle: "Greedy Algorithm",
-      description: "每一步都選擇當前最優——活在當下，不為未來擔憂。活動安排時選最早結束的，但背包問題中可能錯失全局最優。",
+      description: "貪心策略很簡單——每一步都選擇當前看起來最優的選項。活在當下，不為未來擔憂。活動安排問題中選擇最早結束的活動，但背包問題中可能錯失全局最優。貪心的誘惑在於簡單，代價是可能錯失全局最優。",
       algorithm: "貪心策略",
       link: "/chapter5/gate1",
     },
@@ -19,7 +19,7 @@ const Chapter5Hub = () => {
       id: "gate2",
       title: "記憶水晶",
       subtitle: "Dynamic Programming",
-      description: "把大問題拆成小問題，記錄每個答案避免重複計算。背包、LCS、編輯距離——以空間換時間的經典範例。",
+      description: "巨大的水晶矩陣在虛空中展開，每個格子都是一個子問題的答案。把大問題拆成小問題，記錄每個答案避免重複計算。背包、LCS、編輯距離——這就是「最優子結構」的威力，以空間換時間的經典範例。",
       algorithm: "動態規劃",
       link: "/chapter5/gate2",
     },
@@ -27,7 +27,7 @@ const Chapter5Hub = () => {
       id: "gate3",
       title: "回溯迷宮",
       subtitle: "Backtracking",
-      description: "嘗試所有可能性，走錯就退回換條路。N皇后、數獨求解——智慧的暴力破解，當其他方法失效時的最後武器。",
+      description: "巨大的迷宮在虛空中展開，無數條岔路，無數個可能性。嘗試所有可能，走錯就退回換條路。N皇后、數獨求解、組合生成——智慧的暴力破解，在發現錯誤時立即停止，剪枝大量無效分支。",
       algorithm: "回溯搜索",
       link: "/chapter5/gate3",
     },
@@ -35,7 +35,7 @@ const Chapter5Hub = () => {
       id: "gate4",
       title: "分治戰場",
       subtitle: "Divide & Conquer",
-      description: "分解、解決、合併——化繁為簡的終極體現。快速冪、大整數乘法，將 O(n²) 降到 O(n log n) 的優化範式。",
+      description: "巨大的問題在虛空中分裂成無數小問題，然後又逐層合併。分解→解決→合併，化繁為簡的終極體現。快速冪、大整數乘法、矩陣乘法——將 O(n²) 降到 O(n log n) 的優化範式。",
       algorithm: "分治思想",
       link: "/chapter5/gate4",
     },
@@ -63,13 +63,13 @@ const Chapter5Hub = () => {
           className="text-center mb-16"
         >
           <h1 className="font-cinzel text-5xl md:text-6xl text-primary mb-4 drop-shadow-[0_0_20px_rgba(212,175,55,0.8)]">
-            抉擇神殿
+            智慧殿堂
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground">
-            第五章：高級策略與動態規劃
+            第五章：決策與最優性
           </p>
           <p className="text-sm md:text-base text-muted-foreground mt-2 max-w-3xl mx-auto">
-            學習更高層次的「問題解決思想」，在面對複雜約束和龐大選擇時，如何做出全局最優的決策
+            這裡沒有具體的結構，沒有明確的道路。整個殿堂由無數閃爍的決策點組成——貪心、動態規劃、回溯、分治，尋求最佳決策的智慧考驗
           </p>
         </motion.div>
 
