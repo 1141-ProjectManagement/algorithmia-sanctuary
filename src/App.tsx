@@ -23,6 +23,7 @@ import Chapter3Gate2 from "./pages/Chapter3Gate2";
 import Chapter4Hub from "./pages/Chapter4Hub";
 import Chapter5Hub from "./pages/Chapter5Hub";
 import Chapter5Gate1 from "./pages/Chapter5Gate1";
+import Chapter5Gate2 from "./pages/Chapter5Gate2";
 import Chapter6Hub from "./pages/Chapter6Hub";
 import NotFound from "./pages/NotFound";
 
@@ -53,6 +54,8 @@ const App = () => (
           <Route path="/chapter4" element={<Chapter4Hub />} />
           <Route path="/chapter5" element={<Chapter5Hub />} />
           <Route path="/chapter5/gate1" element={<Chapter5Gate1 />} />
+          <Route path="/chapter5/gate2" element={<Chapter5Gate2 />} />
+          <Route path="/chapter6" element={<Chapter6Hub />} />
           <Route path="/chapter6" element={<Chapter6Hub />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
