@@ -68,7 +68,6 @@ const TreeNodeMesh = ({ node, isVisited, isProcessed, isCurrent }: TreeNodeMeshP
         color="white"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/Inter-Bold.woff"
       >
         {node.value.toString()}
       </Text>

@@ -76,7 +76,6 @@ const TaskCardMesh = ({ node }: TaskCardMeshProps) => {
           color={node.status === 'locked' ? '#9ca3af' : '#ffffff'}
           anchorX="center"
           anchorY="middle"
-          font="/fonts/inter.woff"
         >
           {node.label}
         </Text>

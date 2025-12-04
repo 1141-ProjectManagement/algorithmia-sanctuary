@@ -31,10 +31,8 @@ const Chapter4Gate4 = () => {
   const progress = (completedSections.length / 3) * 100;
 
   const handleStoryComplete = () => {
-    console.log("handleStoryComplete called");
     setShowStoryDialog(false);
     setShowTeachDialog(true);
-    console.log("showTeachDialog should be true now");
   };
 
   const handleTeachComplete = () => {
