@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import Hero from "@/components/Hero";
 import Realms from "@/components/Realms";
 import About from "@/components/About";
+import Testimonials from "@/components/Testimonials";
 import ScrollNav from "@/components/ScrollNav";
 import Navbar from "@/components/Navbar";
 
-const sections = ["Introduction", "Realms", "About"];
+const sections = ["Introduction", "Realms", "About", "Testimonials"];
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
@@ -31,6 +32,7 @@ const Index = () => {
           if (sectionId === "hero-section") index = 0;
           else if (sectionId === "realms-section") index = 1;
           else if (sectionId === "about-section") index = 2;
+          else if (sectionId === "testimonials-section") index = 3;
 
           setCurrentSection(index);
         }
@@ -44,7 +46,7 @@ const Index = () => {
 
     // Observe only page sections (exclude notification sections)
     const allSections = document.querySelectorAll(
-      "section#hero-section, section#realms-section, section#about-section",
+      "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
     );
     sectionsRef.current = Array.from(allSections) as HTMLElement[];
 
@@ -85,14 +87,14 @@ const Index = () => {
         if (e.key === "ArrowDown" || e.key === " ") {
           if (currentSection < sections.length - 1) {
             const nextSection = document.querySelectorAll(
-              "section#hero-section, section#realms-section, section#about-section",
+              "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
             )[currentSection + 1];
             nextSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         } else if (e.key === "ArrowUp") {
           if (currentSection > 0) {
             const prevSection = document.querySelectorAll(
-              "section#hero-section, section#realms-section, section#about-section",
+              "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
             )[currentSection - 1];
             prevSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
@@ -108,7 +110,7 @@ const Index = () => {
     if (!mainRef.current) return;
 
     const allSections = document.querySelectorAll(
-      "section#hero-section, section#realms-section, section#about-section",
+      "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
     );
     const targetSection = allSections[index] as HTMLElement;
     if (!targetSection) return;
@@ -176,7 +178,8 @@ const Index = () => {
         <style>{`
         section#hero-section,
         section#realms-section,
-        section#about-section {
+        section#about-section,
+        section#testimonials-section {
           scroll-snap-align: start;
           scroll-snap-stop: always;
           position: relative;
@@ -197,7 +200,7 @@ const Index = () => {
           box-shadow: 0 0 15px hsla(43, 74%, 53%, 0.4), 0 2px 8px hsla(0, 0%, 0%, 0.3);
         }
 
-        section#about-section::after {
+        section#testimonials-section::after {
           display: none;
         }
 
@@ -221,6 +224,9 @@ const Index = () => {
 
         {/* Section 3: About */}
         <About />
+
+        {/* Section 4: Testimonials */}
+        <Testimonials />
       </main>
     </>
   );
