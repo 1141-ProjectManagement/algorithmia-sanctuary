@@ -93,12 +93,19 @@ const Hero = () => {
         ))}
       </div>
 
-      {/* Glowing orb - center top */}
+      {/* Glowing orb - center top - enhanced intensity */}
       <div 
-        className="absolute top-20 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full opacity-50 blur-3xl" 
+        className="absolute top-12 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full opacity-70 blur-3xl" 
         style={{
-          background: "radial-gradient(circle, hsl(var(--primary)) 0%, transparent 70%)",
-          boxShadow: "0 0 80px hsla(var(--primary), 0.6)"
+          background: "radial-gradient(circle, hsl(45, 100%, 55%) 0%, hsl(43, 74%, 45%) 30%, transparent 70%)",
+          boxShadow: "0 0 120px hsla(45, 100%, 50%, 0.7), 0 0 200px hsla(43, 74%, 53%, 0.4)"
+        }} 
+      />
+      {/* Secondary inner glow for depth */}
+      <div 
+        className="absolute top-24 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full opacity-80 blur-2xl" 
+        style={{
+          background: "radial-gradient(circle, hsl(45, 100%, 65%) 0%, transparent 60%)",
         }} 
       />
 
