@@ -13,31 +13,31 @@ const Chapter4Hub = () => {
       id: 'gate1',
       title: "波紋探索 & 深淵探險",
       subtitle: "BFS & DFS",
-      description: "兩種古老的探索法術——波紋術像水波層層擴散，保證最短路徑；深淵術則深入盡頭再回溯，節省記憶但可能繞路。",
-      algorithm: "遍歷",
+      description: "兩種古老的探索法術——「波紋術」像水波層層擴散，保證找到最短路徑但需記住每層節點；「深淵術」則深入盡頭再回溯，節省記憶但可能走彎路。沒有萬能的方法，選擇遍歷方式本身就是策略。",
+      algorithm: "圖遍歷",
       route: "/chapter4/gate1"
     },
     {
       id: 'gate2',
       title: "連接之橋",
       subtitle: "Minimum Spanning Tree",
-      description: "島嶼群島需要橋樑相連。Kruskal 從最便宜的邊入手，Prim 從起點逐步擴展——殊途同歸，找到最小成本的連接方案。",
+      description: "一片島嶼群島需要橋樑相連。Kruskal 從最便宜的邊入手，確保不形成環；Prim 從起點逐步擴展最近的島嶼——殊途同歸，找到最小成本的連接方案。最優並不代表唯一。",
       algorithm: "最小生成樹",
       route: "/chapter4/gate2"
     },
     {
       id: 'gate3',
       title: "導航星盤",
-      subtitle: "Dijkstra",
-      description: "古人用來計算最短路徑的神器。從起點出發，永遠選擇已知最短距離中最小的節點擴展——貪心策略的勝利。",
-      algorithm: "最短路徑",
+      subtitle: "Dijkstra's Algorithm",
+      description: "巨大的星盤在虛空中旋轉，標記著無數城市與距離。古人用來計算最短路徑的神器——永遠選擇「已知最短距離」中最小的節點擴展，貪心策略的經典勝利。但要小心，無法處理負權重邊。",
+      algorithm: "單源最短路徑",
       route: "/chapter4/gate3"
     },
     {
       id: 'gate4',
       title: "依序啟動",
       subtitle: "Topological Sort",
-      description: "任務之間存在依賴關係。拓撲排序確保每個任務在前置條件完成後才執行——若出現循環依賴，則項目本身有邏輯錯誤。",
+      description: "任務卡片漂浮在虛空中，箭頭標示著依賴關係。拓撲排序確保每個任務在前置條件完成後才執行——若出現循環依賴，排序將無法完成，意味著項目本身有邏輯錯誤。秩序不只是排列，也是理解。",
       algorithm: "拓撲排序",
       route: "/chapter4/gate4"
     },
@@ -45,8 +45,8 @@ const Chapter4Hub = () => {
       id: 'gate5',
       title: "全域視界",
       subtitle: "Floyd-Warshall",
-      description: "最強大的全對最短路徑算法。三重迴圈的魔法一次計算所有城市對的距離——代價是 O(n³) 的時間複雜度。",
-      algorithm: "全域路徑",
+      description: "巨大的距離矩陣在虛空中展開，最強大但也最昂貴的全對最短路徑算法。三重迴圈的魔法一次計算所有城市對的距離——代價是 O(n³) 的時間複雜度。當網絡規模龐大時，維護成本會指數級增長。",
+      algorithm: "全對最短路徑",
       route: "/chapter4/gate5"
     }
   ];
@@ -63,11 +63,11 @@ const Chapter4Hub = () => {
             <ArrowLeft className="w-4 h-4" />
             返回首頁
           </Link>
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2">
-            織徑神殿
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2 font-['Cinzel']">
+            網絡聖殿
           </h1>
           <p className="text-lg text-muted-foreground">
-            第四章：圖論與路徑規劃 - 將視野擴展到複雜的「網路」結構，學習如何在點與點之間找到最佳的路徑與連接方式
+            第四章：全局視野與路徑規劃 - 超越樹，進入錯綜複雜的網絡空間。無數節點懸浮在虛空中，用光線互相連接，理解「全局最優」的真正意義
           </p>
         </div>
       </div>
