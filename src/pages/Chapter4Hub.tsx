@@ -11,37 +11,42 @@ const Chapter4Hub = () => {
   const gates = [
     {
       id: 'gate1',
-      title: "Gate 1: 廣度/深度優先搜尋",
-      description: "掌握遍歷圖的兩種核心方法。BFS 能找到無權重圖的最短路徑，DFS 則擅長探索所有可能性、檢測環路。",
-      algorithm: "BFS/DFS",
+      title: "波紋探索 & 深淵探險",
+      subtitle: "BFS & DFS",
+      description: "兩種古老的探索法術——波紋術像水波層層擴散，保證最短路徑；深淵術則深入盡頭再回溯，節省記憶但可能繞路。",
+      algorithm: "遍歷",
       route: "/chapter4/gate1"
     },
     {
       id: 'gate2',
-      title: "Gate 2: 最小生成樹",
-      description: "學會用最低成本連接所有節點。Kruskal 和 Prim 演算法是解決網路鋪設、電路板佈線等成本最小化問題的經典方案。",
-      algorithm: "MST",
+      title: "連接之橋",
+      subtitle: "Minimum Spanning Tree",
+      description: "島嶼群島需要橋樑相連。Kruskal 從最便宜的邊入手，Prim 從起點逐步擴展——殊途同歸，找到最小成本的連接方案。",
+      algorithm: "最小生成樹",
       route: "/chapter4/gate2"
     },
     {
       id: 'gate3',
-      title: "Gate 3: 戴克斯特拉演算法",
-      description: "精通單點出發的最短路徑問題。解決地圖導航、網路路由等場景中，從一個起點到所有其他點的最短路徑計算。",
-      algorithm: "Dijkstra",
+      title: "導航星盤",
+      subtitle: "Dijkstra",
+      description: "古人用來計算最短路徑的神器。從起點出發，永遠選擇已知最短距離中最小的節點擴展——貪心策略的勝利。",
+      algorithm: "最短路徑",
       route: "/chapter4/gate3"
     },
     {
       id: 'gate4',
-      title: "Gate 4: 拓撲排序",
-      description: "學會安排有依賴關係的任務順序。應用於課程修課順序、專案管理、軟體編譯依賴等，確保任務在滿足其所有前置條件後才被執行。",
-      algorithm: "Topological Sort",
+      title: "依序啟動",
+      subtitle: "Topological Sort",
+      description: "任務之間存在依賴關係。拓撲排序確保每個任務在前置條件完成後才執行——若出現循環依賴，則項目本身有邏輯錯誤。",
+      algorithm: "拓撲排序",
       route: "/chapter4/gate4"
     },
     {
       id: 'gate5',
-      title: "Gate 5: 弗洛伊德演算法",
-      description: "解決「全對全」的最短路徑問題。一次性計算出圖中任意兩點之間的最短距離，適用於需要全域路徑資訊的場景。",
-      algorithm: "Floyd-Warshall",
+      title: "全域視界",
+      subtitle: "Floyd-Warshall",
+      description: "最強大的全對最短路徑算法。三重迴圈的魔法一次計算所有城市對的距離——代價是 O(n³) 的時間複雜度。",
+      algorithm: "全域路徑",
       route: "/chapter4/gate5"
     }
   ];
@@ -110,9 +115,12 @@ const Chapter4Hub = () => {
                         <span className="text-sm font-medium text-primary">
                           {gate.algorithm}
                         </span>
-                        <h3 className="text-xl font-bold text-foreground mt-1">
+                        <h3 className="text-xl font-bold text-foreground mt-1 font-['Cinzel']">
                           {gate.title}
                         </h3>
+                        <span className="text-xs text-muted-foreground">
+                          {gate.subtitle}
+                        </span>
                       </div>
                       <p className="text-sm text-muted-foreground leading-relaxed">
                         {gate.description}
