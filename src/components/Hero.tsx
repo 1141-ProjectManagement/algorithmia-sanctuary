@@ -47,18 +47,18 @@ const Hero = () => {
         </defs>
       </svg>
 
-      {/* Mesh Gradient Background */}
+      {/* Mesh Gradient Background - deep mystical temple atmosphere */}
       <MeshGradient
         className="absolute inset-0 w-full h-full"
-        colors={["#0a0a0a", "#1a1a0a", "#2d2a1a", "#0a0a0a"]}
-        speed={0.15}
+        colors={["#080808", "#0d0a06", "#1a150a", "#0a0808"]}
+        speed={0.08}
       />
       
-      {/* Secondary mesh for depth */}
+      {/* Secondary mesh - subtle golden glow with mystical blue hint */}
       <MeshGradient
-        className="absolute inset-0 w-full h-full opacity-30"
-        colors={["#0a0a0a", "#d4af37", "#b8860b", "#f4d03f"]}
-        speed={0.1}
+        className="absolute inset-0 w-full h-full opacity-25"
+        colors={["#0a0a0a", "#8b7355", "#d4af37", "#1a1a2e"]}
+        speed={0.05}
       />
 
       {/* Temple pillars - left */}
