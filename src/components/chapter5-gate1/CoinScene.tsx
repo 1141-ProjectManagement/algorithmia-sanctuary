@@ -56,7 +56,6 @@ const CoinMesh = ({ coin, index }: CoinMeshProps) => {
         color="#000000"
         anchorX="center"
         anchorY="middle"
-        font="/fonts/inter.woff"
       >
         {coin.value.toString()}
       </Text>
