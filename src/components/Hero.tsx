@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Circle, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
-import { MeshGradient, PulsingBorder } from "@paper-design/shaders-react";
+import { PulsingBorder } from "@paper-design/shaders-react";
+import ShaderBackground from "./ShaderBackground";
 
 const Hero = () => {
   const scrollToRealms = () => {
@@ -47,67 +48,14 @@ const Hero = () => {
         </defs>
       </svg>
 
-      {/* Mesh Gradient Background - deep mystical temple atmosphere */}
-      <MeshGradient
-        className="absolute inset-0 w-full h-full"
-        colors={["#080808", "#0d0a06", "#1a150a", "#0a0808"]}
-        speed={0.08}
-      />
-      
-      {/* Secondary mesh - subtle golden glow with mystical blue hint */}
-      <MeshGradient
-        className="absolute inset-0 w-full h-full opacity-25"
-        colors={["#0a0a0a", "#8b7355", "#d4af37", "#1a1a2e"]}
-        speed={0.05}
-      />
+      {/* Shared Shader Background */}
+      <ShaderBackground variant="hero" />
 
       {/* Temple pillars - left */}
       <div className="absolute left-8 md:left-20 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary to-transparent opacity-40" />
 
       {/* Temple pillars - right */}
       <div className="absolute right-8 md:right-20 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-primary to-transparent opacity-40" />
-
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none">
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-primary/60 rounded-full"
-            style={{
-              left: `${10 + Math.random() * 80}%`,
-              top: `${10 + Math.random() * 80}%`,
-            }}
-            animate={{
-              y: [-20, -40, -20],
-              x: [0, Math.random() * 30 - 15, 0],
-              opacity: [0.2, 0.8, 0.2],
-              scale: [0.5, 1, 0.5],
-            }}
-            transition={{
-              duration: 4 + Math.random() * 2,
-              repeat: Infinity,
-              delay: i * 0.3,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Glowing orb - center top - enhanced intensity */}
-      <div 
-        className="absolute top-12 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full opacity-70 blur-3xl" 
-        style={{
-          background: "radial-gradient(circle, hsl(45, 100%, 55%) 0%, hsl(43, 74%, 45%) 30%, transparent 70%)",
-          boxShadow: "0 0 120px hsla(45, 100%, 50%, 0.7), 0 0 200px hsla(43, 74%, 53%, 0.4)"
-        }} 
-      />
-      {/* Secondary inner glow for depth */}
-      <div 
-        className="absolute top-24 left-1/2 -translate-x-1/2 w-40 h-40 rounded-full opacity-80 blur-2xl" 
-        style={{
-          background: "radial-gradient(circle, hsl(45, 100%, 65%) 0%, transparent 60%)",
-        }} 
-      />
 
       {/* Main content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
