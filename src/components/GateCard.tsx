@@ -11,6 +11,7 @@ export interface GateData {
   description: string;
   algorithm?: string;
   route: string;
+  backgroundImage?: string;
 }
 
 interface GateCardProps {
@@ -55,6 +56,20 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: Gate
         }}
         onClick={onClick}
       >
+        {/* Background Image */}
+        {gate.backgroundImage && (
+          <div className="absolute inset-0 z-0">
+            <img 
+              src={gate.backgroundImage} 
+              alt=""
+              className={`w-full h-full object-cover transition-all duration-500 ${
+                locked ? "grayscale opacity-30" : "opacity-40 group-hover:opacity-50 group-hover:scale-105"
+              }`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/40" />
+          </div>
+        )}
+
         {/* Status Badge */}
         <div className="absolute top-4 right-4 z-10">
           {locked && (
@@ -73,7 +88,7 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: Gate
         </div>
 
         {/* Card Content */}
-        <div className="p-6 space-y-4">
+        <div className="relative z-10 p-6 space-y-4">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div 

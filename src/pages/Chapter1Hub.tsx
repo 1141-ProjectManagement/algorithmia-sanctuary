@@ -5,6 +5,13 @@ import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
 import { getChapterTheme } from "@/config/chapterThemes";
 
+// Gate background images
+import gate1Bg from "@/assets/gates/chapter1-gate1-measurement.jpg";
+import gate2Bg from "@/assets/gates/chapter1-gate2-containers.jpg";
+import gate3Bg from "@/assets/gates/chapter1-gate3-stack-tower.jpg";
+import gate4Bg from "@/assets/gates/chapter1-gate4-queue-gate.jpg";
+import gate5Bg from "@/assets/gates/chapter1-gate5-tablets.jpg";
+
 const gates: GateData[] = [
   {
     id: "gate-1",
@@ -13,6 +20,7 @@ const gates: GateData[] = [
     description: "掌握 Big O 時間複雜度的奧秘，理解演算法效率的基石。如同古人用尺規丈量世界，你將學會用時間複雜度衡量演算法的效能。",
     algorithm: "Big O 分析",
     route: "/chapter1/gate1",
+    backgroundImage: gate1Bg,
   },
   {
     id: "gate-2",
@@ -21,6 +29,7 @@ const gates: GateData[] = [
     description: "探索陣列與鏈結串列的差異，理解記憶體的連續與離散之美。容器的選擇決定了數據的命運。",
     algorithm: "陣列 / 鏈結串列",
     route: "/chapter1/gate2",
+    backgroundImage: gate2Bg,
   },
   {
     id: "gate-3",
@@ -29,6 +38,7 @@ const gates: GateData[] = [
     description: "揭開後進先出的堆疊秘密。如同一座高塔，最後放上的石塊必須最先移除。函數呼叫、括號配對，皆遵循此道。",
     algorithm: "Stack / LIFO",
     route: "/chapter1/gate3",
+    backgroundImage: gate3Bg,
   },
   {
     id: "gate-4",
@@ -37,6 +47,7 @@ const gates: GateData[] = [
     description: "理解先進先出的佇列原理。排隊等候的智慧——先來者先服務，公平且有序的數據結構。",
     algorithm: "Queue / FIFO",
     route: "/chapter1/gate4",
+    backgroundImage: gate4Bg,
   },
   {
     id: "gate-5",
@@ -45,6 +56,7 @@ const gates: GateData[] = [
     description: "學會線性搜尋的基本技巧。在未知的遺跡中，逐一檢查每塊石板，直到找到刻有秘密的那一塊。",
     algorithm: "線性搜尋",
     route: "/chapter1/gate5",
+    backgroundImage: gate5Bg,
   },
 ];
 
