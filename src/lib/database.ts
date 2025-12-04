@@ -179,8 +179,8 @@ export function logoutUser(): void {
 const ALL_GATES = [
   { chapterId: 'chapter1', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5'] },
   { chapterId: 'chapter2', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5'] },
-  { chapterId: 'chapter3', gates: ['gate1', 'gate2'] },
-  { chapterId: 'chapter4', gates: ['gate1', 'gate2', 'gate3', 'gate4'] },
+  { chapterId: 'chapter3', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5'] },
+  { chapterId: 'chapter4', gates: ['gate1', 'gate2', 'gate3', 'gate4', 'gate5'] },
   { chapterId: 'chapter5', gates: ['gate1', 'gate2', 'gate3', 'gate4'] },
   { chapterId: 'chapter6', gates: ['gate1', 'gate2', 'gate3', 'gate4'] },
 ];
