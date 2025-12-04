@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Code2, Target, Zap, Users } from "lucide-react";
+import { MeshGradient } from "@paper-design/shaders-react";
 
 const features = [
   {
@@ -35,27 +36,57 @@ const About = () => {
       className="h-screen flex items-center justify-center px-6 relative overflow-hidden"
       aria-label="About Algorithmia Expedition"
     >
-      {/* Background gradient */}
-      <div 
-        className="absolute inset-0 opacity-20"
-        style={{
-          background: 'radial-gradient(ellipse at center, hsl(30, 20%, 8%) 0%, transparent 70%)'
-        }}
+      {/* Mesh Gradient Background */}
+      <MeshGradient
+        className="absolute inset-0 w-full h-full"
+        colors={["#080808", "#0d0908", "#100c08", "#080808"]}
+        speed={0.05}
+      />
+      
+      {/* Secondary mesh with mystical tones */}
+      <MeshGradient
+        className="absolute inset-0 w-full h-full opacity-15"
+        colors={["#0a0a0a", "#4a3f2a", "#c9a227", "#1e1e3e"]}
+        speed={0.03}
       />
 
-      {/* Decorative elements */}
+      {/* Floating particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(10)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-primary/40 rounded-full"
+            style={{
+              left: `${10 + Math.random() * 80}%`,
+              top: `${10 + Math.random() * 80}%`,
+            }}
+            animate={{
+              y: [-10, -30, -10],
+              x: [0, Math.random() * 15 - 7.5, 0],
+              opacity: [0.15, 0.5, 0.15],
+              scale: [0.4, 0.9, 0.4],
+            }}
+            transition={{
+              duration: 6 + Math.random() * 2,
+              repeat: Infinity,
+              delay: i * 0.35,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Glowing orbs */}
       <div 
-        className="absolute top-20 left-1/4 w-64 h-64 rounded-full opacity-5"
+        className="absolute top-20 left-1/4 w-56 h-56 rounded-full opacity-40 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, hsl(43, 74%, 53%) 0%, transparent 70%)',
-          filter: 'blur(40px)'
+          background: 'radial-gradient(circle, hsl(43, 74%, 50%) 0%, transparent 70%)'
         }}
       />
       <div 
-        className="absolute bottom-20 right-1/4 w-96 h-96 rounded-full opacity-5"
+        className="absolute bottom-20 right-1/4 w-72 h-72 rounded-full opacity-30 blur-3xl"
         style={{
-          background: 'radial-gradient(circle, hsl(43, 74%, 53%) 0%, transparent 70%)',
-          filter: 'blur(60px)'
+          background: 'radial-gradient(circle, hsl(43, 74%, 45%) 0%, transparent 70%)'
         }}
       />
 
