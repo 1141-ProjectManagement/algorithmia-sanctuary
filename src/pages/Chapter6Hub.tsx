@@ -46,8 +46,7 @@ const Chapter6Hub = () => {
       <div
         className="absolute inset-0 opacity-20"
         style={{
-          background:
-            "radial-gradient(ellipse at top, hsl(30, 20%, 6%) 0%, transparent 50%)",
+          background: "radial-gradient(ellipse at top, hsl(30, 20%, 6%) 0%, transparent 50%)",
         }}
       />
 
@@ -66,36 +65,29 @@ const Chapter6Hub = () => {
             className="mb-6 text-temple-gold hover:text-temple-gold/80"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            返回七座聖殿
+            返回
           </Button>
 
           <div className="text-center mb-8">
             <h1
               className="font-cinzel text-5xl md:text-7xl font-bold mb-4"
               style={{
-                background:
-                  "linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)",
+                background: "linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
             >
               整合神殿
             </h1>
-            <p className="font-inter text-xl text-foreground/70 mb-2">
-              Temple of Unity
-            </p>
-            <p className="font-inter text-base text-foreground/60 max-w-2xl mx-auto">
-              融合所有知識，達至圓滿
-            </p>
+            <p className="font-inter text-xl text-foreground/70 mb-2">Temple of Unity</p>
+            <p className="font-inter text-base text-foreground/60 max-w-2xl mx-auto">融合所有知識，達至圓滿</p>
           </div>
 
           {/* Progress bar */}
           <div className="max-w-md mx-auto">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-foreground/70">章節進度</span>
-              <span className="text-sm font-semibold text-temple-gold">
-                {progress}%
-              </span>
+              <span className="text-sm font-semibold text-temple-gold">{progress}%</span>
             </div>
             <Progress value={progress} className="h-2" />
           </div>
@@ -103,7 +95,7 @@ const Chapter6Hub = () => {
 
         {/* Gates grid */}
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {gates.map((gate, index) => {
+          {gates.map((gate, index) => {
             const isUnlocked = isGateUnlocked(gate.id, gateOrder);
             const isCompleted = isGateCompleted(gate.id);
 
@@ -130,9 +122,7 @@ const Chapter6Hub = () => {
                       : "opacity-60 cursor-not-allowed bg-card/30"
                   }`}
                   style={{
-                    boxShadow: isUnlocked
-                      ? "0 0 20px rgba(212, 175, 55, 0.3)"
-                      : "none",
+                    boxShadow: isUnlocked ? "0 0 20px rgba(212, 175, 55, 0.3)" : "none",
                   }}
                 >
                   {/* Lock/Complete indicator */}
@@ -146,12 +136,8 @@ const Chapter6Hub = () => {
 
                   {/* Content */}
                   <div className="space-y-3">
-                    <h3 className="font-cinzel text-2xl font-bold text-temple-gold">
-                      {gate.title}
-                    </h3>
-                    <p className="font-inter text-sm text-foreground/70 line-clamp-2">
-                      {gate.description}
-                    </p>
+                    <h3 className="font-cinzel text-2xl font-bold text-temple-gold">{gate.title}</h3>
+                    <p className="font-inter text-sm text-foreground/70 line-clamp-2">{gate.description}</p>
 
                     {isUnlocked && !isCompleted && (
                       <motion.div
