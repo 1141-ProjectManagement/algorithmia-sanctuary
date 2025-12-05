@@ -141,15 +141,29 @@ export const useTwoPointersStore = create<TwoPointersState>((set, get) => ({
     set({ isAnimating: true });
     
     while (true) {
-      const { left, right, currentSum, target, found } = get();
+      const { left, right, currentSum, target, found, stones } = get();
       
       if (found || left >= right) break;
+      
+      // Check if already at target
+      if (currentSum === target) {
+        const newStones = [...stones];
+        newStones[left].status = 'target';
+        newStones[right].status = 'target';
+        set({
+          stones: newStones,
+          found: true,
+          stepLog: [...get().stepLog, `✓ 找到目標！stones[${left}] + stones[${right}] = ${currentSum}`],
+          currentStep: `找到了！stones[${left}] + stones[${right}] = ${currentSum}`,
+        });
+        break;
+      }
       
       await delay(800);
       
       if (currentSum < target) {
         get().moveLeft();
-      } else if (currentSum > target) {
+      } else {
         get().moveRight();
       }
     }
