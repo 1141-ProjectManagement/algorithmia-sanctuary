@@ -120,7 +120,7 @@ const TwoPointersScene = ({ stones, currentSum, target, found }: TwoPointersScen
   }, [stones.length]);
 
   return (
-    <Canvas camera={{ position: [0, 4, 8], fov: 50 }}>
+    <Canvas camera={{ position: [0, 4, 8], fov: 50 }} style={{ pointerEvents: 'none' }}>
       <ambientLight intensity={0.4} />
       <pointLight position={[5, 8, 5]} intensity={1} />
       <pointLight position={[-5, 8, 5]} intensity={0.5} />
