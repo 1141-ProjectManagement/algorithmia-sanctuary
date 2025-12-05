@@ -247,10 +247,11 @@ const NetworkScene = ({ nodes, edges, nodeIds, currentK, currentI, currentJ }: N
       {/* Title */}
       <Text
         position={[0, 2.8, 0]}
-        fontSize={0.2}
+        fontSize={0.18}
         color="#d4af37"
+        anchorX="center"
       >
-        🌐 城市網絡 - Floyd-Warshall
+        City Network - Floyd-Warshall
       </Text>
 
       {/* Legend */}
