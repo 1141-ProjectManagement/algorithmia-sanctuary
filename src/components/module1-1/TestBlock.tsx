@@ -208,7 +208,7 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
             key={complexity}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => !selectedAnswer && handleAnswerSelect(complexity)}
+            onClick={() => (isCorrect !== true) && handleAnswerSelect(complexity)}
             className={`relative p-6 rounded-lg border-2 cursor-pointer transition-all ${
               selectedAnswer === complexity
                 ? isCorrect
