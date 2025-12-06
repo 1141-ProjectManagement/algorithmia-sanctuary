@@ -94,7 +94,7 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
         { id: "swap_branches", label: "交換 left 和 right", description: "修正遞迴方向" },
         { id: "both", label: "兩個都要改", description: "運算符和方向都錯了" },
       ];
-    } else if (challenge.title.includes("方向")) {
+    } else if (challenge.correctAnswer === "left" || challenge.correctAnswer === "right") {
       return [
         { id: "left", label: "往左走 ◀", description: `因為 ${challenge.target} < 根節點` },
         { id: "right", label: "往右走 ▶", description: `因為 ${challenge.target} > 根節點` },
