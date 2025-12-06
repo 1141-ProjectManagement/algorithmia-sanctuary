@@ -126,9 +126,16 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
     }
   };
 
-  const handleComplete = () => {
+  const handleNextChallenge = () => {
     if (challenge === 1 && isCorrect) {
-      handleChallengeSwitch(2);
+      setChallenge(2);
+      setShowResult(false);
+      setIsCorrect(false);
+      setShowHint(false);
+      setKruskalAnswer("");
+      setPrimSelection(null);
+      setAttemptCount(0);
+      setupPrimChallenge();
     } else if (challenge === 2 && isCorrect) {
       onComplete();
     }
@@ -255,7 +262,7 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
               {isCorrect ? "正確！" : "再試一次"}
             </p>
             {isCorrect && (
-              <Button onClick={handleComplete} className="mt-2" size="sm">
+              <Button onClick={handleNextChallenge} className="mt-2" size="sm">
                 {challenge === 1 ? "進入挑戰 2" : "完成關卡"}
               </Button>
             )}
