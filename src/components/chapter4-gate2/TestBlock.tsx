@@ -127,16 +127,21 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
   };
 
   const handleNextChallenge = () => {
-    if (challenge === 1 && isCorrect) {
-      setChallenge(2);
+    if (challenge === 1) {
+      // 先重置狀態
       setShowResult(false);
       setIsCorrect(false);
       setShowHint(false);
       setKruskalAnswer("");
       setPrimSelection(null);
       setAttemptCount(0);
-      setupPrimChallenge();
-    } else if (challenge === 2 && isCorrect) {
+      // 然後切換到挑戰 2
+      setChallenge(2);
+      // 延遲設置 Prim 挑戰，確保狀態已更新
+      setTimeout(() => {
+        setupPrimChallenge();
+      }, 50);
+    } else if (challenge === 2) {
       onComplete();
     }
   };
