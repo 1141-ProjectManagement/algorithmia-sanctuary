@@ -53,6 +53,7 @@ const Chapter5Hub = () => {
     isGateUnlocked,
     getCompletedGatesCount,
     isChapterCompleted,
+    getGateSections,
   } = useChapterProgress("chapter5");
 
   const completedCount = getCompletedGatesCount();
@@ -151,6 +152,7 @@ const Chapter5Hub = () => {
           isUnlocked={isGateUnlocked(gate.id, gateOrder)}
           onClick={() => handleGateClick(gate)}
           theme={theme}
+          sections={getGateSections(gate.id)}
         />
       ))}
     </ChapterHubLayout>

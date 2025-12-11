@@ -7,44 +7,40 @@ import TeachBlock from "@/components/chapter2-gate1/TeachBlock";
 import DemoBlock from "@/components/chapter2-gate1/DemoBlock";
 import TestBlock from "@/components/chapter2-gate1/TestBlock";
 import realm2Image from "@/assets/realm-2-chronos.jpg";
+import type { SectionType } from "@/lib/auth";
 
 const Chapter2Gate1 = () => {
   const navigate = useNavigate();
-  const { completeGate } = useChapterProgress("chapter2");
+  const { completeSection, getGateSections, isGateCompleted } = useChapterProgress("chapter2");
   const { currentSection, demoRef, testRef, handleNavigate } = useGateNavigation();
 
   // Dialog states
   const [showStory, setShowStory] = useState(true);
   const [showTeach, setShowTeach] = useState(false);
-  const [teachCompleted, setTeachCompleted] = useState(false);
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
+  
+  // Get current section status from database
+  const sections = getGateSections("gate1");
 
   const handleStoryComplete = () => {
     setShowStory(false);
     setShowTeach(true);
   };
 
-  const handleTeachComplete = () => {
-    setTeachCompleted(true);
-    if (!completedSections.includes("teach")) {
-      setCompletedSections([...completedSections, "teach"]);
+  const handleSectionComplete = async (section: SectionType) => {
+    await completeSection("gate1", section);
+    
+    // Check if all sections complete, then navigate
+    if (section === "test") {
+      setTimeout(() => navigate("/chapter2"), 1500);
     }
+  };
+
+  const handleTeachComplete = async () => {
+    await handleSectionComplete("teach");
     setShowTeach(false);
   };
 
-  const handleDemoComplete = () => {
-    if (!completedSections.includes("demo")) {
-      setCompletedSections([...completedSections, "demo"]);
-    }
-  };
-
-  const handleTestComplete = () => {
-    if (!completedSections.includes("test")) {
-      setCompletedSections([...completedSections, "test"]);
-    }
-    completeGate("gate1");
-    setTimeout(() => navigate("/chapter2"), 1500);
-  };
+  const completedCount = [sections.teach, sections.demo, sections.test].filter(Boolean).length;
 
   return (
     <>
@@ -55,17 +51,17 @@ const Chapter2Gate1 = () => {
         returnPath="/chapter2"
         onShowStory={() => setShowStory(true)}
         onShowTeach={() => setShowTeach(true)}
-        showScrollNav={teachCompleted}
+        showScrollNav={sections.teach}
         currentSection={currentSection}
         onNavigate={handleNavigate}
-        progress={{ completed: completedSections.length, total: 3 }}
+        progress={{ completed: completedCount, total: 3 }}
       >
         <GateSection
           ref={demoRef}
           title="互動演示"
           description="觀察 Bubble Sort 的排序過程，體驗相鄰交換的魔法"
         >
-          <DemoBlock onComplete={handleDemoComplete} />
+          <DemoBlock onComplete={() => handleSectionComplete("demo")} />
         </GateSection>
 
         <GateSection
@@ -74,7 +70,7 @@ const Chapter2Gate1 = () => {
           description="預判每一步的交換決策，證明你已掌握泡泡術"
           variant="gradient"
         >
-          <TestBlock onComplete={handleTestComplete} />
+          <TestBlock onComplete={() => handleSectionComplete("test")} />
         </GateSection>
       </GatePageLayout>
 
@@ -129,9 +125,9 @@ const Chapter2Gate1 = () => {
         onOpenChange={setShowTeach}
         title="泡泡排序的奧秘"
         onComplete={handleTeachComplete}
-        isCompleted={teachCompleted}
+        isCompleted={sections.teach}
       >
-        <TeachBlock onComplete={() => setTeachCompleted(true)} />
+        <TeachBlock onComplete={() => {}} />
       </TeachDialog>
     </>
   );

@@ -7,42 +7,34 @@ import TeachBlock from "@/components/chapter2-gate5/TeachBlock";
 import DemoBlock from "@/components/chapter2-gate5/DemoBlock";
 import TestBlock from "@/components/chapter2-gate5/TestBlock";
 import realmImage from "@/assets/realm-2-chronos.jpg";
+import type { SectionType } from "@/lib/auth";
 
 const Chapter2Gate5 = () => {
   const navigate = useNavigate();
-  const { completeGate, isGateCompleted } = useChapterProgress("chapter-2");
+  const { completeSection, getGateSections } = useChapterProgress("chapter2");
   const { currentSection, demoRef, testRef, handleNavigate } = useGateNavigation();
   
-  const [showStoryDialog, setShowStoryDialog] = useState(!isGateCompleted("gate-5"));
+  const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showTeachDialog, setShowTeachDialog] = useState(false);
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
-  const [teachCompleted, setTeachCompleted] = useState(false);
+
+  const sections = getGateSections("gate5");
+  const completedCount = [sections.teach, sections.demo, sections.test].filter(Boolean).length;
 
   const handleStoryComplete = () => {
     setShowStoryDialog(false);
     setShowTeachDialog(true);
   };
 
-  const handleTeachComplete = () => {
-    setTeachCompleted(true);
-    setShowTeachDialog(false);
-    handleSectionComplete("teach");
-  };
-
-  const handleSectionComplete = (section: string) => {
-    if (!completedSections.includes(section)) {
-      setCompletedSections([...completedSections, section]);
+  const handleSectionComplete = async (section: SectionType) => {
+    await completeSection("gate5", section);
+    if (section === "test") {
+      setTimeout(() => navigate("/chapter2"), 1500);
     }
   };
 
-  const handleAllComplete = () => {
-    completeGate("gate-5");
-    setTimeout(() => navigate("/chapter2"), 1500);
-  };
-
-  const progress = {
-    completed: completedSections.length,
-    total: 3,
+  const handleTeachComplete = async () => {
+    await handleSectionComplete("teach");
+    setShowTeachDialog(false);
   };
 
   return (
@@ -89,9 +81,9 @@ const Chapter2Gate5 = () => {
         onOpenChange={setShowTeachDialog}
         title="滑動視窗的精髓"
         onComplete={handleTeachComplete}
-        isCompleted={teachCompleted}
+        isCompleted={sections.teach}
       >
-        <TeachBlock onComplete={() => setTeachCompleted(true)} />
+        <TeachBlock onComplete={() => {}} />
       </TeachDialog>
 
       <GatePageLayout
@@ -100,7 +92,7 @@ const Chapter2Gate5 = () => {
         backgroundImage={realmImage}
         returnPath="/chapter2"
         returnLabel="返回秩序神殿"
-        progress={progress}
+        progress={{ completed: completedCount, total: 3 }}
         showScrollNav
         currentSection={currentSection}
         sections={["互動演示", "實戰挑戰"]}
@@ -122,12 +114,7 @@ const Chapter2Gate5 = () => {
           description="補全滑動視窗的代碼邏輯"
           variant="gradient"
         >
-          <TestBlock
-            onComplete={() => {
-              handleSectionComplete("test");
-              handleAllComplete();
-            }}
-          />
+          <TestBlock onComplete={() => handleSectionComplete("test")} />
         </GateSection>
       </GatePageLayout>
     </>
