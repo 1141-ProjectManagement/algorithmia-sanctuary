@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { signOut, getProfile, type Profile } from "@/lib/auth";
+import { signOut, getProfile, unlockAllGates, getPendingMasterKey, type Profile } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 import type { User, Session } from "@supabase/supabase-js";
 
 export const useAuth = () => {
@@ -8,6 +9,7 @@ export const useAuth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -16,10 +18,10 @@ export const useAuth = () => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer profile fetch with setTimeout to avoid deadlock
+        // Defer profile fetch and master key processing with setTimeout to avoid deadlock
         if (session?.user) {
           setTimeout(() => {
-            fetchProfile(session.user.id);
+            fetchProfileAndProcessMasterKey(session.user.id);
           }, 0);
         } else {
           setProfile(null);
@@ -33,7 +35,7 @@ export const useAuth = () => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        fetchProfile(session.user.id);
+        fetchProfileAndProcessMasterKey(session.user.id);
       }
       setIsLoading(false);
     });
@@ -41,9 +43,23 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfileAndProcessMasterKey = async (userId: string) => {
     const profileData = await getProfile(userId);
     setProfile(profileData);
+
+    // Check for pending master key (from OAuth redirect)
+    const pendingKey = getPendingMasterKey();
+    if (pendingKey === "ABAB") {
+      try {
+        await unlockAllGates(userId);
+        toast({
+          title: "🔓 通關密鑰已驗證！",
+          description: "所有關卡已解鎖，盡情探索吧！",
+        });
+      } catch (error) {
+        console.error("Error unlocking gates:", error);
+      }
+    }
   };
 
   const logout = async () => {

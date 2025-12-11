@@ -19,40 +19,22 @@ export interface Progress {
   completed_at?: string;
 }
 
-// Sign up a new user
-export async function signUp(email: string, password: string, nickname: string): Promise<{ user: User | null; error: Error | null }> {
+// Sign in with Google OAuth
+export async function signInWithGoogle(): Promise<{ error: Error | null }> {
   const redirectUrl = `${window.location.origin}/`;
   
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
     options: {
-      emailRedirectTo: redirectUrl,
-      data: {
-        nickname,
-      },
+      redirectTo: redirectUrl,
     },
   });
 
   if (error) {
-    return { user: null, error };
+    return { error };
   }
 
-  return { user: data.user, error: null };
-}
-
-// Sign in an existing user
-export async function signIn(email: string, password: string): Promise<{ user: User | null; error: Error | null }> {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    return { user: null, error };
-  }
-
-  return { user: data.user, error: null };
+  return { error: null };
 }
 
 // Sign out
@@ -88,8 +70,8 @@ export async function getProfile(userId: string): Promise<Profile | null> {
   return data;
 }
 
-// Update user profile
-export async function updateProfile(userId: string, nickname: string): Promise<Profile | null> {
+// Update user profile nickname
+export async function updateProfileNickname(userId: string, nickname: string): Promise<Profile | null> {
   const { data, error } = await supabase
     .from("profiles")
     .update({ nickname })
@@ -179,4 +161,18 @@ export async function unlockAllGates(userId: string): Promise<void> {
     console.error("Error unlocking all gates:", error);
     throw error;
   }
+}
+
+// Store master key in localStorage for post-OAuth processing
+export function setMasterKeyPending(key: string): void {
+  if (key) {
+    localStorage.setItem("pending_master_key", key);
+  }
+}
+
+// Get and clear pending master key
+export function getPendingMasterKey(): string | null {
+  const key = localStorage.getItem("pending_master_key");
+  localStorage.removeItem("pending_master_key");
+  return key;
 }

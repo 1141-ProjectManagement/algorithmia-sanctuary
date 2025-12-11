@@ -3,8 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { signUp, signIn, unlockAllGates } from "@/lib/auth";
+import { signInWithGoogle, setMasterKeyPending } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { Sparkles } from "lucide-react";
 
@@ -15,163 +14,39 @@ interface AuthModalProps {
 }
 
 export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
   const [masterKey, setMasterKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   const { toast } = useToast();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      toast({
-        title: "錯誤",
-        description: "請填寫所有欄位",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const handleGoogleSignIn = async () => {
     setIsLoading(true);
 
     try {
-      const { user, error } = await signIn(email, password);
+      // Store master key if provided (will be processed after OAuth redirect)
+      if (masterKey === "ABAB") {
+        setMasterKeyPending(masterKey);
+      }
+
+      const { error } = await signInWithGoogle();
 
       if (error) {
         toast({
           title: "登入失敗",
-          description: error.message === "Invalid login credentials" 
-            ? "電子郵件或密碼錯誤" 
-            : error.message,
+          description: error.message,
           variant: "destructive",
         });
-        return;
+        setIsLoading(false);
       }
-
-      if (user) {
-        // Check master key and unlock all gates if correct
-        if (masterKey === "ABAB") {
-          await unlockAllGates(user.id);
-          toast({
-            title: "🔓 通關密鑰已驗證！",
-            description: "所有關卡已解鎖，盡情探索吧！",
-          });
-        } else {
-          toast({
-            title: "歡迎回來！",
-            description: "登入成功",
-          });
-        }
-
-        onSuccess();
-        onOpenChange(false);
-        resetForm();
-      }
+      // Note: On success, the page will redirect to Google, so no need to handle success here
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Google sign in error:", error);
       toast({
         title: "錯誤",
         description: "登入失敗，請稍後再試",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password || !nickname) {
-      toast({
-        title: "錯誤",
-        description: "請填寫所有欄位",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast({
-        title: "錯誤",
-        description: "請輸入有效的電子郵件地址",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (password.length < 6) {
-      toast({
-        title: "錯誤",
-        description: "密碼至少需要 6 個字元",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const { user, error } = await signUp(email, password, nickname);
-
-      if (error) {
-        if (error.message.includes("already registered")) {
-          toast({
-            title: "註冊失敗",
-            description: "此電子郵件已被註冊，請直接登入",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "註冊失敗",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
-        return;
-      }
-
-      if (user) {
-        // Check master key and unlock all gates if correct
-        if (masterKey === "ABAB") {
-          await unlockAllGates(user.id);
-          toast({
-            title: "🔓 通關密鑰已驗證！",
-            description: "所有關卡已解鎖，開始你的冒險吧！",
-          });
-        } else {
-          toast({
-            title: "註冊成功！",
-            description: `歡迎 ${nickname} 加入 Algorithmia 探險之旅`,
-          });
-        }
-
-        onSuccess();
-        onOpenChange(false);
-        resetForm();
-      }
-    } catch (error) {
-      console.error("Register error:", error);
-      toast({
-        title: "錯誤",
-        description: "註冊失敗，請稍後再試",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const resetForm = () => {
-    setEmail("");
-    setPassword("");
-    setNickname("");
-    setMasterKey("");
   };
 
   return (
@@ -185,157 +60,60 @@ export const AuthModal = ({ open, onOpenChange, onSuccess }: AuthModalProps) => 
             </DialogTitle>
           </div>
           <DialogDescription className="text-center text-foreground/70">
-            登入或註冊以追蹤學習進度
+            使用 Google 帳號登入以追蹤學習進度
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "login" | "register")} className="mt-4">
-          <TabsList className="grid w-full grid-cols-2 bg-background/50 border border-temple-gold/20">
-            <TabsTrigger value="login" className="data-[state=active]:bg-temple-gold/20 data-[state=active]:text-temple-gold">
-              登入
-            </TabsTrigger>
-            <TabsTrigger value="register" className="data-[state=active]:bg-temple-gold/20 data-[state=active]:text-temple-gold">
-              註冊
-            </TabsTrigger>
-          </TabsList>
+        <div className="space-y-6 mt-4">
+          <div className="space-y-2">
+            <Label htmlFor="masterKey" className="text-foreground flex items-center gap-2">
+              <span>🔑 通關密鑰</span>
+              <span className="text-xs text-foreground/50">(選填)</span>
+            </Label>
+            <Input
+              id="masterKey"
+              type="text"
+              placeholder="輸入通關密鑰解鎖所有關卡"
+              value={masterKey}
+              onChange={(e) => setMasterKey(e.target.value)}
+              className="border-temple-gold/30 focus:border-temple-gold bg-background/50 font-mono"
+              disabled={isLoading}
+            />
+          </div>
 
-          <TabsContent value="login">
-            <form onSubmit={handleLogin} className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="login-email" className="text-foreground">
-                  電子郵件
-                </Label>
-                <Input
-                  id="login-email"
-                  type="email"
-                  placeholder="explorer@algorithmia.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="border-temple-gold/30 focus:border-temple-gold bg-background/50"
-                  disabled={isLoading}
-                />
-              </div>
+          <Button
+            onClick={handleGoogleSignIn}
+            className="w-full font-cinzel bg-temple-gold/20 text-temple-gold border-2 border-temple-gold hover:bg-temple-gold/30 transition-all duration-300 flex items-center justify-center gap-3"
+            style={{
+              boxShadow: "0 0 20px hsla(43, 74%, 53%, 0.3)",
+            }}
+            disabled={isLoading}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="currentColor"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              />
+            </svg>
+            {isLoading ? "處理中..." : "使用 Google 登入"}
+          </Button>
 
-              <div className="space-y-2">
-                <Label htmlFor="login-password" className="text-foreground">
-                  密碼
-                </Label>
-                <Input
-                  id="login-password"
-                  type="password"
-                  placeholder="輸入密碼"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border-temple-gold/30 focus:border-temple-gold bg-background/50"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="login-masterKey" className="text-foreground flex items-center gap-2">
-                  <span>🔑 通關密鑰</span>
-                  <span className="text-xs text-foreground/50">(選填)</span>
-                </Label>
-                <Input
-                  id="login-masterKey"
-                  type="text"
-                  placeholder="輸入通關密鑰解鎖所有關卡"
-                  value={masterKey}
-                  onChange={(e) => setMasterKey(e.target.value)}
-                  className="border-temple-gold/30 focus:border-temple-gold bg-background/50 font-mono"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full font-cinzel bg-temple-gold/20 text-temple-gold border-2 border-temple-gold hover:bg-temple-gold/30 transition-all duration-300"
-                style={{
-                  boxShadow: "0 0 20px hsla(43, 74%, 53%, 0.3)",
-                }}
-                disabled={isLoading}
-              >
-                {isLoading ? "處理中..." : "登入"}
-              </Button>
-            </form>
-          </TabsContent>
-
-          <TabsContent value="register">
-            <form onSubmit={handleRegister} className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="register-email" className="text-foreground">
-                  電子郵件
-                </Label>
-                <Input
-                  id="register-email"
-                  type="email"
-                  placeholder="explorer@algorithmia.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="border-temple-gold/30 focus:border-temple-gold bg-background/50"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="register-password" className="text-foreground">
-                  密碼
-                </Label>
-                <Input
-                  id="register-password"
-                  type="password"
-                  placeholder="至少 6 個字元"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="border-temple-gold/30 focus:border-temple-gold bg-background/50"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="register-nickname" className="text-foreground">
-                  探險者暱稱
-                </Label>
-                <Input
-                  id="register-nickname"
-                  type="text"
-                  placeholder="輸入你的暱稱"
-                  value={nickname}
-                  onChange={(e) => setNickname(e.target.value)}
-                  className="border-temple-gold/30 focus:border-temple-gold bg-background/50"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="register-masterKey" className="text-foreground flex items-center gap-2">
-                  <span>🔑 通關密鑰</span>
-                  <span className="text-xs text-foreground/50">(選填)</span>
-                </Label>
-                <Input
-                  id="register-masterKey"
-                  type="text"
-                  placeholder="輸入通關密鑰解鎖所有關卡"
-                  value={masterKey}
-                  onChange={(e) => setMasterKey(e.target.value)}
-                  className="border-temple-gold/30 focus:border-temple-gold bg-background/50 font-mono"
-                  disabled={isLoading}
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full font-cinzel bg-temple-gold/20 text-temple-gold border-2 border-temple-gold hover:bg-temple-gold/30 transition-all duration-300"
-                style={{
-                  boxShadow: "0 0 20px hsla(43, 74%, 53%, 0.3)",
-                }}
-                disabled={isLoading}
-              >
-                {isLoading ? "處理中..." : "註冊"}
-              </Button>
-            </form>
-          </TabsContent>
-        </Tabs>
+          <p className="text-xs text-center text-foreground/50">
+            登入即表示您同意我們的服務條款與隱私政策
+          </p>
+        </div>
       </DialogContent>
     </Dialog>
   );
