@@ -255,6 +255,36 @@ src/
 
 ---
 
+## 📚 開發文檔 | Documentation
+
+### Supabase 整合文檔
+
+本專案使用 Supabase 作為後端服務。有 3 份簡潔文檔供參考：
+
+| 文檔 | 用途 |
+|------|------|
+| **[快速參考](./docs/SUPABASE_QUICK_REFERENCE.md)** | 快速查詢 API、表結構、Hook 索引 |
+| **[整合指南](./docs/SUPABASE_INTEGRATION.md)** | 完整的技術參考和實現細節 |
+| **[Hook 指南](./docs/HOOKS_AND_SUPABASE.md)** | React Hook 使用和實戰範例 |
+
+### 快速開始
+
+```bash
+# 1. 設置環境變數 (.env.local)
+VITE_SUPABASE_URL=https://uslkpijmsudubulkuxve.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your_key_here
+
+# 2. 啟動應用
+npm run dev
+```
+
+**核心功能**:
+- 🔐 Google OAuth 認證
+- 📊 進度自動追蹤
+- 🔓 密鑰解鎖 (`ABAB`)
+
+---
+
 ## 🤝 貢獻 | Contributing
 
 歡迎貢獻！請遵循以下步驟：
