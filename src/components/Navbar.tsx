@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, Sparkles, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/components/AuthModal";
-import { getCurrentUser, logoutUser } from "@/lib/database";
+import { useAuth } from "@/hooks/useAuth";
 
 interface NavbarProps {
   currentSection: number;
@@ -24,7 +24,7 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<{ email: string; nickname: string } | null>(null);
+  const { profile, isAuthenticated, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,30 +35,17 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  useEffect(() => {
-    // Check for current user on mount
-    getCurrentUser().then(user => {
-      if (user) {
-        setCurrentUser({ email: user.email, nickname: user.nickname });
-      }
-    });
-  }, []);
-
   const handleNavClick = (index: number) => {
     onNavigate(index);
     setMobileMenuOpen(false);
   };
 
-  const handleAuthSuccess = async () => {
-    const user = await getCurrentUser();
-    if (user) {
-      setCurrentUser({ email: user.email, nickname: user.nickname });
-    }
+  const handleAuthSuccess = () => {
+    // Auth state is automatically updated via useAuth hook
   };
 
-  const handleLogout = () => {
-    logoutUser();
-    setCurrentUser(null);
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
@@ -129,10 +116,10 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
               ))}
 
               {/* Login/User Button */}
-              {currentUser ? (
+              {isAuthenticated && profile ? (
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-temple-gold font-cinzel">
-                    {currentUser.nickname}
+                    {profile.nickname}
                   </span>
                   <Button
                     variant="outline"
@@ -203,10 +190,10 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
                 </button>
               ))}
 
-              {currentUser ? (
+              {isAuthenticated && profile ? (
                 <div className="space-y-3">
                   <div className="text-center text-temple-gold font-cinzel text-lg">
-                    {currentUser.nickname}
+                    {profile.nickname}
                   </div>
                   <Button
                     variant="outline"

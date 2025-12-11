@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { getCurrentUser, getProgress, saveProgress as saveProgressDB, Progress } from "@/lib/database";
+import { supabase } from "@/integrations/supabase/client";
+import { getProgress, saveProgress as saveProgressDB, type Progress } from "@/lib/auth";
 
 export interface GateProgress {
   gateId: string;
@@ -21,14 +22,14 @@ export const useChapterProgress = (chapterId: string) => {
     gates: [],
   });
   const [isLoading, setIsLoading] = useState(true);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   // Load progress from database or localStorage
   useEffect(() => {
     const loadProgress = async () => {
       setIsLoading(true);
       try {
-        const user = await getCurrentUser();
+        const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
           // User is logged in, load from database
@@ -70,6 +71,15 @@ export const useChapterProgress = (chapterId: string) => {
     };
 
     loadProgress();
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        loadProgress();
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [chapterId]);
 
   const saveProgressLocal = (newProgress: ChapterProgress) => {
