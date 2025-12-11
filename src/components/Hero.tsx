@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Circle, Sparkles } from "lucide-react";
+import { Circle, Sparkles, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  
   const scrollToRealms = () => {
     const realmsSection = document.getElementById("realms-section");
     realmsSection?.scrollIntoView({
@@ -233,11 +236,12 @@ const Hero = () => {
           探索演算法的古老智慧，穿越六座神聖聖殿，解鎖計算思維的奧秘
         </motion.p>
 
-        {/* CTA Button */}
+        {/* CTA Buttons */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }} 
           animate={{ opacity: 1, scale: 1 }} 
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
+          className="flex flex-col sm:flex-row items-center gap-4"
         >
           <Button 
             size="lg" 
@@ -262,6 +266,16 @@ const Hero = () => {
               開始探索之旅
               <span className="text-sm font-inter ml-2">Start Your Expedition</span>
             </span>
+          </Button>
+
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => navigate("/progress")}
+            className="font-cinzel text-lg px-8 py-7 border-primary/50 text-primary hover:bg-primary/10 hover:border-primary"
+          >
+            <BarChart3 className="w-5 h-5 mr-2" />
+            查看進度
           </Button>
         </motion.div>
       </div>
