@@ -61,6 +61,7 @@ export default function Chapter2Hub() {
     isGateUnlocked,
     getCompletedGatesCount,
     isChapterCompleted,
+    getGateSections,
   } = useChapterProgress("chapter2");
 
   const completedCount = getCompletedGatesCount();
@@ -158,6 +159,7 @@ export default function Chapter2Hub() {
           isUnlocked={isGateUnlocked(gate.id, gateOrder)}
           onClick={() => handleGateClick(gate)}
           theme={theme}
+          sections={getGateSections(gate.id)}
         />
       ))}
     </ChapterHubLayout>

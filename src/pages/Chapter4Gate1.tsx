@@ -7,48 +7,39 @@ import TeachBlock from "@/components/chapter4-gate1/TeachBlock";
 import DemoBlock from "@/components/chapter4-gate1/DemoBlock";
 import TestBlock from "@/components/chapter4-gate1/TestBlock";
 import { useToast } from "@/hooks/use-toast";
+import type { SectionType } from "@/lib/auth";
 
 const Chapter4Gate1 = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { completeGate } = useChapterProgress("chapter4");
+  const { completeSection, getGateSections } = useChapterProgress("chapter4");
   const { currentSection, demoRef, testRef, handleNavigate } = useGateNavigation();
 
   const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showTeachDialog, setShowTeachDialog] = useState(false);
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
+
+  const sections = getGateSections("gate1");
+  const completedCount = [sections.teach, sections.demo, sections.test].filter(Boolean).length;
 
   const handleStoryComplete = () => {
     setShowStoryDialog(false);
     setShowTeachDialog(true);
   };
 
-  const handleTeachComplete = () => {
+  const handleSectionComplete = async (section: SectionType) => {
+    await completeSection("gate1", section);
+    if (section === "test") {
+      toast({
+        title: "🎉 關卡完成！",
+        description: "你已掌握 BFS 與 DFS 的圖遍歷技術",
+      });
+      setTimeout(() => navigate("/chapter4"), 2000);
+    }
+  };
+
+  const handleTeachComplete = async () => {
+    await handleSectionComplete("teach");
     setShowTeachDialog(false);
-    if (!completedSections.includes("teach")) {
-      setCompletedSections([...completedSections, "teach"]);
-    }
-  };
-
-  const handleSectionComplete = (section: string) => {
-    if (!completedSections.includes(section)) {
-      const newCompleted = [...completedSections, section];
-      setCompletedSections(newCompleted);
-
-      if (newCompleted.length >= 3) {
-        completeGate("gate1");
-        toast({
-          title: "🎉 關卡完成！",
-          description: "你已掌握 BFS 與 DFS 的圖遍歷技術",
-        });
-        setTimeout(() => navigate("/chapter4"), 2000);
-      }
-    }
-  };
-
-  const progress = {
-    completed: completedSections.length,
-    total: 3,
   };
 
   const storyContent = (
@@ -94,10 +85,6 @@ const Chapter4Gate1 = () => {
     </>
   );
 
-  const teachContent = (
-    <TeachBlock onComplete={handleTeachComplete} />
-  );
-
   return (
     <>
       <StoryDialog
@@ -114,8 +101,9 @@ const Chapter4Gate1 = () => {
         onOpenChange={setShowTeachDialog}
         title="知識卷軸：BFS & DFS"
         onComplete={handleTeachComplete}
+        isCompleted={sections.teach}
       >
-        {teachContent}
+        <TeachBlock onComplete={() => {}} />
       </TeachDialog>
 
       <GatePageLayout
@@ -129,7 +117,7 @@ const Chapter4Gate1 = () => {
         sections={["互動演示", "實戰挑戰"]}
         currentSection={currentSection}
         onNavigate={handleNavigate}
-        progress={progress}
+        progress={{ completed: completedCount, total: 3 }}
       >
         <GateSection
           ref={demoRef}

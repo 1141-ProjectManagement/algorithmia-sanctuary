@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GatePageLayout, StoryDialog, TeachDialog, GateSection } from "@/components/gate";
 import { useGateNavigation } from "@/hooks/useGateNavigation";
@@ -6,48 +6,38 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import TeachBlock from "@/components/chapter3-gate1/TeachBlock";
 import DemoBlock from "@/components/chapter3-gate1/DemoBlock";
 import TestBlock from "@/components/chapter3-gate1/TestBlock";
-
 import realmBg from "@/assets/realm-3-echoes.jpg";
+import type { SectionType } from "@/lib/auth";
 
 const Chapter3Gate1 = () => {
   const navigate = useNavigate();
-  const { completeGate, isLoading } = useChapterProgress("chapter3");
+  const { completeSection, getGateSections, isLoading } = useChapterProgress("chapter3");
   const { currentSection, demoRef, testRef, handleNavigate } = useGateNavigation();
 
   const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showTeachDialog, setShowTeachDialog] = useState(false);
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
+
+  const sections = getGateSections("gate1");
+  const completedCount = [sections.teach, sections.demo, sections.test].filter(Boolean).length;
 
   const handleStoryComplete = () => {
     setShowStoryDialog(false);
     setShowTeachDialog(true);
   };
 
-  const handleTeachComplete = () => {
-    setShowTeachDialog(false);
-    handleSectionComplete("teach");
-    setTimeout(() => {
-      demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 300);
-  };
-
-  const handleSectionComplete = (section: string) => {
-    if (!completedSections.includes(section)) {
-      setCompletedSections((prev) => [...prev, section]);
+  const handleSectionComplete = async (section: SectionType) => {
+    await completeSection("gate1", section);
+    if (section === "test") {
+      setTimeout(() => navigate("/chapter3"), 2000);
     }
   };
 
-  const handleGateComplete = async () => {
-    handleSectionComplete("test");
-    await completeGate("gate1");
+  const handleTeachComplete = async () => {
+    await handleSectionComplete("teach");
+    setShowTeachDialog(false);
     setTimeout(() => {
-      navigate("/chapter3");
-    }, 2000);
-  };
-
-  const progress = {
-    completed: completedSections.length,
-    total: 3,
+      demoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 300);
   };
 
   if (isLoading) {
@@ -71,7 +61,7 @@ const Chapter3Gate1 = () => {
         currentSection={currentSection}
         sections={["互動演示", "實戰挑戰"]}
         onNavigate={handleNavigate}
-        progress={progress}
+        progress={{ completed: completedCount, total: 3 }}
       >
         <GateSection
           ref={demoRef}
@@ -87,7 +77,7 @@ const Chapter3Gate1 = () => {
           description="修復古老的訪問儀式，解開石碑上的密碼"
           variant="gradient"
         >
-          <TestBlock onComplete={handleGateComplete} />
+          <TestBlock onComplete={() => handleSectionComplete("test")} />
         </GateSection>
       </GatePageLayout>
 
@@ -143,9 +133,9 @@ const Chapter3Gate1 = () => {
         onOpenChange={setShowTeachDialog}
         title="樹的遍歷 - 三種深度優先路徑"
         onComplete={handleTeachComplete}
-        isCompleted={true}
+        isCompleted={sections.teach}
       >
-        <TeachBlock onComplete={handleTeachComplete} />
+        <TeachBlock onComplete={() => {}} />
       </TeachDialog>
     </>
   );

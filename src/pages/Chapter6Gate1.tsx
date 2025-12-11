@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Target, Zap, GitMerge } from "lucide-react";
 import GatePageLayout from "@/components/gate/GatePageLayout";
 import { StoryDialog, TeachDialog } from "@/components/gate";
@@ -10,28 +9,30 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import TeachBlock from "@/components/chapter6-gate1/TeachBlock";
 import DemoBlock from "@/components/chapter6-gate1/DemoBlock";
 import TestBlock from "@/components/chapter6-gate1/TestBlock";
-
 import realmImage from "@/assets/realm-6-unity.jpg";
+import type { SectionType } from "@/lib/auth";
 
 const Chapter6Gate1 = () => {
   const navigate = useNavigate();
-  const { completeGate } = useChapterProgress("chapter6");
+  const { completeSection, getGateSections } = useChapterProgress("chapter6");
   const { currentSection, demoRef, testRef, handleNavigate } = useGateNavigation();
 
   const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showTeachDialog, setShowTeachDialog] = useState(false);
-  const [teachCompleted, setTeachCompleted] = useState(false);
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
 
-  const handleSectionComplete = (section: string) => {
-    if (!completedSections.includes(section)) {
-      setCompletedSections([...completedSections, section]);
+  const sections = getGateSections("gate1");
+  const completedCount = [sections.teach, sections.demo, sections.test].filter(Boolean).length;
+
+  const handleSectionComplete = async (section: SectionType) => {
+    await completeSection("gate1", section);
+    if (section === "test") {
+      setTimeout(() => navigate("/chapter6"), 1500);
     }
   };
 
-  const handleAllComplete = () => {
-    completeGate("gate1");
-    setTimeout(() => navigate("/chapter6"), 1500);
+  const handleTeachComplete = async () => {
+    await handleSectionComplete("teach");
+    setShowTeachDialog(false);
   };
 
   return (
@@ -83,13 +84,10 @@ const Chapter6Gate1 = () => {
         open={showTeachDialog}
         onOpenChange={setShowTeachDialog}
         title="併查集的核心概念"
-        isCompleted={teachCompleted}
-        onComplete={() => {
-          setShowTeachDialog(false);
-          handleSectionComplete("teach");
-        }}
+        isCompleted={sections.teach}
+        onComplete={handleTeachComplete}
       >
-        <TeachBlock onComplete={() => setTeachCompleted(true)} />
+        <TeachBlock onComplete={() => {}} />
       </TeachDialog>
 
       <GatePageLayout
@@ -97,7 +95,7 @@ const Chapter6Gate1 = () => {
         subtitle="Union-Find - 併查集與路徑壓縮"
         backgroundImage={realmImage}
         returnPath="/chapter6"
-        progress={{ completed: completedSections.length, total: 3 }}
+        progress={{ completed: completedCount, total: 3 }}
         showScrollNav={true}
         currentSection={currentSection}
         onNavigate={handleNavigate}
@@ -118,12 +116,7 @@ const Chapter6Gate1 = () => {
           description="修復 find 函數，實現路徑壓縮"
           variant="gradient"
         >
-          <TestBlock
-            onComplete={() => {
-              handleSectionComplete("test");
-              handleAllComplete();
-            }}
-          />
+          <TestBlock onComplete={() => handleSectionComplete("test")} />
         </GateSection>
       </GatePageLayout>
     </>

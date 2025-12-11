@@ -6,48 +6,34 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import TeachBlock from "@/components/chapter2-gate2/TeachBlock";
 import DemoBlock from "@/components/chapter2-gate2/DemoBlock";
 import TestBlock from "@/components/chapter2-gate2/TestBlock";
+import type { SectionType } from "@/lib/auth";
 
 const Chapter2Gate2 = () => {
   const navigate = useNavigate();
-  const { completeGate } = useChapterProgress("chapter-2");
+  const { completeSection, getGateSections } = useChapterProgress("chapter2");
+  const { currentSection, demoRef, testRef, handleNavigate } = useGateNavigation();
   
   const [showStory, setShowStory] = useState(true);
   const [showTeach, setShowTeach] = useState(false);
-  const [teachCompleted, setTeachCompleted] = useState(false);
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
 
-  const { currentSection, demoRef, testRef, handleNavigate } = useGateNavigation();
+  const sections = getGateSections("gate2");
+  const completedCount = [sections.teach, sections.demo, sections.test].filter(Boolean).length;
 
   const handleStoryComplete = () => {
     setShowStory(false);
     setShowTeach(true);
   };
 
-  const handleTeachComplete = () => {
+  const handleSectionComplete = async (section: SectionType) => {
+    await completeSection("gate2", section);
+    if (section === "test") {
+      setTimeout(() => navigate("/chapter2"), 1500);
+    }
+  };
+
+  const handleTeachComplete = async () => {
+    await handleSectionComplete("teach");
     setShowTeach(false);
-    setTeachCompleted(true);
-    if (!completedSections.includes('teach')) {
-      setCompletedSections(prev => [...prev, 'teach']);
-    }
-  };
-
-  const handleDemoComplete = () => {
-    if (!completedSections.includes('demo')) {
-      setCompletedSections(prev => [...prev, 'demo']);
-    }
-  };
-
-  const handleTestComplete = () => {
-    if (!completedSections.includes('test')) {
-      setCompletedSections(prev => [...prev, 'test']);
-    }
-    completeGate("gate-2");
-    setTimeout(() => navigate("/chapter2"), 1500);
-  };
-
-  const progress = {
-    completed: completedSections.length,
-    total: 3,
   };
 
   return (
@@ -58,19 +44,19 @@ const Chapter2Gate2 = () => {
         backgroundImage="/placeholder.svg"
         returnPath="/chapter2"
         onShowStory={() => setShowStory(true)}
-        onShowTeach={teachCompleted ? () => setShowTeach(true) : undefined}
-        showScrollNav={teachCompleted}
+        onShowTeach={sections.teach ? () => setShowTeach(true) : undefined}
+        showScrollNav={sections.teach}
         sections={["互動演示", "實戰挑戰"]}
         currentSection={currentSection}
         onNavigate={handleNavigate}
-        progress={progress}
+        progress={{ completed: completedCount, total: 3 }}
       >
         <GateSection
           ref={demoRef}
           title="互動演示"
           description="觀察分而治之的遞迴樹狀結構"
         >
-          <DemoBlock onComplete={handleDemoComplete} />
+          <DemoBlock onComplete={() => handleSectionComplete("demo")} />
         </GateSection>
 
         <GateSection
@@ -79,7 +65,7 @@ const Chapter2Gate2 = () => {
           description="驗證你對分治演算法的理解"
           variant="gradient"
         >
-          <TestBlock onComplete={handleTestComplete} />
+          <TestBlock onComplete={() => handleSectionComplete("test")} />
         </GateSection>
       </GatePageLayout>
 
@@ -127,8 +113,9 @@ const Chapter2Gate2 = () => {
         onOpenChange={setShowTeach}
         title="知識卷軸：分而治之"
         onComplete={handleTeachComplete}
+        isCompleted={sections.teach}
       >
-        <TeachBlock onComplete={handleTeachComplete} />
+        <TeachBlock onComplete={() => {}} />
       </TeachDialog>
     </>
   );
