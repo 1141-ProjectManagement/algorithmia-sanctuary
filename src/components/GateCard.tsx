@@ -1,8 +1,14 @@
 import { motion } from "framer-motion";
-import { Lock, CheckCircle2, ArrowRight } from "lucide-react";
+import { Lock, CheckCircle2, ArrowRight, BookOpen, Play, ClipboardCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChapterTheme } from "@/config/chapterThemes";
+
+export interface SectionProgress {
+  teach: boolean;
+  demo: boolean;
+  test: boolean;
+}
 
 export interface GateData {
   id: string;
@@ -21,9 +27,10 @@ interface GateCardProps {
   isUnlocked: boolean;
   onClick: () => void;
   theme?: ChapterTheme;
+  sections?: SectionProgress;
 }
 
-const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: GateCardProps) => {
+const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme, sections }: GateCardProps) => {
   const locked = !isUnlocked;
   
   // Default theme colors if not provided
@@ -31,6 +38,12 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: Gate
   const glowColor = theme?.glowColor || "rgba(212, 175, 55, 0.5)";
   const gradientFrom = theme?.gradientFrom || "hsl(43, 74%, 53%)";
   const gradientTo = theme?.gradientTo || "hsl(43, 74%, 40%)";
+
+  // Calculate section completion count
+  const completedSectionsCount = sections 
+    ? [sections.teach, sections.demo, sections.test].filter(Boolean).length 
+    : 0;
+  const hasPartialProgress = completedSectionsCount > 0 && !isCompleted;
 
   return (
     <motion.div
@@ -47,9 +60,11 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: Gate
         style={{
           borderColor: isCompleted 
             ? `${accentColor}50` 
-            : isUnlocked 
-              ? `${accentColor}30` 
-              : undefined,
+            : hasPartialProgress
+              ? `${accentColor}30`
+              : isUnlocked 
+                ? `${accentColor}30` 
+                : undefined,
           boxShadow: isCompleted 
             ? `0 0 20px ${glowColor}` 
             : undefined,
@@ -83,6 +98,14 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: Gate
               style={{ background: `${accentColor}20` }}
             >
               <CheckCircle2 className="w-6 h-6" style={{ color: accentColor }} />
+            </div>
+          )}
+          {hasPartialProgress && !isCompleted && (
+            <div 
+              className="px-2 py-1 rounded-full flex items-center justify-center backdrop-blur-sm text-xs font-medium"
+              style={{ background: `${accentColor}20`, color: accentColor }}
+            >
+              {completedSectionsCount}/3
             </div>
           )}
         </div>
@@ -122,6 +145,27 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: Gate
             {gate.description}
           </p>
 
+          {/* Section Progress Indicators */}
+          {sections && isUnlocked && (
+            <div className="flex items-center gap-3 pt-2 border-t border-border/50">
+              <div className={`flex items-center gap-1 text-xs ${sections.teach ? 'text-green-500' : 'text-muted-foreground'}`}>
+                <BookOpen className="w-3 h-3" />
+                <span>教學</span>
+                {sections.teach && <CheckCircle2 className="w-3 h-3" />}
+              </div>
+              <div className={`flex items-center gap-1 text-xs ${sections.demo ? 'text-green-500' : 'text-muted-foreground'}`}>
+                <Play className="w-3 h-3" />
+                <span>演示</span>
+                {sections.demo && <CheckCircle2 className="w-3 h-3" />}
+              </div>
+              <div className={`flex items-center gap-1 text-xs ${sections.test ? 'text-green-500' : 'text-muted-foreground'}`}>
+                <ClipboardCheck className="w-3 h-3" />
+                <span>測驗</span>
+                {sections.test && <CheckCircle2 className="w-3 h-3" />}
+              </div>
+            </div>
+          )}
+
           {/* Action Button */}
           <div className="pt-2">
             {locked ? (
@@ -139,6 +183,16 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme }: Gate
                 }}
               >
                 重新挑戰
+                <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            ) : hasPartialProgress ? (
+              <Button
+                className="w-full text-background"
+                style={{ 
+                  background: `linear-gradient(135deg, ${gradientFrom}, ${gradientTo})`,
+                }}
+              >
+                繼續學習
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             ) : (

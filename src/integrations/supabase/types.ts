@@ -47,8 +47,11 @@ export type Database = {
           completed: boolean
           completed_at: string | null
           created_at: string
+          demo_completed: boolean
           gate_id: string
           id: string
+          teach_completed: boolean
+          test_completed: boolean
           user_id: string
         }
         Insert: {
@@ -56,8 +59,11 @@ export type Database = {
           completed?: boolean
           completed_at?: string | null
           created_at?: string
+          demo_completed?: boolean
           gate_id: string
           id?: string
+          teach_completed?: boolean
+          test_completed?: boolean
           user_id: string
         }
         Update: {
@@ -65,8 +71,11 @@ export type Database = {
           completed?: boolean
           completed_at?: string | null
           created_at?: string
+          demo_completed?: boolean
           gate_id?: string
           id?: string
+          teach_completed?: boolean
+          test_completed?: boolean
           user_id?: string
         }
         Relationships: []
