@@ -252,12 +252,12 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
-          className="flex flex-col sm:flex-row items-center gap-4"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full max-w-2xl mx-auto"
         >
           <Button
             size="lg"
             onClick={scrollToRealms}
-            className="font-cinzel text-lg px-10 py-7 relative group overflow-hidden border-0"
+            className="font-cinzel text-lg px-10 py-7 relative group overflow-hidden border-0 w-full sm:w-auto"
             style={{
               background: "linear-gradient(135deg, hsl(43, 74%, 53%) 0%, hsl(43, 74%, 40%) 100%)",
               boxShadow: "0 0 30px rgba(212, 175, 55, 0.4), 0 10px 30px rgba(0, 0, 0, 0.3)",
@@ -282,7 +282,7 @@ const Hero = () => {
             size="lg"
             variant="outline"
             onClick={() => navigate("/progress")}
-            className="font-cinzel text-lg px-8 py-7 border-primary/50 text-primary hover:bg-primary/10 hover:border-primary"
+            className="font-cinzel text-lg px-8 py-7 border-primary/50 text-primary hover:bg-primary/10 hover:border-primary w-full sm:w-auto"
           >
             <BarChart3 className="w-5 h-5 mr-2" />
             查看進度

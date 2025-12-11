@@ -6,8 +6,10 @@
 
 ![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=flat-square&logo=typescript)
-![Three.js](https://img.shields.io/badge/Three.js-r181-000000?style=flat-square&logo=three.js)
+![Three.js](https://img.shields.io/badge/Three.js-0.181-000000?style=flat-square&logo=three.js)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC?style=flat-square&logo=tailwind-css)
+![Zustand](https://img.shields.io/badge/Zustand-5.0-orange?style=flat-square)
+![Supabase](https://img.shields.io/badge/Supabase-2.87-3ECF8E?style=flat-square&logo=supabase)
 
 ---
 
@@ -100,24 +102,26 @@
 ## 🛠️ 技術堆疊 | Tech Stack
 
 ### 核心框架 | Core Technologies
-- ⚛️ **React 18** - UI 框架
-- 📘 **TypeScript** - 型別安全
+- ⚛️ **React 18.3** - UI 框架
+- 📘 **TypeScript 5.0** - 型別安全
 - ⚡ **Vite** - 建構工具
-- 🗺️ **React Router** - 路由管理
+- 🗺️ **React Router 6** - 路由管理
+- 🔐 **Supabase** - 後端即服務 (BaaS)
 
 ### 視覺化 & 動畫 | Visualization & Animation
-- 🎮 **Three.js** (react-three-fiber) - 3D 視覺化
-- 🎭 **Framer Motion** - UI 動畫
-- 🎨 **Tailwind CSS** - 樣式系統
+- 🎮 **Three.js** (react-three-fiber 8.18 + drei 9.122) - 3D 視覺化
+- 🎭 **Framer Motion 12** - UI 動畫
+- 🎨 **Tailwind CSS 3.4** - 樣式系統
 
 ### 狀態管理 | State Management
-- 🐻 **Zustand** - 演算法狀態管理
-- 🔄 **TanStack Query** - 資料快取
+- 🐻 **Zustand 5** - 演算法狀態管理
+- 🔄 **TanStack Query 5** - 資料快取
 
 ### UI 組件 | UI Components
 - 🧩 **shadcn/ui** - 基礎組件庫
 - 🎯 **Lucide React** - 圖標系統
 - 🎯 **Radix UI** - 無樣式可訪問元件
+- 📊 **Recharts** - 圖表組件
 
 ---
 
@@ -161,34 +165,55 @@ npm run dev
 ```
 src/
 ├── assets/              # 圖片與靜態資源
+│   ├── about/           # 關於頁面圖片
+│   └── gates/           # 關卡相關圖片
 ├── components/
 │   ├── ui/              # shadcn/ui 基礎組件
 │   ├── gate/            # 共用關卡組件
 │   │   ├── GatePageLayout.tsx
 │   │   ├── StoryDialog.tsx
 │   │   ├── TeachDialog.tsx
-│   │   └── GateSection.tsx
-│   ├── chapter1-gate1/  # 各關卡專屬組件
-│   │   ├── TeachBlock.tsx
-│   │   ├── DemoBlock.tsx
-│   │   └── TestBlock.tsx
-│   └── ...
+│   │   ├── GateSection.tsx
+│   │   └── index.ts
+│   ├── chapter1-gate2/  # 各關卡專屬組件 (chapter1-6)
+│   ├── chapter2-gate1/
+│   ├── ...              # 其他章節關卡組件
+│   ├── About.tsx        # 關於頁面
+│   ├── AuthModal.tsx    # 認證彈窗
+│   ├── ChapterHubLayout.tsx
+│   ├── Hero.tsx         # 首頁英雄區
+│   ├── Navbar.tsx       # 導航列
+│   └── Realms.tsx       # 章節地圖
 ├── config/              # 章節主題配置
 │   └── chapterThemes.ts
 ├── hooks/               # 自定義 React Hooks
+│   ├── useAuth.ts
 │   ├── useChapterProgress.ts
-│   └── useGateNavigation.ts
+│   ├── useGateNavigation.ts
+│   ├── use-mobile.tsx
+│   └── use-toast.ts
+├── integrations/        # 第三方服務整合
+│   └── supabase/
 ├── lib/                 # 工具函數
-│   └── database.ts
+│   ├── auth.ts
+│   └── utils.ts
 ├── pages/               # 頁面組件
 │   ├── Index.tsx
-│   ├── Chapter1Hub.tsx
-│   ├── Chapter1Gate1.tsx
-│   └── ...
+│   ├── Chapter1Hub.tsx ~ Chapter6Hub.tsx
+│   ├── Chapter1Gate1.tsx ~ Chapter6Gate4.tsx
+│   ├── ProgressDashboard.tsx
+│   └── NotFound.tsx
 └── stores/              # Zustand 狀態管理
     ├── bubbleSortStore.ts
     ├── binarySearchStore.ts
-    └── ...
+    ├── dijkstraStore.ts
+    ├── dpStore.ts
+    ├── graphTraversalStore.ts
+    ├── heapStore.ts
+    ├── huffmanStore.ts
+    ├── treeTraversalStore.ts
+    ├── unionFindStore.ts
+    └── ...              # 共 22 個演算法 Store
 ```
 
 ---
@@ -214,7 +239,7 @@ src/
 
 ## 🔐 使用者系統 | User System
 
-- 本地 SQLite 資料庫儲存進度
+- **Supabase** 雲端資料庫儲存使用者進度
 - 支援 Email + 暱稱註冊
 - **通關密鑰**：輸入 `ABAB` 可解鎖全部關卡
 
