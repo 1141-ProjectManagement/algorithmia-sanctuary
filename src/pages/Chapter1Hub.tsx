@@ -63,6 +63,9 @@ const gates: GateData[] = [
 const gateOrder = gates.map((g) => g.id);
 const theme = getChapterTheme(1);
 
+// Map gate IDs without hyphen for database storage
+const gateIdToDbId = (gateId: string) => gateId.replace("-", "");
+
 const Chapter1Hub = () => {
   const navigate = useNavigate();
   const [showStoryDialog, setShowStoryDialog] = useState(false);
@@ -73,13 +76,15 @@ const Chapter1Hub = () => {
     isGateUnlocked,
     getCompletedGatesCount,
     isChapterCompleted,
-  } = useChapterProgress("chapter-1");
+    getGateSections,
+  } = useChapterProgress("chapter1");
 
   const completedCount = getCompletedGatesCount();
   const chapterCompleted = isChapterCompleted(gates.length);
 
   const handleGateClick = (gate: GateData) => {
-    if (isGateUnlocked(gate.id, gateOrder)) {
+    const dbGateId = gateIdToDbId(gate.id);
+    if (isGateUnlocked(dbGateId, gateOrder.map(gateIdToDbId))) {
       navigate(gate.route);
     }
   };
@@ -160,17 +165,22 @@ const Chapter1Hub = () => {
       completionTitle="起源聖殿已被征服"
       completionMessage={completionMessage}
     >
-      {gates.map((gate, index) => (
-        <GateCard
-          key={gate.id}
-          gate={gate}
-          index={index}
-          isCompleted={isGateCompleted(gate.id)}
-          isUnlocked={isGateUnlocked(gate.id, gateOrder)}
-          onClick={() => handleGateClick(gate)}
-          theme={theme}
-        />
-      ))}
+      {gates.map((gate, index) => {
+        const dbGateId = gateIdToDbId(gate.id);
+        const dbGateOrder = gateOrder.map(gateIdToDbId);
+        return (
+          <GateCard
+            key={gate.id}
+            gate={gate}
+            index={index}
+            isCompleted={isGateCompleted(dbGateId)}
+            isUnlocked={isGateUnlocked(dbGateId, dbGateOrder)}
+            onClick={() => handleGateClick(gate)}
+            theme={theme}
+            sections={getGateSections(dbGateId)}
+          />
+        );
+      })}
     </ChapterHubLayout>
   );
 };

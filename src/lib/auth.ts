@@ -17,7 +17,12 @@ export interface Progress {
   gate_id: string;
   completed: boolean;
   completed_at?: string;
+  teach_completed: boolean;
+  demo_completed: boolean;
+  test_completed: boolean;
 }
+
+export type SectionType = "teach" | "demo" | "test";
 
 // Sign in with Google OAuth
 export async function signInWithGoogle(): Promise<{ error: Error | null }> {
@@ -87,7 +92,56 @@ export async function updateProfileNickname(userId: string, nickname: string): P
   return data;
 }
 
-// Save progress
+// Save section progress (teach, demo, or test)
+export async function saveSectionProgress(
+  userId: string,
+  chapterId: string,
+  gateId: string,
+  section: SectionType
+): Promise<void> {
+  // First check if progress record exists
+  const { data: existing } = await supabase
+    .from("progress")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("chapter_id", chapterId)
+    .eq("gate_id", gateId)
+    .maybeSingle();
+
+  const updateField = `${section}_completed`;
+  
+  if (existing) {
+    // Update existing record
+    const { error } = await supabase
+      .from("progress")
+      .update({ [updateField]: true })
+      .eq("user_id", userId)
+      .eq("chapter_id", chapterId)
+      .eq("gate_id", gateId);
+
+    if (error) {
+      console.error("Error updating section progress:", error);
+      throw error;
+    }
+  } else {
+    // Create new record with this section completed
+    const { error } = await supabase
+      .from("progress")
+      .insert({
+        user_id: userId,
+        chapter_id: chapterId,
+        gate_id: gateId,
+        [updateField]: true,
+      });
+
+    if (error) {
+      console.error("Error creating section progress:", error);
+      throw error;
+    }
+  }
+}
+
+// Save full gate progress (legacy support)
 export async function saveProgress(
   userId: string,
   chapterId: string,
@@ -102,6 +156,9 @@ export async function saveProgress(
         chapter_id: chapterId,
         gate_id: gateId,
         completed,
+        teach_completed: completed,
+        demo_completed: completed,
+        test_completed: completed,
         completed_at: completed ? new Date().toISOString() : null,
       },
       {
@@ -149,6 +206,9 @@ export async function unlockAllGates(userId: string): Promise<void> {
       chapter_id: chapter.chapterId,
       gate_id: gateId,
       completed: true,
+      teach_completed: true,
+      demo_completed: true,
+      test_completed: true,
       completed_at: new Date().toISOString(),
     }))
   );

@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { getProgress, saveProgress as saveProgressDB, type Progress } from "@/lib/auth";
+import { getProgress, saveSectionProgress, type Progress, type SectionType } from "@/lib/auth";
+
+export interface SectionProgress {
+  teach: boolean;
+  demo: boolean;
+  test: boolean;
+}
 
 export interface GateProgress {
   gateId: string;
   completed: boolean;
   completedAt?: number;
+  sections: SectionProgress;
 }
 
 export interface ChapterProgress {
@@ -40,6 +47,11 @@ export const useChapterProgress = (chapterId: string) => {
             gateId: p.gate_id,
             completed: p.completed,
             completedAt: p.completed_at ? new Date(p.completed_at).getTime() : undefined,
+            sections: {
+              teach: p.teach_completed,
+              demo: p.demo_completed,
+              test: p.test_completed,
+            },
           }));
           
           setProgress({
@@ -52,7 +64,17 @@ export const useChapterProgress = (chapterId: string) => {
           const stored = localStorage.getItem(STORAGE_KEY);
           if (stored) {
             const allProgress = JSON.parse(stored);
-            setProgress(allProgress[chapterId] || { chapterId, gates: [] });
+            const chapterData = allProgress[chapterId];
+            if (chapterData) {
+              // Ensure sections exist in legacy data
+              const gates = (chapterData.gates || []).map((g: any) => ({
+                ...g,
+                sections: g.sections || { teach: g.completed, demo: g.completed, test: g.completed },
+              }));
+              setProgress({ ...chapterData, gates });
+            } else {
+              setProgress({ chapterId, gates: [] });
+            }
           } else {
             setProgress({ chapterId, gates: [] });
           }
@@ -90,15 +112,24 @@ export const useChapterProgress = (chapterId: string) => {
     setProgress(newProgress);
   };
 
-  const completeGate = async (gateId: string) => {
+  // Complete a specific section (teach, demo, or test)
+  const completeSection = async (gateId: string, section: SectionType) => {
     const existingGate = progress.gates.find((g) => g.gateId === gateId);
-    if (existingGate?.completed) return; // Already completed
+    
+    // Check if section is already completed
+    if (existingGate?.sections[section]) return;
+
+    // Calculate new section state
+    const currentSections = existingGate?.sections || { teach: false, demo: false, test: false };
+    const newSections = { ...currentSections, [section]: true };
+    const isFullyCompleted = newSections.teach && newSections.demo && newSections.test;
 
     const updatedGates = progress.gates.filter((g) => g.gateId !== gateId);
     updatedGates.push({
       gateId,
-      completed: true,
-      completedAt: Date.now(),
+      completed: isFullyCompleted,
+      completedAt: isFullyCompleted ? Date.now() : existingGate?.completedAt,
+      sections: newSections,
     });
 
     const newProgress = {
@@ -111,9 +142,9 @@ export const useChapterProgress = (chapterId: string) => {
     // Save to database if user is logged in, otherwise localStorage
     if (currentUserId) {
       try {
-        await saveProgressDB(currentUserId, chapterId, gateId, true);
+        await saveSectionProgress(currentUserId, chapterId, gateId, section);
       } catch (error) {
-        console.error("Error saving progress to database:", error);
+        console.error("Error saving section progress to database:", error);
         // Fallback to localStorage on error
         saveProgressLocal(newProgress);
       }
@@ -122,8 +153,25 @@ export const useChapterProgress = (chapterId: string) => {
     }
   };
 
+  // Legacy: Complete entire gate at once
+  const completeGate = async (gateId: string) => {
+    await completeSection(gateId, "teach");
+    await completeSection(gateId, "demo");
+    await completeSection(gateId, "test");
+  };
+
   const isGateCompleted = (gateId: string): boolean => {
     return progress.gates.some((g) => g.gateId === gateId && g.completed);
+  };
+
+  const isSectionCompleted = (gateId: string, section: SectionType): boolean => {
+    const gate = progress.gates.find((g) => g.gateId === gateId);
+    return gate?.sections?.[section] ?? false;
+  };
+
+  const getGateSections = (gateId: string): SectionProgress => {
+    const gate = progress.gates.find((g) => g.gateId === gateId);
+    return gate?.sections ?? { teach: false, demo: false, test: false };
   };
 
   const isGateUnlocked = (gateId: string, gateOrder: string[]): boolean => {
@@ -143,13 +191,35 @@ export const useChapterProgress = (chapterId: string) => {
     return getCompletedGatesCount() === totalGates;
   };
 
+  // Get overall section completion stats for the chapter
+  const getChapterSectionStats = () => {
+    const stats = {
+      teachCompleted: 0,
+      demoCompleted: 0,
+      testCompleted: 0,
+      totalGates: progress.gates.length,
+    };
+
+    progress.gates.forEach((gate) => {
+      if (gate.sections.teach) stats.teachCompleted++;
+      if (gate.sections.demo) stats.demoCompleted++;
+      if (gate.sections.test) stats.testCompleted++;
+    });
+
+    return stats;
+  };
+
   return {
     progress,
     completeGate,
+    completeSection,
     isGateCompleted,
+    isSectionCompleted,
+    getGateSections,
     isGateUnlocked,
     getCompletedGatesCount,
     isChapterCompleted,
+    getChapterSectionStats,
     isLoading,
   };
 };

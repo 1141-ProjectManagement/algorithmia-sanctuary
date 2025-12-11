@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, BookOpen, Scroll } from "lucide-react";
+import { ArrowLeft, BookOpen, Scroll, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -10,15 +10,17 @@ import TeachBlock from "@/components/module1-1/TeachBlock";
 import DemoBlock from "@/components/module1-1/DemoBlock";
 import TestBlock from "@/components/module1-1/TestBlock";
 import stoneTablet from "@/assets/stone-tablet.jpg";
+import type { SectionType } from "@/lib/auth";
 
 interface Module1_1Props {
+  onSectionComplete?: (section: SectionType) => void;
   onGateComplete?: () => void;
   returnPath?: string;
 }
 
-const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) => {
+const Module1_1 = ({ onSectionComplete, onGateComplete, returnPath = "/" }: Module1_1Props = {}) => {
   const navigate = useNavigate();
-  const [completedSections, setCompletedSections] = useState<string[]>([]);
+  const [completedSections, setCompletedSections] = useState<Set<SectionType>>(new Set());
   const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showTeachDialog, setShowTeachDialog] = useState(false);
   const [currentSection, setCurrentSection] = useState(0);
@@ -51,9 +53,19 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
     sectionRefs[index].current?.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
-  const handleSectionComplete = (section: string) => {
-    if (!completedSections.includes(section)) {
-      setCompletedSections([...completedSections, section]);
+  const handleSectionComplete = async (section: SectionType) => {
+    if (completedSections.has(section)) return;
+    
+    const newCompleted = new Set(completedSections);
+    newCompleted.add(section);
+    setCompletedSections(newCompleted);
+    
+    // Save to database
+    await onSectionComplete?.(section);
+    
+    // Check if all sections complete
+    if (newCompleted.size === 3) {
+      onGateComplete?.();
     }
   };
 
@@ -62,16 +74,12 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
     setShowTeachDialog(true);
   };
 
-  const handleTeachComplete = () => {
-    handleSectionComplete('teach');
+  const handleTeachComplete = async () => {
+    await handleSectionComplete('teach');
     setShowTeachDialog(false);
   };
 
-  const handleAllComplete = () => {
-    onGateComplete?.();
-  };
-
-  const progress = (completedSections.length / 3) * 100;
+  const progress = (completedSections.size / 3) * 100;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -166,16 +174,22 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
             </DialogHeader>
 
             <div className="space-y-6">
-              <TeachBlock onComplete={handleTeachComplete} />
+              <TeachBlock onComplete={() => {}} />
               
               <div className="flex justify-center pt-6 border-t border-border">
                 <Button
                   size="lg"
                   onClick={handleTeachComplete}
-                  disabled={!completedSections.includes('teach')}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-gold disabled:opacity-50"
+                  className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-gold"
                 >
-                  完成學習，開始挑戰
+                  {completedSections.has('teach') ? (
+                    <>
+                      <CheckCircle className="mr-2 h-5 w-5" />
+                      已完成學習
+                    </>
+                  ) : (
+                    "完成學習，開始挑戰"
+                  )}
                 </Button>
               </div>
             </div>
@@ -228,6 +242,9 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
               >
                 <BookOpen className="mr-2 h-4 w-4" />
                 複習知識
+                {completedSections.has('teach') && (
+                  <CheckCircle className="ml-2 h-4 w-4 text-green-500" />
+                )}
               </Button>
             </div>
           </motion.div>
@@ -239,9 +256,20 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-muted-foreground">學習進度</span>
-            <span className="text-sm text-primary font-medium">
-              {completedSections.length} / 3 完成
-            </span>
+            <div className="flex items-center gap-4 text-sm">
+              <span className={`flex items-center gap-1 ${completedSections.has('teach') ? 'text-green-500' : 'text-muted-foreground'}`}>
+                {completedSections.has('teach') && <CheckCircle className="h-3 w-3" />}
+                教學
+              </span>
+              <span className={`flex items-center gap-1 ${completedSections.has('demo') ? 'text-green-500' : 'text-muted-foreground'}`}>
+                {completedSections.has('demo') && <CheckCircle className="h-3 w-3" />}
+                演示
+              </span>
+              <span className={`flex items-center gap-1 ${completedSections.has('test') ? 'text-green-500' : 'text-muted-foreground'}`}>
+                {completedSections.has('test') && <CheckCircle className="h-3 w-3" />}
+                測驗
+              </span>
+            </div>
           </div>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
             <motion.div
@@ -277,6 +305,9 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-['Cinzel'] text-primary mb-4">
                 互動演示
+                {completedSections.has('demo') && (
+                  <CheckCircle className="inline-block ml-3 h-8 w-8 text-green-500" />
+                )}
               </h2>
               <p className="text-muted-foreground">
                 觀察沙漏水晶的流動，感受不同複雜度的執行速度
@@ -305,6 +336,9 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-['Cinzel'] text-primary mb-4">
                 實戰挑戰
+                {completedSections.has('test') && (
+                  <CheckCircle className="inline-block ml-3 h-8 w-8 text-green-500" />
+                )}
               </h2>
               <p className="text-muted-foreground">
                 運用你的知識，判斷程式碼的時間複雜度
@@ -313,10 +347,7 @@ const Module1_1 = ({ onGateComplete, returnPath = "/" }: Module1_1Props = {}) =>
 
             <div className="p-8 bg-card/50 rounded-lg border border-primary/30">
               <TestBlock 
-                onComplete={() => {
-                  handleSectionComplete('test');
-                  handleAllComplete();
-                }}
+                onComplete={() => handleSectionComplete('test')}
               />
             </div>
           </motion.div>
