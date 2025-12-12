@@ -4,6 +4,7 @@ import { Menu, X, Sparkles, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface NavbarProps {
   currentSection: number;
@@ -25,6 +26,7 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { profile, isAuthenticated, logout } = useAuth();
+  const { playClick } = useAudioContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +38,7 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
   }, []);
 
   const handleNavClick = (index: number) => {
+    playClick();
     onNavigate(index);
     setMobileMenuOpen(false);
   };
@@ -45,7 +48,18 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
   };
 
   const handleLogout = async () => {
+    playClick();
     await logout();
+  };
+
+  const handleAuthClick = () => {
+    playClick();
+    setAuthModalOpen(true);
+  };
+
+  const handleMobileMenuToggle = () => {
+    playClick();
+    setMobileMenuOpen(!mobileMenuOpen);
   };
 
   return (
@@ -135,7 +149,7 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setAuthModalOpen(true)}
+                  onClick={handleAuthClick}
                   className="font-cinzel border-temple-gold/50 text-temple-gold hover:bg-temple-gold/10 hover:border-temple-gold transition-all duration-300"
                 >
                   登入/註冊
@@ -145,7 +159,7 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
 
             {/* Mobile Menu Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={handleMobileMenuToggle}
               className="md:hidden p-2 text-temple-gold hover:bg-temple-gold/10 rounded-lg transition-colors"
               aria-label="Toggle menu"
             >
@@ -210,7 +224,7 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
               ) : (
                 <Button
                   variant="outline"
-                  onClick={() => setAuthModalOpen(true)}
+                  onClick={handleAuthClick}
                   className="w-full font-cinzel text-lg py-6 border-2 border-temple-gold text-temple-gold hover:bg-temple-gold/20 transition-all duration-300"
                   style={{
                     boxShadow: "0 0 20px hsla(43, 74%, 53%, 0.3)",
