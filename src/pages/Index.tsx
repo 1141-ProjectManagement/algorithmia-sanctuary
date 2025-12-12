@@ -5,7 +5,8 @@ import About from "@/components/About";
 import Testimonials from "@/components/Testimonials";
 import ScrollNav from "@/components/ScrollNav";
 import Navbar from "@/components/Navbar";
-
+import { AudioControls } from "@/components/AudioControls";
+import { useAudioContext } from "@/contexts/AudioContext";
 const sections = ["Introduction", "Realms", "About", "Testimonials"];
 
 const Index = () => {
@@ -13,7 +14,16 @@ const Index = () => {
   const sectionsRef = useRef<HTMLElement[]>([]);
   const mainRef = useRef<HTMLElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
+  
+  const {
+    bgmPlaying,
+    sfxEnabled,
+    volume,
+    toggleBgm,
+    toggleSfx,
+    setVolume,
+    playClick,
+  } = useAudioContext();
   // Intersection Observer for accurate section tracking
   useEffect(() => {
     const observerOptions = {
@@ -157,6 +167,17 @@ const Index = () => {
     <>
       {/* Top Navigation Bar */}
       <Navbar currentSection={currentSection} onNavigate={navigateToSection} />
+
+      {/* Audio Controls */}
+      <AudioControls
+        bgmPlaying={bgmPlaying}
+        sfxEnabled={sfxEnabled}
+        volume={volume}
+        onToggleBgm={toggleBgm}
+        onToggleSfx={toggleSfx}
+        onVolumeChange={setVolume}
+        onButtonClick={playClick}
+      />
 
       <main
         ref={mainRef}
