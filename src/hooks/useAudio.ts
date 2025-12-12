@@ -8,12 +8,11 @@ interface AudioState {
 
 const AUDIO_PREFS_KEY = "algorithmia-audio-prefs";
 
-// Web Audio API based sound generation
+// Audio engine using HTML5 Audio for BGM and Web Audio API for SFX
 class TempleAudioEngine {
   private audioContext: AudioContext | null = null;
-  private bgmOscillators: OscillatorNode[] = [];
-  private bgmGains: GainNode[] = [];
   private masterGain: GainNode | null = null;
+  private bgmAudio: HTMLAudioElement | null = null;
   private isPlaying = false;
 
   private getContext(): AudioContext {
@@ -29,76 +28,30 @@ class TempleAudioEngine {
     if (this.masterGain) {
       this.masterGain.gain.setValueAtTime(volume, this.audioContext?.currentTime || 0);
     }
+    if (this.bgmAudio) {
+      this.bgmAudio.volume = volume;
+    }
   }
 
-  // Mystical temple ambient drone
+  // Play MP3 background music
   startBgm(volume: number) {
     if (this.isPlaying) return;
     
-    const ctx = this.getContext();
-    if (ctx.state === "suspended") {
-      ctx.resume();
+    if (!this.bgmAudio) {
+      this.bgmAudio = new Audio("/audio/bgm-temple.mp3");
+      this.bgmAudio.loop = true;
     }
-
-    this.masterGain!.gain.setValueAtTime(volume, ctx.currentTime);
-
-    // Create layered drone frequencies (mystical temple ambience)
-    const frequencies = [
-      { freq: 55, type: "sine" as OscillatorType, gain: 0.15 },      // Deep bass drone
-      { freq: 82.41, type: "sine" as OscillatorType, gain: 0.1 },   // E2
-      { freq: 110, type: "sine" as OscillatorType, gain: 0.08 },    // A2
-      { freq: 164.81, type: "triangle" as OscillatorType, gain: 0.05 }, // E3 shimmer
-      { freq: 220, type: "sine" as OscillatorType, gain: 0.03 },    // A3 harmonic
-    ];
-
-    frequencies.forEach(({ freq, type, gain }) => {
-      const osc = ctx.createOscillator();
-      const gainNode = ctx.createGain();
-      
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      
-      // Add subtle frequency modulation for ethereal effect
-      const lfo = ctx.createOscillator();
-      const lfoGain = ctx.createGain();
-      lfo.frequency.setValueAtTime(0.1 + Math.random() * 0.2, ctx.currentTime);
-      lfoGain.gain.setValueAtTime(freq * 0.01, ctx.currentTime);
-      lfo.connect(lfoGain);
-      lfoGain.connect(osc.frequency);
-      lfo.start();
-      
-      gainNode.gain.setValueAtTime(0, ctx.currentTime);
-      gainNode.gain.linearRampToValueAtTime(gain, ctx.currentTime + 2);
-      
-      osc.connect(gainNode);
-      gainNode.connect(this.masterGain!);
-      osc.start();
-      
-      this.bgmOscillators.push(osc, lfo);
-      this.bgmGains.push(gainNode);
-    });
-
+    
+    this.bgmAudio.volume = volume;
+    this.bgmAudio.play().catch(console.error);
     this.isPlaying = true;
   }
 
   stopBgm() {
-    if (!this.isPlaying) return;
-
-    const ctx = this.audioContext;
-    if (!ctx) return;
-
-    this.bgmGains.forEach(gain => {
-      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
-    });
-
-    setTimeout(() => {
-      this.bgmOscillators.forEach(osc => {
-        try { osc.stop(); } catch {}
-      });
-      this.bgmOscillators = [];
-      this.bgmGains = [];
-    }, 1100);
-
+    if (!this.isPlaying || !this.bgmAudio) return;
+    
+    this.bgmAudio.pause();
+    this.bgmAudio.currentTime = 0;
     this.isPlaying = false;
   }
 
