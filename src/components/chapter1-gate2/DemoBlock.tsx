@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Play, RotateCcw } from "lucide-react";
 import arrayPillars from "@/assets/array-pillars.png";
 import linkedBeads from "@/assets/linked-beads.png";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface DemoBlockProps {
   onComplete: () => void;
@@ -15,8 +16,10 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   const [arrayTime, setArrayTime] = useState<number | null>(null);
   const [linkedTime, setLinkedTime] = useState<number | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const { playClick } = useAudioContext();
 
   const insertArray = (index: number) => {
+    playClick();
     const start = Date.now();
     const newItems = [...arrayItems];
     newItems.splice(index, 0, Math.floor(Math.random() * 100));
@@ -30,6 +33,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   };
 
   const insertLinked = () => {
+    playClick();
     const start = Date.now();
     const newItems = [Math.floor(Math.random() * 100), ...linkedItems];
     setLinkedItems(newItems);
@@ -42,6 +46,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   };
 
   const reset = () => {
+    playClick();
     setArrayItems([1, 2, 3, 4, 5]);
     setLinkedItems([1, 2, 3, 4, 5]);
     setArrayTime(null);

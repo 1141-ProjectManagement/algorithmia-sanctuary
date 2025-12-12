@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Code2, Zap, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import hourglassCrystal from "@/assets/hourglass-crystal.png";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface CodeExample {
   id: string;
@@ -45,8 +46,10 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [viewedAll, setViewedAll] = useState(false);
   const [viewedExamples, setViewedExamples] = useState<Set<string>>(new Set());
+  const { playClick } = useAudioContext();
 
   const handleCodeSelect = (example: CodeExample) => {
+    playClick();
     setSelectedCode(example);
     setIsAnimating(true);
     
