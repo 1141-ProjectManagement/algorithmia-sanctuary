@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, Layers } from "lucide-react";
 import stackTower from "@/assets/stack-tower.png";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface TeachBlockProps {
   onComplete: () => void;
@@ -10,8 +11,10 @@ interface TeachBlockProps {
 
 const TeachBlock = ({ onComplete }: TeachBlockProps) => {
   const [completed, setCompleted] = useState(false);
+  const { playClick } = useAudioContext();
 
   const handleComplete = () => {
+    playClick();
     setCompleted(true);
     onComplete();
   };

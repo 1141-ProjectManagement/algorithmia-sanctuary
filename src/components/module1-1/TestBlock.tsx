@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import hourglassCrystal from "@/assets/hourglass-crystal.png";
 import bigOBadge from "@/assets/big-o-badge.png";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface CodeSnippet {
   id: string;
@@ -48,10 +49,12 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
   const [completedChallenges, setCompletedChallenges] = useState<number>(0);
   const [showBadge, setShowBadge] = useState(false);
   const { toast } = useToast();
+  const { playClick } = useAudioContext();
 
   const currentChallengeData = challenges[currentChallenge];
 
   const handleAnswerSelect = (complexity: string) => {
+    playClick();
     setSelectedAnswer(complexity);
     const correct = complexity === currentChallengeData.correctAnswer;
     setIsCorrect(correct);
@@ -147,7 +150,7 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
             <Button 
               size="lg"
               className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-glow-gold"
-              onClick={() => window.location.href = "/"}
+              onClick={() => { playClick(); window.location.href = "/"; }}
             >
               返回探索地圖
             </Button>
@@ -256,7 +259,7 @@ const TestBlock = ({ onComplete }: TestBlockProps) => {
           >
             <Button
               variant="outline"
-              onClick={() => setShowHint(!showHint)}
+              onClick={() => { playClick(); setShowHint(!showHint); }}
               className="border-primary/50 text-primary hover:bg-primary/10"
             >
               <Lightbulb className="mr-2 h-4 w-4" />

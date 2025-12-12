@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Plus, Minus, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import stackTower from "@/assets/stack-tower.png";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface DemoBlockProps {
   onComplete: () => void;
@@ -15,8 +16,10 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   const [stack, setStack] = useState<string[]>([]);
   const [input, setInput] = useState("");
   const [hasInteracted, setHasInteracted] = useState(false);
+  const { playClick } = useAudioContext();
 
   const push = () => {
+    playClick();
     if (!input.trim()) {
       toast({ title: "請輸入內容", variant: "destructive" });
       return;
@@ -36,6 +39,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   };
 
   const pop = () => {
+    playClick();
     if (stack.length === 0) {
       toast({ 
         title: "堆疊已空", 
@@ -60,6 +64,7 @@ const DemoBlock = ({ onComplete }: DemoBlockProps) => {
   };
 
   const peek = () => {
+    playClick();
     if (stack.length === 0) {
       toast({ 
         title: "堆疊已空", 

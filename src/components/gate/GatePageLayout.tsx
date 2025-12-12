@@ -4,6 +4,7 @@ import { ArrowLeft, Scroll, BookOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ScrollNav from "@/components/ScrollNav";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface GatePageLayoutProps {
   children: ReactNode;
@@ -40,7 +41,22 @@ const GatePageLayout = ({
   progress,
 }: GatePageLayoutProps) => {
   const navigate = useNavigate();
+  const { playClick } = useAudioContext();
 
+  const handleReturn = () => {
+    playClick();
+    navigate(returnPath);
+  };
+
+  const handleShowStory = () => {
+    playClick();
+    onShowStory?.();
+  };
+
+  const handleShowTeach = () => {
+    playClick();
+    onShowTeach?.();
+  };
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
@@ -54,7 +70,7 @@ const GatePageLayout = ({
           <Button
             variant="ghost"
             className="mb-4 text-primary hover:text-primary/80"
-            onClick={() => navigate(returnPath)}
+            onClick={handleReturn}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {returnLabel}
@@ -76,7 +92,7 @@ const GatePageLayout = ({
                 {onShowStory && (
                   <Button
                     variant="outline"
-                    onClick={onShowStory}
+                    onClick={handleShowStory}
                     className="border-primary/50 hover:bg-primary/10"
                   >
                     <Scroll className="mr-2 h-4 w-4" />
@@ -86,7 +102,7 @@ const GatePageLayout = ({
                 {onShowTeach && (
                   <Button
                     variant="outline"
-                    onClick={onShowTeach}
+                    onClick={handleShowTeach}
                     className="border-primary/50 hover:bg-primary/10"
                   >
                     <BookOpen className="mr-2 h-4 w-4" />

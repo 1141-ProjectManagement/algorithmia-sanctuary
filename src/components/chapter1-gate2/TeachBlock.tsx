@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2, Box, Link as LinkIcon } from "lucide-react";
 import arrayPillars from "@/assets/array-pillars.png";
 import linkedBeads from "@/assets/linked-beads.png";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 interface TeachBlockProps {
   onComplete: () => void;
@@ -11,8 +12,10 @@ interface TeachBlockProps {
 
 const TeachBlock = ({ onComplete }: TeachBlockProps) => {
   const [completed, setCompleted] = useState(false);
+  const { playClick } = useAudioContext();
 
   const handleComplete = () => {
+    playClick();
     setCompleted(true);
     onComplete();
   };
