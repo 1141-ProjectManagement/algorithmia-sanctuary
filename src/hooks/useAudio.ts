@@ -1,144 +1,249 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface AudioState {
   bgmPlaying: boolean;
-  bgmLoaded: boolean;
   sfxEnabled: boolean;
   volume: number;
 }
 
-const AUDIO_CACHE_KEY = "algorithmia-audio-cache";
 const AUDIO_PREFS_KEY = "algorithmia-audio-prefs";
+
+// Web Audio API based sound generation
+class TempleAudioEngine {
+  private audioContext: AudioContext | null = null;
+  private bgmOscillators: OscillatorNode[] = [];
+  private bgmGains: GainNode[] = [];
+  private masterGain: GainNode | null = null;
+  private isPlaying = false;
+
+  private getContext(): AudioContext {
+    if (!this.audioContext) {
+      this.audioContext = new AudioContext();
+      this.masterGain = this.audioContext.createGain();
+      this.masterGain.connect(this.audioContext.destination);
+    }
+    return this.audioContext;
+  }
+
+  setVolume(volume: number) {
+    if (this.masterGain) {
+      this.masterGain.gain.setValueAtTime(volume, this.audioContext?.currentTime || 0);
+    }
+  }
+
+  // Mystical temple ambient drone
+  startBgm(volume: number) {
+    if (this.isPlaying) return;
+    
+    const ctx = this.getContext();
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+
+    this.masterGain!.gain.setValueAtTime(volume, ctx.currentTime);
+
+    // Create layered drone frequencies (mystical temple ambience)
+    const frequencies = [
+      { freq: 55, type: "sine" as OscillatorType, gain: 0.15 },      // Deep bass drone
+      { freq: 82.41, type: "sine" as OscillatorType, gain: 0.1 },   // E2
+      { freq: 110, type: "sine" as OscillatorType, gain: 0.08 },    // A2
+      { freq: 164.81, type: "triangle" as OscillatorType, gain: 0.05 }, // E3 shimmer
+      { freq: 220, type: "sine" as OscillatorType, gain: 0.03 },    // A3 harmonic
+    ];
+
+    frequencies.forEach(({ freq, type, gain }) => {
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      
+      // Add subtle frequency modulation for ethereal effect
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.setValueAtTime(0.1 + Math.random() * 0.2, ctx.currentTime);
+      lfoGain.gain.setValueAtTime(freq * 0.01, ctx.currentTime);
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+      lfo.start();
+      
+      gainNode.gain.setValueAtTime(0, ctx.currentTime);
+      gainNode.gain.linearRampToValueAtTime(gain, ctx.currentTime + 2);
+      
+      osc.connect(gainNode);
+      gainNode.connect(this.masterGain!);
+      osc.start();
+      
+      this.bgmOscillators.push(osc, lfo);
+      this.bgmGains.push(gainNode);
+    });
+
+    this.isPlaying = true;
+  }
+
+  stopBgm() {
+    if (!this.isPlaying) return;
+
+    const ctx = this.audioContext;
+    if (!ctx) return;
+
+    this.bgmGains.forEach(gain => {
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 1);
+    });
+
+    setTimeout(() => {
+      this.bgmOscillators.forEach(osc => {
+        try { osc.stop(); } catch {}
+      });
+      this.bgmOscillators = [];
+      this.bgmGains = [];
+    }, 1100);
+
+    this.isPlaying = false;
+  }
+
+  // Mystical chime click sound
+  playClick(volume: number) {
+    const ctx = this.getContext();
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+
+    const now = ctx.currentTime;
+    
+    // Golden chime frequencies
+    const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5 (major chord)
+    
+    frequencies.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now);
+      
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(volume * 0.3, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3 + i * 0.1);
+      
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+      
+      osc.start(now + i * 0.02);
+      osc.stop(now + 0.5);
+    });
+  }
+
+  // Sacred rune success sound
+  playSuccess(volume: number) {
+    const ctx = this.getContext();
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+
+    const now = ctx.currentTime;
+    
+    // Ascending mystical scale
+    const notes = [261.63, 329.63, 392.00, 523.25, 659.25]; // C4, E4, G4, C5, E5
+    
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = i < 3 ? "sine" : "triangle";
+      osc.frequency.setValueAtTime(freq, now);
+      
+      const startTime = now + i * 0.12;
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(volume * 0.25, startTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.8);
+      
+      osc.connect(gain);
+      gain.connect(this.masterGain || ctx.destination);
+      
+      osc.start(startTime);
+      osc.stop(startTime + 1);
+    });
+
+    // Add shimmer effect
+    const shimmer = ctx.createOscillator();
+    const shimmerGain = ctx.createGain();
+    shimmer.type = "sine";
+    shimmer.frequency.setValueAtTime(1046.5, now); // C6
+    
+    shimmerGain.gain.setValueAtTime(0, now + 0.5);
+    shimmerGain.gain.linearRampToValueAtTime(volume * 0.1, now + 0.6);
+    shimmerGain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+    
+    shimmer.connect(shimmerGain);
+    shimmerGain.connect(this.masterGain || ctx.destination);
+    shimmer.start(now + 0.5);
+    shimmer.stop(now + 2);
+  }
+
+  cleanup() {
+    this.stopBgm();
+    if (this.audioContext) {
+      this.audioContext.close();
+      this.audioContext = null;
+    }
+  }
+}
 
 export function useAudio() {
   const [state, setState] = useState<AudioState>(() => {
     const saved = localStorage.getItem(AUDIO_PREFS_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return { bgmPlaying: false, sfxEnabled: true, volume: 0.3 };
+      }
     }
-    return {
-      bgmPlaying: false,
-      bgmLoaded: false,
-      sfxEnabled: true,
-      volume: 0.3,
-    };
+    return { bgmPlaying: false, sfxEnabled: true, volume: 0.3 };
   });
 
-  const bgmRef = useRef<HTMLAudioElement | null>(null);
-  const clickSfxRef = useRef<HTMLAudioElement | null>(null);
-  const successSfxRef = useRef<HTMLAudioElement | null>(null);
+  const engineRef = useRef<TempleAudioEngine | null>(null);
+
+  // Initialize audio engine
+  useEffect(() => {
+    engineRef.current = new TempleAudioEngine();
+    return () => {
+      engineRef.current?.cleanup();
+    };
+  }, []);
 
   // Save preferences
   useEffect(() => {
     localStorage.setItem(AUDIO_PREFS_KEY, JSON.stringify(state));
   }, [state]);
 
-  // Load cached audio or generate new
-  const loadAudio = useCallback(async (type: "bgm" | "click" | "success") => {
-    const cache = localStorage.getItem(AUDIO_CACHE_KEY);
-    const cached = cache ? JSON.parse(cache) : {};
-
-    if (cached[type]) {
-      return `data:audio/mpeg;base64,${cached[type]}`;
-    }
-
-    try {
-      const { data, error } = await supabase.functions.invoke("generate-audio", {
-        body: { type },
-      });
-
-      if (error) throw error;
-
-      // Cache the audio
-      cached[type] = data.audio;
-      localStorage.setItem(AUDIO_CACHE_KEY, JSON.stringify(cached));
-
-      return `data:audio/mpeg;base64,${data.audio}`;
-    } catch (error) {
-      console.error(`Failed to generate ${type} audio:`, error);
-      return null;
-    }
-  }, []);
-
-  // Initialize BGM
-  const initBgm = useCallback(async () => {
-    if (bgmRef.current) return;
-
-    const audioUrl = await loadAudio("bgm");
-    if (audioUrl) {
-      bgmRef.current = new Audio(audioUrl);
-      bgmRef.current.loop = true;
-      bgmRef.current.volume = state.volume;
-      setState(prev => ({ ...prev, bgmLoaded: true }));
-    }
-  }, [loadAudio, state.volume]);
-
-  // Initialize SFX
-  const initSfx = useCallback(async () => {
-    if (!clickSfxRef.current) {
-      const clickUrl = await loadAudio("click");
-      if (clickUrl) {
-        clickSfxRef.current = new Audio(clickUrl);
-        clickSfxRef.current.volume = state.volume;
-      }
-    }
-
-    if (!successSfxRef.current) {
-      const successUrl = await loadAudio("success");
-      if (successUrl) {
-        successSfxRef.current = new Audio(successUrl);
-        successSfxRef.current.volume = state.volume;
-      }
-    }
-  }, [loadAudio, state.volume]);
+  // Update volume when it changes
+  useEffect(() => {
+    engineRef.current?.setVolume(state.volume);
+  }, [state.volume]);
 
   // Toggle BGM
   const toggleBgm = useCallback(() => {
-    if (!bgmRef.current) {
-      initBgm().then(() => {
-        if (bgmRef.current) {
-          bgmRef.current.play();
-          setState(prev => ({ ...prev, bgmPlaying: true }));
-        }
-      });
-      return;
-    }
-
     if (state.bgmPlaying) {
-      bgmRef.current.pause();
+      engineRef.current?.stopBgm();
       setState(prev => ({ ...prev, bgmPlaying: false }));
     } else {
-      bgmRef.current.play();
+      engineRef.current?.startBgm(state.volume);
       setState(prev => ({ ...prev, bgmPlaying: true }));
     }
-  }, [state.bgmPlaying, initBgm]);
+  }, [state.bgmPlaying, state.volume]);
 
   // Play click sound
   const playClick = useCallback(() => {
     if (!state.sfxEnabled) return;
-
-    if (!clickSfxRef.current) {
-      initSfx();
-      return;
-    }
-
-    clickSfxRef.current.currentTime = 0;
-    clickSfxRef.current.play().catch(() => {});
-  }, [state.sfxEnabled, initSfx]);
+    engineRef.current?.playClick(state.volume);
+  }, [state.sfxEnabled, state.volume]);
 
   // Play success sound
   const playSuccess = useCallback(() => {
     if (!state.sfxEnabled) return;
-
-    if (!successSfxRef.current) {
-      initSfx();
-      return;
-    }
-
-    successSfxRef.current.currentTime = 0;
-    successSfxRef.current.play().catch(() => {});
-  }, [state.sfxEnabled, initSfx]);
+    engineRef.current?.playSuccess(state.volume);
+  }, [state.sfxEnabled, state.volume]);
 
   // Toggle SFX
   const toggleSfx = useCallback(() => {
@@ -148,29 +253,11 @@ export function useAudio() {
   // Set volume
   const setVolume = useCallback((volume: number) => {
     setState(prev => ({ ...prev, volume }));
-    if (bgmRef.current) bgmRef.current.volume = volume;
-    if (clickSfxRef.current) clickSfxRef.current.volume = volume;
-    if (successSfxRef.current) successSfxRef.current.volume = volume;
-  }, []);
-
-  // Preload SFX on mount
-  useEffect(() => {
-    initSfx();
-  }, [initSfx]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (bgmRef.current) {
-        bgmRef.current.pause();
-        bgmRef.current = null;
-      }
-    };
   }, []);
 
   return {
     bgmPlaying: state.bgmPlaying,
-    bgmLoaded: state.bgmLoaded,
+    bgmLoaded: true, // Always ready with Web Audio API
     sfxEnabled: state.sfxEnabled,
     volume: state.volume,
     toggleBgm,
