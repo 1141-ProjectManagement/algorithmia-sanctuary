@@ -8,12 +8,14 @@ interface AudioState {
 
 const AUDIO_PREFS_KEY = "algorithmia-audio-prefs";
 
-// Audio engine using HTML5 Audio for BGM and Web Audio API for SFX
+// Audio engine using HTML5 Audio for BGM and SFX
 class TempleAudioEngine {
   private audioContext: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private bgmAudio: HTMLAudioElement | null = null;
+  private clickAudio: HTMLAudioElement | null = null;
   private isPlaying = false;
+  private volume = 0.3;
 
   private getContext(): AudioContext {
     if (!this.audioContext) {
@@ -25,6 +27,7 @@ class TempleAudioEngine {
   }
 
   setVolume(volume: number) {
+    this.volume = volume;
     if (this.masterGain) {
       this.masterGain.gain.setValueAtTime(volume, this.audioContext?.currentTime || 0);
     }
@@ -55,35 +58,12 @@ class TempleAudioEngine {
     this.isPlaying = false;
   }
 
-  // Mystical chime click sound
+  // Play MP3 click sound
   playClick(volume: number) {
-    const ctx = this.getContext();
-    if (ctx.state === "suspended") {
-      ctx.resume();
-    }
-
-    const now = ctx.currentTime;
-    
-    // Golden chime frequencies
-    const frequencies = [523.25, 659.25, 783.99]; // C5, E5, G5 (major chord)
-    
-    frequencies.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, now);
-      
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(volume * 0.3, now + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3 + i * 0.1);
-      
-      osc.connect(gain);
-      gain.connect(this.masterGain || ctx.destination);
-      
-      osc.start(now + i * 0.02);
-      osc.stop(now + 0.5);
-    });
+    // Create a new Audio instance each time for overlapping sounds
+    const clickSound = new Audio("/audio/click.mp3");
+    clickSound.volume = volume;
+    clickSound.play().catch(console.error);
   }
 
   // Sacred rune success sound
