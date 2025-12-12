@@ -2,15 +2,23 @@ import { Button } from "@/components/ui/button";
 import { Circle, Sparkles, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { playClick } = useAudioContext();
 
   const scrollToRealms = () => {
+    playClick();
     const realmsSection = document.getElementById("realms-section");
     realmsSection?.scrollIntoView({
       behavior: "smooth",
     });
+  };
+
+  const handleProgressClick = () => {
+    playClick();
+    navigate("/progress");
   };
 
   return (
@@ -281,7 +289,7 @@ const Hero = () => {
           <Button
             size="lg"
             variant="outline"
-            onClick={() => navigate("/progress")}
+            onClick={handleProgressClick}
             className="font-cinzel text-lg px-8 py-7 border-primary/50 text-primary hover:bg-primary/10 hover:border-primary w-full sm:w-auto"
           >
             <BarChart3 className="w-5 h-5 mr-2" />
