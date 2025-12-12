@@ -3,6 +3,7 @@ import { Lock, CheckCircle2, ArrowRight, BookOpen, Play, ClipboardCheck } from "
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChapterTheme } from "@/config/chapterThemes";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 export interface SectionProgress {
   teach: boolean;
@@ -32,6 +33,14 @@ interface GateCardProps {
 
 const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme, sections }: GateCardProps) => {
   const locked = !isUnlocked;
+  const { playClick } = useAudioContext();
+  
+  const handleClick = () => {
+    if (!locked) {
+      playClick();
+      onClick();
+    }
+  };
   
   // Default theme colors if not provided
   const accentColor = theme?.accentColor || "hsl(43, 74%, 53%)";
@@ -69,7 +78,7 @@ const GateCard = ({ gate, index, isCompleted, isUnlocked, onClick, theme, sectio
             ? `0 0 20px ${glowColor}` 
             : undefined,
         }}
-        onClick={onClick}
+        onClick={handleClick}
       >
         {/* Background Image */}
         {gate.backgroundImage && (

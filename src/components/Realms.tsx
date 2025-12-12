@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { useState } from "react";
+import { useAudioContext } from "@/contexts/AudioContext";
 
 import "swiper/css";
 import "swiper/css/effect-coverflow";
@@ -140,11 +141,17 @@ const swiperStyles = `
 const Realms = () => {
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
+  const { playClick } = useAudioContext();
 
   const handleRealmClick = (realm: (typeof realms)[0]) => {
     if (realm.available && realm.link) {
+      playClick();
       navigate(realm.link);
     }
+  };
+
+  const handleSlideClick = () => {
+    playClick();
   };
 
   const handleSlideChange = (swiper: SwiperType) => {
