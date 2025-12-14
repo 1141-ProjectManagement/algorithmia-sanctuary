@@ -3,7 +3,6 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float, Line } from "@react-three/drei";
 import * as THREE from "three";
 import { BSTNode } from "@/stores/bstStore";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface BSTNodeMeshProps {
   node: BSTNode;
@@ -312,8 +311,6 @@ const BSTScene = ({
           color="#d4af37"
         />
         
-        {/* Cursor-following torch light */}
-        <CursorLight color="#d4af37" intensity={2.5} distance={12} />
 
         {tree && (
           <BSTVisualization

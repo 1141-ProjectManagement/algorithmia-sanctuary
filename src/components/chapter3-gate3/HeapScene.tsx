@@ -2,7 +2,6 @@ import { Canvas } from "@react-three/fiber";
 import { Float, Text, Line } from "@react-three/drei";
 import { useMemo } from "react";
 import type { HeapNode } from "@/stores/heapStore";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface HeapNodeMeshProps {
   node: HeapNode;
@@ -137,8 +136,6 @@ const HeapScene = ({ heap, highlightIndices }: HeapSceneProps) => {
       <pointLight position={[5, 5, 5]} intensity={0.6} />
       <pointLight position={[-5, 5, 5]} intensity={0.3} />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#d4af37" intensity={2} distance={10} />
       
       <Float speed={1} rotationIntensity={0.1} floatIntensity={0.3}>
         <group>

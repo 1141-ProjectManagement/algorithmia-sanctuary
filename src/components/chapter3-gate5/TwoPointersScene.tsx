@@ -2,7 +2,6 @@ import { Canvas } from "@react-three/fiber";
 import { Float, Text } from "@react-three/drei";
 import { useMemo } from "react";
 import type { StoneData } from "@/stores/twoPointersStore";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface StoneMeshProps {
   stone: StoneData;
@@ -126,8 +125,6 @@ const TwoPointersScene = ({ stones, currentSum, target, found }: TwoPointersScen
       <pointLight position={[5, 8, 5]} intensity={0.6} />
       <pointLight position={[-5, 8, 5]} intensity={0.3} />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#d4af37" intensity={2} distance={12} />
       
       <Float speed={0.5} rotationIntensity={0.05} floatIntensity={0.1}>
         <group>

@@ -3,7 +3,6 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float, Line } from "@react-three/drei";
 import * as THREE from "three";
 import { TreeNode } from "@/stores/treeTraversalStore";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface TreeNodeMeshProps {
   node: TreeNode;
@@ -219,8 +218,6 @@ const TreeScene = ({ tree, visitedNodes, processedNodes, currentNodeId }: TreeSc
           color="#d4af37"
         />
         
-        {/* Cursor-following torch light */}
-        <CursorLight color="#00ff88" intensity={2} distance={10} />
 
         <TreeVisualization
           tree={tree}
