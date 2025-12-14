@@ -2,6 +2,7 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Text, Environment, MeshTransmissionMaterial } from "@react-three/drei";
 import * as THREE from "three";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface GemProps {
   position: [number, number, number];
@@ -101,9 +102,12 @@ const GemScene = ({ array, comparing, swapped, sorted }: GemSceneProps) => {
       <color attach="background" args={["#0a0a0a"]} />
       
       {/* Lighting */}
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, 10, -10]} intensity={0.5} color="#2832c2" />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.5} />
+      <pointLight position={[-10, 10, -10]} intensity={0.3} color="#2832c2" />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#d4af37" intensity={3} distance={12} />
       
       {/* Environment for reflections */}
       <Environment preset="night" />

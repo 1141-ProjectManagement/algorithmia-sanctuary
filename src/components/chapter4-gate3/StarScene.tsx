@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Line, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { StarNode, StarEdge } from "@/stores/dijkstraStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface StarMeshProps {
   node: StarNode;
@@ -150,9 +151,12 @@ interface StarSceneProps {
 const StarScene = ({ nodes, edges, onNodeClick }: StarSceneProps) => {
   return (
     <Canvas camera={{ position: [0, 2, 7], fov: 50 }}>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-5, 5, -5]} intensity={0.5} color="#d4af37" />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.6} />
+      <pointLight position={[-5, 5, -5]} intensity={0.3} color="#d4af37" />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#d4af37" intensity={2.5} distance={12} />
 
       {/* Background */}
       <mesh position={[0, 0, -8]}>

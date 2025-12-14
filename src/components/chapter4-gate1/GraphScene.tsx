@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Line, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { GraphNode, GraphEdge } from "@/stores/graphTraversalStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface GraphNodeMeshProps {
   node: GraphNode;
@@ -135,9 +136,12 @@ interface GraphSceneProps {
 const GraphScene = ({ nodes, edges, mode, onNodeClick }: GraphSceneProps) => {
   return (
     <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, 10]} intensity={0.5} color={mode === "bfs" ? "#3b82f6" : "#ef4444"} />
+      <ambientLight intensity={0.25} />
+      <pointLight position={[10, 10, 10]} intensity={0.6} />
+      <pointLight position={[-10, -10, 10]} intensity={0.3} color={mode === "bfs" ? "#3b82f6" : "#ef4444"} />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color={mode === "bfs" ? "#3b82f6" : "#ef4444"} intensity={2} distance={12} />
 
       <Float speed={0.5} rotationIntensity={0.02} floatIntensity={0.05}>
         <group>

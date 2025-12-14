@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, Float, Line } from "@react-three/drei";
 import * as THREE from "three";
 import { TreeNode } from "@/stores/divideConquerStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface TreeNodeMeshProps {
   node: TreeNode;
@@ -218,9 +219,12 @@ const RecursiveTreeScene = ({ tree, activeNodeId, algorithm }: RecursiveTreeScen
   return (
     <Canvas camera={{ position: [0, 0, 12], fov: 50 }}>
       <color attach="background" args={['#0a0a0a']} />
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4a90d9" />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.6} />
+      <pointLight position={[-10, -10, -10]} intensity={0.3} color="#4a90d9" />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#d4af37" intensity={2} distance={15} />
       
       <RecursiveTree tree={tree} activeNodeId={activeNodeId} algorithm={algorithm} />
       

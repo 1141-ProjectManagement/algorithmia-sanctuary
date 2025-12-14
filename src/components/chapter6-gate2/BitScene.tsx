@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { getBit } from "@/stores/bitManipulationStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface BitSceneProps {
   valueA: number;
@@ -234,9 +235,12 @@ const ConnectionBeams = ({
 const Scene = ({ valueA, valueB, result, operation, animatingBits, showB = true }: BitSceneProps) => {
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, 5]} intensity={0.5} color="#2832c2" />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.6} />
+      <pointLight position={[-10, -10, 5]} intensity={0.3} color="#2832c2" />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#d4af37" intensity={2} distance={15} />
       
       <Float speed={0.5} rotationIntensity={0.05} floatIntensity={0.2}>
         <group>

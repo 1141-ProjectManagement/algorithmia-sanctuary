@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { Coin } from "@/stores/greedyStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface CoinMeshProps {
   coin: Coin;
@@ -114,16 +115,19 @@ interface CoinSceneProps {
 const CoinScene = ({ coins, targetAmount, remainingAmount, isComplete }: CoinSceneProps) => {
   return (
     <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[5, 5, 5]} intensity={1} color="#ffffff" />
-      <pointLight position={[-5, 5, 5]} intensity={0.5} color="#d4af37" />
+      <ambientLight intensity={0.3} />
+      <pointLight position={[5, 5, 5]} intensity={0.6} color="#ffffff" />
+      <pointLight position={[-5, 5, 5]} intensity={0.3} color="#d4af37" />
       <spotLight
         position={[0, 5, 2]}
         angle={0.3}
         penumbra={0.5}
-        intensity={1}
+        intensity={0.6}
         color="#d4af37"
       />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#d4af37" intensity={2} distance={8} />
       
       <Float speed={0.5} rotationIntensity={0.05} floatIntensity={0.1}>
         <group>

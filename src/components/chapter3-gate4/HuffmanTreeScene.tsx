@@ -2,6 +2,7 @@ import { Canvas } from "@react-three/fiber";
 import { Float, Text, Line } from "@react-three/drei";
 import { useMemo } from "react";
 import type { HuffmanNode } from "@/stores/huffmanStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface NodeMeshProps {
   node: HuffmanNode;
@@ -176,9 +177,12 @@ const HuffmanTreeScene = ({
 }: HuffmanTreeSceneProps) => {
   return (
     <Canvas camera={{ position: [0, -2, 10], fov: 50 }}>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[5, 5, 5]} intensity={1} />
-      <pointLight position={[-5, 5, 5]} intensity={0.5} />
+      <ambientLight intensity={0.25} />
+      <pointLight position={[5, 5, 5]} intensity={0.6} />
+      <pointLight position={[-5, 5, 5]} intensity={0.3} />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#d4af37" intensity={2} distance={12} />
       
       <Float speed={1} rotationIntensity={0.05} floatIntensity={0.2}>
         <group>
