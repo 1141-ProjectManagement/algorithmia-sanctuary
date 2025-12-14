@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float, Line } from "@react-three/drei";
 import * as THREE from "three";
 import { TreeNode } from "@/stores/treeTraversalStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface TreeNodeMeshProps {
   node: TreeNode;
@@ -207,16 +208,19 @@ const TreeScene = ({ tree, visitedNodes, processedNodes, currentNodeId }: TreeSc
         gl={{ antialias: true }}
       >
         <color attach="background" args={["#0a0a0a"]} />
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={1} />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#4488ff" />
+        <ambientLight intensity={0.25} />
+        <pointLight position={[10, 10, 10]} intensity={0.6} />
+        <pointLight position={[-10, -10, -10]} intensity={0.3} color="#4488ff" />
         <spotLight
           position={[0, 5, 5]}
           angle={0.5}
           penumbra={0.5}
-          intensity={1}
+          intensity={0.6}
           color="#d4af37"
         />
+        
+        {/* Cursor-following torch light */}
+        <CursorLight color="#00ff88" intensity={2} distance={10} />
 
         <TreeVisualization
           tree={tree}

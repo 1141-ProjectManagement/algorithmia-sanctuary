@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Line, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { Island, Bridge } from "@/stores/mstStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface IslandMeshProps {
   island: Island;
@@ -144,9 +145,12 @@ interface IslandSceneProps {
 const IslandScene = ({ islands, bridges, mode, onIslandClick }: IslandSceneProps) => {
   return (
     <Canvas camera={{ position: [0, 5, 8], fov: 50 }}>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-5, 5, -5]} intensity={0.5} color={mode === "kruskal" ? "#10b981" : "#22d3ee"} />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.6} />
+      <pointLight position={[-5, 5, -5]} intensity={0.3} color={mode === "kruskal" ? "#10b981" : "#22d3ee"} />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color={mode === "kruskal" ? "#10b981" : "#22d3ee"} intensity={2} distance={15} />
       
       {/* Background stars */}
       <mesh position={[0, 0, -10]}>

@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Float, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { useBossStore } from "@/stores/bossStore";
+import CursorLight from "@/components/3d/CursorLight";
 
 const Shield = ({ 
   radius, 
@@ -122,10 +123,13 @@ const BossSceneContent = () => {
 
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <pointLight position={[10, 10, 10]} intensity={1} color="#d4af37" />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8b5cf6" />
-      <spotLight position={[0, 10, 0]} intensity={1} angle={0.3} color="#ffffff" />
+      <ambientLight intensity={0.2} />
+      <pointLight position={[10, 10, 10]} intensity={0.6} color="#d4af37" />
+      <pointLight position={[-10, -10, -10]} intensity={0.3} color="#8b5cf6" />
+      <spotLight position={[0, 10, 0]} intensity={0.6} angle={0.3} color="#ffffff" />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#8b5cf6" intensity={2} distance={15} />
 
       <BossCore />
 

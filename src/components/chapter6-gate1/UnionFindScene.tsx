@@ -2,6 +2,7 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float } from "@react-three/drei";
 import * as THREE from "three";
+import CursorLight from "@/components/3d/CursorLight";
 
 interface Node {
   id: number;
@@ -189,9 +190,12 @@ const Scene = ({ nodes, parent, highlightPath, activeNodes }: UnionFindSceneProp
 
   return (
     <>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color="#2832c2" />
+      <ambientLight intensity={0.25} />
+      <pointLight position={[10, 10, 10]} intensity={0.6} />
+      <pointLight position={[-10, -10, -10]} intensity={0.3} color="#2832c2" />
+      
+      {/* Cursor-following torch light */}
+      <CursorLight color="#d4af37" intensity={2} distance={12} />
       
       <Float speed={1} rotationIntensity={0.1} floatIntensity={0.3}>
         <group>
