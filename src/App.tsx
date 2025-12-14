@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AudioProvider } from "@/contexts/AudioContext";
+import CursorGlow from "@/components/CursorGlow";
 import Index from "./pages/Index";
 import Module1_1 from "./pages/Module1-1";
 import Chapter1Hub from "./pages/Chapter1Hub";
@@ -92,6 +93,8 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        {/* Global cursor glow effect */}
+        <CursorGlow />
         {/* Global notification components - rendered at root level with fixed positioning */}
         <Toaster />
         <Sonner />
