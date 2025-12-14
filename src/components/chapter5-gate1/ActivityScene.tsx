@@ -3,7 +3,6 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { Activity } from "@/stores/greedyStore";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface ActivityBarProps {
   activity: Activity;
@@ -160,8 +159,6 @@ const ActivityScene = ({ activities, scanPosition }: ActivitySceneProps) => {
       <pointLight position={[10, 10, 10]} intensity={0.6} />
       <pointLight position={[-10, -10, -10]} intensity={0.3} />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#22c55e" intensity={2} distance={10} />
       
       <Float speed={1} rotationIntensity={0.1} floatIntensity={0.2}>
         <group>

@@ -2,7 +2,6 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float, Line } from "@react-three/drei";
 import * as THREE from "three";
-import CursorLight from "@/components/3d/CursorLight";
 
 export interface TreeNode {
   id: string;
@@ -186,8 +185,6 @@ const RecursionTreeScene = ({ tree, activeNodeId, hoveredNodeId, onHover }: Recu
       <pointLight position={[10, 10, 10]} intensity={0.6} />
       <pointLight position={[-10, 5, -10]} intensity={0.3} color="#8b5cf6" />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#d4af37" intensity={2} distance={12} />
       
       <Float speed={0.3} rotationIntensity={0.02} floatIntensity={0.05}>
         <RecursionTree

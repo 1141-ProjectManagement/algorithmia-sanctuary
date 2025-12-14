@@ -2,7 +2,6 @@ import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface DataCubeProps {
   position: [number, number, number];
@@ -198,8 +197,6 @@ const SlidingWindowScene = ({
       <pointLight position={[10, 10, 10]} intensity={0.5} />
       <pointLight position={[-10, -10, -10]} intensity={0.2} color="#4a90d9" />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#d4af37" intensity={2} distance={15} />
 
       {/* Background stars */}
       {useMemo(() => (

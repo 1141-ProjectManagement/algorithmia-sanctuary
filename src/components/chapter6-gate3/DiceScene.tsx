@@ -2,7 +2,6 @@ import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, Text } from '@react-three/drei';
 import * as THREE from 'three';
-import CursorLight from "@/components/3d/CursorLight";
 
 interface ArrayElement {
   value: number;
@@ -213,8 +212,6 @@ const SceneContent = ({
       <directionalLight position={[5, 10, 5]} intensity={0.5} />
       <pointLight position={[0, 5, 0]} color="#d4af37" intensity={0.3} />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#d4af37" intensity={2.5} distance={12} />
       
       <group position={[0, -1.5, 0]}>
         {array.map((element, i) => (

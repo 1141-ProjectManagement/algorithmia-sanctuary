@@ -3,7 +3,6 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float } from "@react-three/drei";
 import * as THREE from "three";
 import { Coin } from "@/stores/greedyStore";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface CoinMeshProps {
   coin: Coin;
@@ -126,8 +125,6 @@ const CoinScene = ({ coins, targetAmount, remainingAmount, isComplete }: CoinSce
         color="#d4af37"
       />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#d4af37" intensity={2} distance={8} />
       
       <Float speed={0.5} rotationIntensity={0.05} floatIntensity={0.1}>
         <group>

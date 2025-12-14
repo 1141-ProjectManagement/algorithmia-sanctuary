@@ -3,7 +3,6 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, Float, Line } from "@react-three/drei";
 import * as THREE from "three";
 import { DPCell } from "@/stores/dpStore";
-import CursorLight from "@/components/3d/CursorLight";
 
 interface CrystalProps {
   cell: DPCell;
@@ -229,8 +228,6 @@ const CrystalMatrixScene = ({
       <pointLight position={[10, 10, 10]} intensity={0.6} />
       <pointLight position={[-10, -10, 10]} intensity={0.3} color="#8b5cf6" />
       
-      {/* Cursor-following torch light */}
-      <CursorLight color="#8b5cf6" intensity={2} distance={10} />
       
       <Float speed={0.5} rotationIntensity={0.05} floatIntensity={0.1}>
         <group>
