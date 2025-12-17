@@ -12,6 +12,9 @@ const pricingPlans: PricingCardProps[] = [
     ],
     buttonText: "免費開始",
     buttonVariant: "secondary",
+    onButtonClick: () => {
+      document.getElementById("realms-section")?.scrollIntoView({ behavior: "smooth" });
+    },
   },
   {
     planName: "冒險家",
