@@ -137,7 +137,7 @@ const ShaderCanvas = () => {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 -z-10 w-full h-full" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 -z-10 w-full h-full" />;
 };
 
 export interface PricingCardProps {
