@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UseTTSOptions {
   defaultSpeed?: number;
@@ -139,7 +140,14 @@ export const useTTS = ({ defaultSpeed = 1 }: UseTTSOptions = {}): UseTTSReturn =
         console.log("TTS: Using cached audio");
         audioBlob = base64ToBlob(cachedBase64);
       } else {
-        console.log("TTS: Fetching from API");
+      console.log("TTS: Fetching from API");
+        
+        // Get user session for authentication
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error("請登入以使用語音朗讀功能");
+        }
+        
         const response = await fetch(
           `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
           {
@@ -147,7 +155,7 @@ export const useTTS = ({ defaultSpeed = 1 }: UseTTSOptions = {}): UseTTSReturn =
             headers: {
               "Content-Type": "application/json",
               apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+              Authorization: `Bearer ${session.access_token}`,
             },
             body: JSON.stringify({ text, speed }),
           }
