@@ -19,6 +19,7 @@ const navItems = [
   },
   { label: "Realms", section: 1, ariaLabel: "Navigate to seven temples" },
   { label: "About", section: 2, ariaLabel: "Navigate to about section" },
+  { label: "Pricing", section: 4, ariaLabel: "Navigate to pricing section" },
 ];
 
 const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
