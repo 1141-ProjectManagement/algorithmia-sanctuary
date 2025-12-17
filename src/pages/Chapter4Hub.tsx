@@ -4,6 +4,7 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
 import { getChapterTheme } from "@/config/chapterThemes";
+import ProtectedChapter from "@/components/ProtectedChapter";
 
 const gates: GateData[] = [
   {
@@ -135,39 +136,41 @@ const Chapter4Hub = () => {
   );
 
   return (
-    <ChapterHubLayout
-      chapterNumber={4}
-      templeName="織徑神殿"
-      chapterTitle="全局視野與路徑規劃"
-      chapterDescription="超越樹，進入錯綜複雜的網絡空間。無數節點懸浮在虛空中，用光線互相連接，理解「全局最優」的真正意義。"
-      completedCount={completedCount}
-      totalGates={gates.length}
-      isChapterCompleted={chapterCompleted}
-      showStoryDialog={showStoryDialog}
-      setShowStoryDialog={setShowStoryDialog}
-      showLoreDialog={showLoreDialog}
-      setShowLoreDialog={setShowLoreDialog}
-      storyContent={storyContent}
-      loreContent={loreContent}
-      loreTitle="古籍碎片：《網絡紀元錄》第四卷"
-      storyText={storyText}
-      autoPlayTTS={true}
-      completionTitle="織徑神殿已被征服"
-      completionMessage={completionMessage}
-    >
-      {gates.map((gate, index) => (
-        <GateCard
-          key={gate.id}
-          gate={gate}
-          index={index}
-          isCompleted={isGateCompleted(gate.id)}
-          isUnlocked={isGateUnlocked(gate.id, gateOrder)}
-          onClick={() => handleGateClick(gate)}
-          theme={theme}
-          sections={getGateSections(gate.id)}
-        />
-      ))}
-    </ChapterHubLayout>
+    <ProtectedChapter chapterNumber={4}>
+      <ChapterHubLayout
+        chapterNumber={4}
+        templeName="織徑神殿"
+        chapterTitle="全局視野與路徑規劃"
+        chapterDescription="超越樹，進入錯綜複雜的網絡空間。無數節點懸浮在虛空中，用光線互相連接，理解「全局最優」的真正意義。"
+        completedCount={completedCount}
+        totalGates={gates.length}
+        isChapterCompleted={chapterCompleted}
+        showStoryDialog={showStoryDialog}
+        setShowStoryDialog={setShowStoryDialog}
+        showLoreDialog={showLoreDialog}
+        setShowLoreDialog={setShowLoreDialog}
+        storyContent={storyContent}
+        loreContent={loreContent}
+        loreTitle="古籍碎片：《網絡紀元錄》第四卷"
+        storyText={storyText}
+        autoPlayTTS={true}
+        completionTitle="織徑神殿已被征服"
+        completionMessage={completionMessage}
+      >
+        {gates.map((gate, index) => (
+          <GateCard
+            key={gate.id}
+            gate={gate}
+            index={index}
+            isCompleted={isGateCompleted(gate.id)}
+            isUnlocked={isGateUnlocked(gate.id, gateOrder)}
+            onClick={() => handleGateClick(gate)}
+            theme={theme}
+            sections={getGateSections(gate.id)}
+          />
+        ))}
+      </ChapterHubLayout>
+    </ProtectedChapter>
   );
 };
 

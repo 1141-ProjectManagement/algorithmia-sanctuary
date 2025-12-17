@@ -4,6 +4,7 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
 import { getChapterTheme } from "@/config/chapterThemes";
+import ProtectedChapter from "@/components/ProtectedChapter";
 
 const gates: GateData[] = [
   {
@@ -135,38 +136,40 @@ export default function Chapter2Hub() {
   );
 
   return (
-    <ChapterHubLayout
-      chapterNumber={2}
-      templeName="時序神殿"
-      chapterTitle="排序與加速"
-      chapterDescription="理解「排序」的力量，掌握「最適化」的藝術。從混亂到秩序，體驗演算法效率帶來的革命性轉變。"
-      completedCount={completedCount}
-      totalGates={gates.length}
-      isChapterCompleted={chapterCompleted}
-      showStoryDialog={showStoryDialog}
-      setShowStoryDialog={setShowStoryDialog}
-      showLoreDialog={showLoreDialog}
-      setShowLoreDialog={setShowLoreDialog}
-      storyContent={storyContent}
-      loreContent={loreContent}
-      loreTitle="古籍碎片：《秩序紀年誌》第二卷"
-      storyText={storyText}
-      autoPlayTTS={true}
-      completionTitle="時序神殿已被征服"
-      completionMessage={completionMessage}
-    >
-      {gates.map((gate, index) => (
-        <GateCard
-          key={gate.id}
-          gate={gate}
-          index={index}
-          isCompleted={isGateCompleted(gate.id)}
-          isUnlocked={isGateUnlocked(gate.id, gateOrder)}
-          onClick={() => handleGateClick(gate)}
-          theme={theme}
-          sections={getGateSections(gate.id)}
-        />
-      ))}
-    </ChapterHubLayout>
+    <ProtectedChapter chapterNumber={2}>
+      <ChapterHubLayout
+        chapterNumber={2}
+        templeName="時序神殿"
+        chapterTitle="排序與加速"
+        chapterDescription="理解「排序」的力量，掌握「最適化」的藝術。從混亂到秩序，體驗演算法效率帶來的革命性轉變。"
+        completedCount={completedCount}
+        totalGates={gates.length}
+        isChapterCompleted={chapterCompleted}
+        showStoryDialog={showStoryDialog}
+        setShowStoryDialog={setShowStoryDialog}
+        showLoreDialog={showLoreDialog}
+        setShowLoreDialog={setShowLoreDialog}
+        storyContent={storyContent}
+        loreContent={loreContent}
+        loreTitle="古籍碎片：《秩序紀年誌》第二卷"
+        storyText={storyText}
+        autoPlayTTS={true}
+        completionTitle="時序神殿已被征服"
+        completionMessage={completionMessage}
+      >
+        {gates.map((gate, index) => (
+          <GateCard
+            key={gate.id}
+            gate={gate}
+            index={index}
+            isCompleted={isGateCompleted(gate.id)}
+            isUnlocked={isGateUnlocked(gate.id, gateOrder)}
+            onClick={() => handleGateClick(gate)}
+            theme={theme}
+            sections={getGateSections(gate.id)}
+          />
+        ))}
+      </ChapterHubLayout>
+    </ProtectedChapter>
   );
 }

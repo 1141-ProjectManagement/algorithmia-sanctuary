@@ -4,6 +4,7 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
 import { getChapterTheme } from "@/config/chapterThemes";
+import ProtectedChapter from "@/components/ProtectedChapter";
 
 const gates: GateData[] = [
   {
@@ -127,39 +128,41 @@ const Chapter6Hub = () => {
   );
 
   return (
-    <ChapterHubLayout
-      chapterNumber={6}
-      templeName="整合神殿"
-      chapterTitle="終極整合"
-      chapterDescription="穿越所有試煉，揭開 Algorithmia 文明的最終真相。將所有知識融合為一，理解文明興衰的深層意義。"
-      completedCount={completedCount}
-      totalGates={gates.length}
-      isChapterCompleted={chapterCompleted}
-      showStoryDialog={showStoryDialog}
-      setShowStoryDialog={setShowStoryDialog}
-      showLoreDialog={showLoreDialog}
-      setShowLoreDialog={setShowLoreDialog}
-      storyContent={storyContent}
-      loreContent={loreContent}
-      loreTitle="古籍碎片：《終章——文明的遺言》"
-      storyText={storyText}
-      autoPlayTTS={true}
-      completionTitle="整合神殿已被征服"
-      completionMessage={completionMessage}
-    >
-      {gates.map((gate, index) => (
-        <GateCard
-          key={gate.id}
-          gate={gate}
-          index={index}
-          isCompleted={isGateCompleted(gate.id)}
-          isUnlocked={isGateUnlocked(gate.id, gateOrder)}
-          onClick={() => handleGateClick(gate)}
-          theme={theme}
-          sections={getGateSections(gate.id)}
-        />
-      ))}
-    </ChapterHubLayout>
+    <ProtectedChapter chapterNumber={6}>
+      <ChapterHubLayout
+        chapterNumber={6}
+        templeName="整合神殿"
+        chapterTitle="終極整合"
+        chapterDescription="穿越所有試煉，揭開 Algorithmia 文明的最終真相。將所有知識融合為一，理解文明興衰的深層意義。"
+        completedCount={completedCount}
+        totalGates={gates.length}
+        isChapterCompleted={chapterCompleted}
+        showStoryDialog={showStoryDialog}
+        setShowStoryDialog={setShowStoryDialog}
+        showLoreDialog={showLoreDialog}
+        setShowLoreDialog={setShowLoreDialog}
+        storyContent={storyContent}
+        loreContent={loreContent}
+        loreTitle="古籍碎片：《終章——文明的遺言》"
+        storyText={storyText}
+        autoPlayTTS={true}
+        completionTitle="整合神殿已被征服"
+        completionMessage={completionMessage}
+      >
+        {gates.map((gate, index) => (
+          <GateCard
+            key={gate.id}
+            gate={gate}
+            index={index}
+            isCompleted={isGateCompleted(gate.id)}
+            isUnlocked={isGateUnlocked(gate.id, gateOrder)}
+            onClick={() => handleGateClick(gate)}
+            theme={theme}
+            sections={getGateSections(gate.id)}
+          />
+        ))}
+      </ChapterHubLayout>
+    </ProtectedChapter>
   );
 };
 
