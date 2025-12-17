@@ -43,6 +43,7 @@ import Chapter6Gate3 from "./pages/Chapter6Gate3";
 import Chapter6Gate4 from "./pages/Chapter6Gate4";
 import NotFound from "./pages/NotFound";
 import ProgressDashboard from "./pages/ProgressDashboard";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/progress" element={<ProgressDashboard />} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/realm/1-1" element={<Module1_1 />} />
             <Route path="/chapter1" element={<Chapter1Hub />} />
             <Route path="/chapter1/gate1" element={<Chapter1Gate1 />} />

@@ -4,6 +4,7 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
 import { getChapterTheme } from "@/config/chapterThemes";
+import ProtectedChapter from "@/components/ProtectedChapter";
 
 const gates: GateData[] = [
   {
@@ -135,39 +136,41 @@ const Chapter3Hub = () => {
   );
 
   return (
-    <ChapterHubLayout
-      chapterNumber={3}
-      templeName="迴聲神殿"
-      chapterTitle="結構與關係"
-      chapterDescription="從線性到分層，管理「父子關係」與「優先級」。在樹的世界中導航，理解層次結構的力量與陷阱。"
-      completedCount={completedCount}
-      totalGates={gates.length}
-      isChapterCompleted={chapterCompleted}
-      showStoryDialog={showStoryDialog}
-      setShowStoryDialog={setShowStoryDialog}
-      showLoreDialog={showLoreDialog}
-      setShowLoreDialog={setShowLoreDialog}
-      storyContent={storyContent}
-      loreContent={loreContent}
-      loreTitle="古籍碎片：《權力經——階層篇》"
-      storyText={storyText}
-      autoPlayTTS={true}
-      completionTitle="迴聲神殿已被征服"
-      completionMessage={completionMessage}
-    >
-      {gates.map((gate, index) => (
-        <GateCard
-          key={gate.id}
-          gate={gate}
-          index={index}
-          isCompleted={isGateCompleted(gate.id)}
-          isUnlocked={isGateUnlocked(gate.id, gateOrder)}
-          onClick={() => handleGateClick(gate)}
-          theme={theme}
-          sections={getGateSections(gate.id)}
-        />
-      ))}
-    </ChapterHubLayout>
+    <ProtectedChapter chapterNumber={3}>
+      <ChapterHubLayout
+        chapterNumber={3}
+        templeName="迴聲神殿"
+        chapterTitle="結構與關係"
+        chapterDescription="從線性到分層，管理「父子關係」與「優先級」。在樹的世界中導航，理解層次結構的力量與陷阱。"
+        completedCount={completedCount}
+        totalGates={gates.length}
+        isChapterCompleted={chapterCompleted}
+        showStoryDialog={showStoryDialog}
+        setShowStoryDialog={setShowStoryDialog}
+        showLoreDialog={showLoreDialog}
+        setShowLoreDialog={setShowLoreDialog}
+        storyContent={storyContent}
+        loreContent={loreContent}
+        loreTitle="古籍碎片：《權力經——階層篇》"
+        storyText={storyText}
+        autoPlayTTS={true}
+        completionTitle="迴聲神殿已被征服"
+        completionMessage={completionMessage}
+      >
+        {gates.map((gate, index) => (
+          <GateCard
+            key={gate.id}
+            gate={gate}
+            index={index}
+            isCompleted={isGateCompleted(gate.id)}
+            isUnlocked={isGateUnlocked(gate.id, gateOrder)}
+            onClick={() => handleGateClick(gate)}
+            theme={theme}
+            sections={getGateSections(gate.id)}
+          />
+        ))}
+      </ChapterHubLayout>
+    </ProtectedChapter>
   );
 };
 

@@ -4,6 +4,7 @@ import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
 import { getChapterTheme } from "@/config/chapterThemes";
+import ProtectedChapter from "@/components/ProtectedChapter";
 
 const gates: GateData[] = [
   {
@@ -128,39 +129,41 @@ const Chapter5Hub = () => {
   );
 
   return (
-    <ChapterHubLayout
-      chapterNumber={5}
-      templeName="抉擇神殿"
-      chapterTitle="決策與最優性"
-      chapterDescription="這裡沒有具體的結構，沒有明確的道路。整個殿堂由無數閃爍的決策點組成——貪心、動態規劃、回溯、分治，尋求最佳決策的智慧考驗。"
-      completedCount={completedCount}
-      totalGates={gates.length}
-      isChapterCompleted={chapterCompleted}
-      showStoryDialog={showStoryDialog}
-      setShowStoryDialog={setShowStoryDialog}
-      showLoreDialog={showLoreDialog}
-      setShowLoreDialog={setShowLoreDialog}
-      storyContent={storyContent}
-      loreContent={loreContent}
-      loreTitle="古籍碎片：《最優性悖論》第五卷"
-      storyText={storyText}
-      autoPlayTTS={true}
-      completionTitle="抉擇神殿已被征服"
-      completionMessage={completionMessage}
-    >
-      {gates.map((gate, index) => (
-        <GateCard
-          key={gate.id}
-          gate={gate}
-          index={index}
-          isCompleted={isGateCompleted(gate.id)}
-          isUnlocked={isGateUnlocked(gate.id, gateOrder)}
-          onClick={() => handleGateClick(gate)}
-          theme={theme}
-          sections={getGateSections(gate.id)}
-        />
-      ))}
-    </ChapterHubLayout>
+    <ProtectedChapter chapterNumber={5}>
+      <ChapterHubLayout
+        chapterNumber={5}
+        templeName="抉擇神殿"
+        chapterTitle="決策與最優性"
+        chapterDescription="這裡沒有具體的結構，沒有明確的道路。整個殿堂由無數閃爍的決策點組成——貪心、動態規劃、回溯、分治，尋求最佳決策的智慧考驗。"
+        completedCount={completedCount}
+        totalGates={gates.length}
+        isChapterCompleted={chapterCompleted}
+        showStoryDialog={showStoryDialog}
+        setShowStoryDialog={setShowStoryDialog}
+        showLoreDialog={showLoreDialog}
+        setShowLoreDialog={setShowLoreDialog}
+        storyContent={storyContent}
+        loreContent={loreContent}
+        loreTitle="古籍碎片：《最優性悖論》第五卷"
+        storyText={storyText}
+        autoPlayTTS={true}
+        completionTitle="抉擇神殿已被征服"
+        completionMessage={completionMessage}
+      >
+        {gates.map((gate, index) => (
+          <GateCard
+            key={gate.id}
+            gate={gate}
+            index={index}
+            isCompleted={isGateCompleted(gate.id)}
+            isUnlocked={isGateUnlocked(gate.id, gateOrder)}
+            onClick={() => handleGateClick(gate)}
+            theme={theme}
+            sections={getGateSections(gate.id)}
+          />
+        ))}
+      </ChapterHubLayout>
+    </ProtectedChapter>
   );
 };
 
