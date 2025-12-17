@@ -70,7 +70,7 @@ serve(async (req) => {
 
       if (upsertError) {
         logStep("Database update error", { error: upsertError.message });
-        throw new Error(`Failed to update subscription: ${upsertError.message}`);
+        throw new Error("Failed to update subscription");
       }
 
       logStep("Subscription upgraded to adventurer", { userId: user.id });
@@ -96,7 +96,21 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    
+    // Sanitize error messages
+    let safeMessage = "An error occurred verifying your payment";
+    if (error instanceof Error) {
+      const msg = error.message;
+      if (msg.includes("not authenticated")) {
+        safeMessage = "Authentication required";
+      } else if (msg === "session_id is required") {
+        safeMessage = msg;
+      } else if (msg === "Failed to update subscription") {
+        safeMessage = msg;
+      }
+    }
+    
+    return new Response(JSON.stringify({ error: safeMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
