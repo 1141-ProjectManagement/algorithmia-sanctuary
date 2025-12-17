@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -11,6 +12,40 @@ serve(async (req) => {
   }
 
   try {
+    // Verify user authentication
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("Missing authorization header");
+      return new Response(
+        JSON.stringify({ error: "Missing authorization header" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+
+    if (authError || !user) {
+      console.error("Authentication failed:", authError?.message || "No user found");
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    console.log(`TTS request from authenticated user: ${user.id}`);
+
     const { text, speed = 1.5 } = await req.json();
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
 
@@ -25,7 +60,7 @@ serve(async (req) => {
 
     const voiceId = "Qbw4VpyUrHEG7NigKzty";
 
-    console.log(`Generating TTS for text length: ${text.length}, speed: ${speed}`);
+    console.log(`Generating TTS for user ${user.id}, text length: ${text.length}, speed: ${speed}`);
 
     const response = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
@@ -55,7 +90,7 @@ serve(async (req) => {
     }
 
     const audioBuffer = await response.arrayBuffer();
-    console.log(`TTS generated successfully, size: ${audioBuffer.byteLength} bytes`);
+    console.log(`TTS generated successfully for user ${user.id}, size: ${audioBuffer.byteLength} bytes`);
 
     return new Response(audioBuffer, {
       headers: {
