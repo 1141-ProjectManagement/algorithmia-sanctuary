@@ -10,16 +10,16 @@ const CheckIcon = ({ className }: { className?: string }) => (
 const ShaderCanvas = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const glProgramRef = useRef<WebGLProgram | null>(null);
-  const glBgColorLocationRef = useRef<WebGLUniformLocation | null>(null);
-  const glRef = useRef<WebGLRenderingContext | null>(null);
-  const [backgroundColor, setBackgroundColor] = useState([0, 0, 0]);
+  
+  // Use a ref for backgroundColor so the render loop always sees the latest value
+  // without needing to be recreated.
+  const backgroundColorRef = useRef([0, 0, 0]);
 
   useEffect(() => {
     const root = document.documentElement;
     const updateColor = () => {
       const isDark = root.classList.contains('dark') || !root.classList.contains('light');
-      setBackgroundColor(isDark ? [0.04, 0.04, 0.04] : [0.98, 0.98, 0.98]);
+      backgroundColorRef.current = isDark ? [0.04, 0.04, 0.04] : [0.98, 0.98, 0.98];
     };
     updateColor();
     const observer = new MutationObserver((mutationsList) => {
@@ -34,23 +34,13 @@ const ShaderCanvas = () => {
   }, []);
 
   useEffect(() => {
-    const gl = glRef.current;
-    const program = glProgramRef.current;
-    const location = glBgColorLocationRef.current;
-    if (gl && program && location) {
-      gl.useProgram(program);
-      gl.uniform3fv(location, new Float32Array(backgroundColor));
-    }
-  }, [backgroundColor]);
-
-  useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
     if (!canvas || !container) return;
     
+    // Check for contexts to prevent errors if WebGL isn't supported
     const gl = canvas.getContext('webgl');
     if (!gl) { console.error("WebGL not supported"); return; }
-    glRef.current = gl;
 
     const vertexShaderSource = `attribute vec2 aPosition; void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }`;
     const fragmentShaderSource = `
@@ -95,39 +85,46 @@ const ShaderCanvas = () => {
       return shader;
     };
 
-    const program = gl.createProgram();
-    if (!program) throw new Error("Could not create program");
-    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    gl.useProgram(program);
-    glProgramRef.current = program;
+    let program: WebGLProgram | null = null;
+    try {
+        program = gl.createProgram();
+        if (!program) throw new Error("Could not create program");
+        const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+    } catch (e) {
+        console.error(e);
+        return;
+    }
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+    
+    if (!program) return;
+    
     const aPosition = gl.getAttribLocation(program, 'aPosition');
     gl.enableVertexAttribArray(aPosition);
     gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, 0, 0);
 
     const iTimeLoc = gl.getUniformLocation(program, 'iTime');
     const iResLoc = gl.getUniformLocation(program, 'iResolution');
-    glBgColorLocationRef.current = gl.getUniformLocation(program, 'uBackgroundColor');
-    gl.uniform3fv(glBgColorLocationRef.current, new Float32Array(backgroundColor));
+    const uBgColorLoc = gl.getUniformLocation(program, 'uBackgroundColor');
 
     let animationFrameId: number;
-    let currentWidth = 0;
-    let currentHeight = 0;
 
     const render = (time: number) => {
-      if (currentWidth === 0 || currentHeight === 0) {
-        animationFrameId = requestAnimationFrame(render);
-        return;
-      }
+      // Ensure we are using the correct program and buffer state
+       if (!gl || !program) return;
+      
+      // Update Uniforms
       gl.uniform1f(iTimeLoc, time * 0.001);
       gl.uniform2f(iResLoc, canvas.width, canvas.height);
+      gl.uniform3fv(uBgColorLoc, new Float32Array(backgroundColorRef.current));
+      
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       animationFrameId = requestAnimationFrame(render);
     };
@@ -137,12 +134,17 @@ const ShaderCanvas = () => {
         const { width, height } = entry.contentRect;
         if (width === 0 || height === 0) return;
         
-        currentWidth = width;
-        currentHeight = height;
         const dpr = Math.min(window.devicePixelRatio, 2);
-        canvas.width = width * dpr;
-        canvas.height = height * dpr;
-        gl.viewport(0, 0, canvas.width, canvas.height);
+        const displayWidth = Math.round(width * dpr);
+        const displayHeight = Math.round(height * dpr);
+
+        // Check if the canvas size actually changed before setting it.
+        // Setting canvas.width/height clears the canvas.
+        if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+            canvas.width = displayWidth;
+            canvas.height = displayHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
       }
     });
     resizeObserver.observe(container);
@@ -152,6 +154,7 @@ const ShaderCanvas = () => {
     return () => {
       resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
+      // Optional: Clean up WebGL resources if needed, but for a single component usually fine.
     };
   }, []);
 

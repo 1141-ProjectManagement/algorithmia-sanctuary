@@ -1,269 +1,169 @@
-# 首頁結構文檔 | Homepage Structure Documentation
+# 🏯 首頁結構與導航文檔 | Homepage Structure & Navigation Hub
 
-**版本更新註釋：**
-- v1.8 (2024): 移除了 ScrollNav 的箭頭按鈕，簡化導航介面僅保留圓點指示器。
-- v1.7 (2024): 優化了 Realms 輪播卡片動畫效果，凸顯單張卡片互動體驗並消除動畫干擾。
-- v1.6 (2024): 優化了 ScrollNav 導航的滾動流暢度，消除了切換區塊時的卡頓感。
-- v1.5 (2024): 修復了使用 ScrollNav 導航時因 snap scrolling 衝突導致區塊卡在中間無法完整定位的問題。
-- v1.4 (2024): 修復了從 Realms 導航到 Hero 時因固定 Navbar 遮擋導致定位不完整的問題。
-- v1.3 (2024): 精簡文檔內容，僅保留開發必要資訊以減少 token 使用。
-- v1.2 (2024): 修復了通知系統 section 元素被誤認為頁面區塊導致空白畫面的問題。
-- v1.1 (2024): 修復了導航系統動態效果與頁面區塊的同步問題，改用 Intersection Observer API 實現精確追蹤。
-- v1.0 (2024): 修復了導航系統（Navbar/ScrollNav/Keyboard）與頁面區塊標籤不同步的問題。
+> 本文檔詳述首頁 (`Index.tsx`) 的架構設計、導航邏輯與區塊互動機制。
+> This document details the architectural design, navigation logic, and interaction mechanisms of the homepage.
 
 ---
 
-## 🏗️ 整體架構
+## 🏗️ 整體架構 | Overall Architecture
 
-### 頁面結構
+### 頁面組件層級 | Component Hierarchy
 
 ```
 Index.tsx
-├── Navbar (currentSection, onNavigate)
-├── ScrollNav (sections, currentSection, onNavigate)
-└── main
-    ├── Hero (#hero-section)
-    ├── Realms (#realms-section)
-    └── About (#about-section)
+├── Navbar (Top Navigation) -> Controls subset of sections
+├── AudioControls (Global Sound)
+└── main (Scroll Container)
+    ├── ScrollNav (Side Indicators) -> Controls ALL sections
+    ├── Hero (#hero-section) [Index: 0]
+    ├── Realms (#realms-section) [Index: 1]
+    ├── About (#about-section) [Index: 2]
+    ├── Testimonials (#testimonials-section) [Index: 3]
+    └── Pricing (#pricing-section) [Index: 4]
 ```
 
-### 區塊索引
+### 區塊索引定義 | Section Index
 
 ```javascript
-const sections = ["Introduction", "Realms", "About"];
-// 0: Hero (#hero-section)
-// 1: Realms (#realms-section)
-// 2: About (#about-section)
-```
-
----
-
-## 🧭 導航系統
-
-### Navbar 配置
-
-```tsx
-const navItems = [
-  { label: "Introduction", section: 0, ariaLabel: "Navigate to hero introduction" },
-  { label: "Realms", section: 1, ariaLabel: "Navigate to seven temples" },
-  { label: "About", section: 2, ariaLabel: "Navigate to about section" },
+const sections = [
+  "Introduction", // 0: Hero
+  "Realms", // 1: Realms
+  "About", // 2: About
+  "Testimonials", // 3: Testimonials
+  "Pricing", // 4: Pricing
 ];
 ```
 
-### 鍵盤快捷鍵
+---
 
-- `↓` / `Space`: 下一個區塊
-- `↑`: 上一個區塊
+## 🧭 導航系統 | Navigation System
 
-### 滾動追蹤（Intersection Observer）
+首頁採用雙重導航系統，分別服務不同層級的導航需求。
 
-```tsx
-// 只追蹤真實頁面區塊，排除通知系統
-const allSections = document.querySelectorAll(
-  "section#hero-section, section#realms-section, section#about-section"
-);
+### 1. 頂部導航列 (Navbar)
 
-// Observer 配置
-const observerOptions = {
-  root: null,
-  rootMargin: "-50% 0px -50% 0px",
-  threshold: 0,
-};
-```
+_專注於主要內容區塊的快速跳轉_
+
+- **組件位置**: `src/components/Navbar.tsx`
+- **覆蓋範圍**: 僅前三章節 (Introduction, Realms, About)
+- **互動**: 點擊標題或漢堡選單跳轉
+
+### 2. 側邊滾動導航 (ScrollNav)
+
+_提供完整的頁面進度指示_
+
+- **組件位置**: `src/components/ScrollNav.tsx`
+- **覆蓋範圍**: 所有區塊 (含 Testimonials 與 Pricing)
+- **樣式**: 右側圓點指示器，Hover 顯示章節名稱
+- **狀態**:
+  - 啟用狀態: 金色光暈 (`hsl(43, 74%, 53%)`)
+  - 縮放動畫: 當前區塊放大 1.4x
+
+### 3. 鍵盤導航 (Keyboard Navigation)
+
+- **支援按鍵**:
+  - `↓` / `Space`: 下一個區塊
+  - `↑`: 上一個區塊
+- **排除條件**: 當焦點在輪播 (Carousel) 組件內時不觸發，避免操作衝突。
+
+### 4. 滾動追蹤 (Tracking)
+
+使用 `Intersection Observer API` 精確追蹤當前視口所在的區塊。
+
+- **Observer Options**: `rootMargin: "-50% 0px -50% 0px"` (確保區塊佔據畫面 50% 時才切換狀態)
 
 ---
 
-## 📄 頁面區塊
+## 📄 頁面區塊詳情 | Page Sections Detail
 
-### Hero (#hero-section)
+### 1. Hero (#hero-section)
 
-- **主標題**: ALGORITHMIA EXPEDITION
-- **副標題**: 探索演算法的古老智慧，穿越七座神聖聖殿，解鎖計算思維的奧秘
-- **CTA**: 開始探索之旅 (scrollToRealms)
+- **功能**: 著陸頁核心視覺
+- **元素**: "ALGORITHMIA EXPEDITION" 標題、動態粒子背景、開始按鈕
+- **特效**: 下方金色分隔線 (Golden Line Divider)
 
-### Realms (#realms-section)
+### 2. Realms (#realms-section)
 
-七大聖殿輪播：
+- **功能**: 七大演算法聖殿展示
+- **互動**: 3D 輪播卡片 (Carousel)，展示各章節主題 (Search, Sorting, Tree, Graph...)
+- **特效**: 下方金色分隔線
 
-1. Search Temple - 搜尋聖殿
-2. Sorting Temple - 排序聖殿
-3. Tree Temple - 樹狀聖殿
-4. Graph Temple - 圖論聖殿
-5. Dynamic Programming Temple - 動態規劃聖殿
-6. Greedy Temple - 貪婪聖殿
-7. Backtracking Temple - 回溯聖殿
+### 3. About (#about-section)
 
-### About (#about-section)
+- **功能**: 專案理念與團隊介紹
+- **內容**: "Restoring the Balance" 敘事文本
+- **特效**: 下方金色分隔線
 
-專案介紹與團隊資訊
+### 4. Testimonials (#testimonials-section)
 
----
+- **功能**: 使用者見證與回饋
+- **樣式**: 卡片式佈局
+- **特效**: 下方金色分隔線
 
-## 🎨 設計系統
+### 5. Pricing (#pricing-section)
 
-### 色彩變數
-
-```css
---temple-gold: 43 74% 53%;      /* 主要強調色 */
---background: 0 0% 4%;           /* 深黑背景 */
---foreground: 45 25% 90%;        /* 文字顏色 */
---lapis-blue: 236 63% 48%;       /* 次要色 */
---jade-green: 153 100% 33%;      /* 成功色 */
-```
-
-### 字體
-
-- **Cinzel**: 標題、按鈕 (400, 600, 700)
-- **Inter**: 內文、導航 (300, 400, 500, 600)
-
-### 斷點
-
-```css
-sm: 640px    md: 768px    lg: 1024px    xl: 1280px    2xl: 1536px
-```
+- **功能**: 訂閱方案選擇
+- **主要組件**: `ModernPricingPage`
+- **背景特效**: `ShaderCanvas` (WebGL 金色流體動畫)
+  - _注意_: 此區塊無 CSS 偽元素分隔線，改用全屏 Shader 背景。
+  - **實作細節**: 使用 `useRef` 進行 WebGL 狀態同步，防止動畫閃爍。
 
 ---
 
-## ⚙️ 技術實作
+## 🎨 樣式與設計 | Design & CSS
 
-### 狀態管理
+### 滾動捕捉 (Snap Scrolling)
 
-```tsx
-const [currentSection, setCurrentSection] = useState(0);
-const sections = ["Introduction", "Realms", "About"];
-```
-
-### 路由配置
-
-```tsx
-<QueryClientProvider>
-  <TooltipProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
-    <Toaster />
-    <Sonner />
-  </TooltipProvider>
-</QueryClientProvider>
-```
-
-### 全域組件 CSS（防止佔用空間）
+頁面採用 CSS Scroll Snap 實現全屏切換體驗。
 
 ```css
-.toaster,
-[data-sonner-toaster],
-section[aria-label*="Notifications"],
-section[aria-live="polite"] {
-    position: fixed !important;
-    pointer-events: none;
-    z-index: 9999;
-    display: none !important;
+main {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+}
+
+section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-height: 100vh;
 }
 ```
 
----
+### 關鍵色彩變數
 
-## 🎭 互動機制
+- `--temple-gold`: `43 74% 53%` (核心識別色)
+- `--background`: `0 0% 4%` (極致深黑)
 
-### Snap Scrolling
+### 全域 CSS 注意事項
 
-```tsx
-<main className="snap-y snap-mandatory overflow-y-scroll">
-  <section className="snap-start snap-stop min-h-screen" />
-</main>
-```
-
-### Smooth Scrolling
-
-```tsx
-element?.scrollIntoView({ behavior: "smooth", block: "start" });
-```
-
-### 動畫配置
-
-```tsx
-// Framer Motion
-initial={{ opacity: 0, y: 20 }}
-animate={{ opacity: 1, y: 0 }}
-transition={{ duration: 0.8, delay: 0.3 }}
-```
+- **通知系統 (Toaster)**: 強制設為 `position: fixed` 並排除在 Section Flow 之外，防止影響滾動定位。
+- **平滑滾動**: HTML 層級啟用 `scroll-behavior: smooth`，但在程式碼控制跳轉時會暫時停用 Snap 以優化流暢度。
 
 ---
 
-## ⚡ 性能優化
+## ⚡ 技術實作筆記 | Implementation Notes
 
-### 程式碼分割
+### 區塊選擇器 (Selectors)
 
-```tsx
-const Hero = lazy(() => import("@/components/Hero"));
-const Realms = lazy(() => import("@/components/Realms"));
-const About = lazy(() => import("@/components/About"));
+為避免選取到非頁面結構的 `<section>` (如 Radix UI 的通知區塊)，必須使用明確 ID 選擇器：
+
+```typescript
+const selector =
+  "section#hero-section, section#realms-section, section#about-section, section#testimonials-section, section#pricing-section";
+const allSections = document.querySelectorAll(selector);
 ```
 
-### 滾動優化
+### 效能優化
 
-```tsx
-const debouncedHandleScroll = () => {
-  requestAnimationFrame(handleScroll);
-};
-window.addEventListener("scroll", debouncedHandleScroll, { passive: true });
-```
+- **Debounce**: 滾動事件監聽器使用 `requestAnimationFrame` 進行節流。
+- **Lazy Loading**: 所有主要區塊組件 (Hero, Realms 等) 建議採用 React Suspense/Lazy 載入 (視專案配置而定)。
+- **WebGL**: Pricing 背景在不可見或組件卸載時會自動清理 Context。
 
 ---
 
-## 🔍 關鍵注意事項
+## 📜 版本紀錄 | Version History
 
-### ⚠️ 必須使用 ID 選擇器
-
-所有 `querySelectorAll("section")` 必須改為：
-
-```tsx
-document.querySelectorAll(
-  "section#hero-section, section#realms-section, section#about-section"
-)
-```
-
-**原因**: 避免選到通知系統的 `<section aria-label="Notifications">`
-
-### ⚠️ Intersection Observer 配置
-
-```tsx
-rootMargin: "-50% 0px -50% 0px"  // 確保區塊中央時才觸發
-threshold: 0                      // 立即檢測
-```
-
-### ⚠️ 區塊同步
-
-- Navbar labels 必須匹配 `sections` 陣列
-- ScrollNav 使用 `sections` prop
-- Keyboard Navigation 使用 `currentSection` 索引
-- 所有導航函數使用相同的 ID 選擇器
-
----
-
-## 📝 快速參考
-
-### 新增區塊步驟
-
-1. 在 `src/components/` 建立新元件
-2. 添加唯一 `id` 屬性（如 `#new-section`）
-3. 更新 `sections` 陣列
-4. 更新 `navItems` 配置
-5. 更新所有 `querySelectorAll` 選擇器
-6. 在 `Index.tsx` 渲染元件
-
-### 常見問題
-
-- **導航不同步**: 檢查 `sections` 陣列與 `navItems` 是否一致
-- **空白畫面**: 檢查是否誤選通知系統的 section
-- **滾動不精確**: 確認使用 Intersection Observer 而非計算滾動位置
-- **通知佔空間**: 確認 CSS 有 `position: fixed !important`
-
----
-
-**文檔版本**: v1.8.0
-**最後更新**: 2024  
-**維護者**: Algorithmia Team
+- **v2.0 (2024)**: 新增 Testimonials 與 Pricing 區塊；優化 WebGL 背景效能。
+- **v1.8**: 移除 ScrollNav 箭頭按鈕。
+- **v1.7**: 優化 Realms 輪播體驗。
+- **v1.0-v1.6**: 滾動導航與 Intersection Observer 核心邏輯迭代。
