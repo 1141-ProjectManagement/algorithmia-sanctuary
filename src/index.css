@@ -38,6 +38,9 @@ All colors MUST be HSL.
 
         --radius: 0.5rem;
 
+        /* Ripple Button */
+        --button-ripple-color: hsla(43, 74%, 53%, 0.3);
+
         /* Mystical Temple Colors */
         --temple-black: 0 0% 4%;
         --temple-gold: 43 74% 53%;

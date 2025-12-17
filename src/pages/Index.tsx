@@ -3,11 +3,12 @@ import Hero from "@/components/Hero";
 import Realms from "@/components/Realms";
 import About from "@/components/About";
 import Testimonials from "@/components/Testimonials";
+import Pricing from "@/components/Pricing";
 import ScrollNav from "@/components/ScrollNav";
 import Navbar from "@/components/Navbar";
 import { AudioControls } from "@/components/AudioControls";
 import { useAudioContext } from "@/contexts/AudioContext";
-const sections = ["Introduction", "Realms", "About", "Testimonials"];
+const sections = ["Introduction", "Realms", "About", "Testimonials", "Pricing"];
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
@@ -43,6 +44,7 @@ const Index = () => {
           else if (sectionId === "realms-section") index = 1;
           else if (sectionId === "about-section") index = 2;
           else if (sectionId === "testimonials-section") index = 3;
+          else if (sectionId === "pricing-section") index = 4;
 
           setCurrentSection(index);
         }
@@ -56,7 +58,7 @@ const Index = () => {
 
     // Observe only page sections (exclude notification sections)
     const allSections = document.querySelectorAll(
-      "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
+      "section#hero-section, section#realms-section, section#about-section, section#testimonials-section, section#pricing-section",
     );
     sectionsRef.current = Array.from(allSections) as HTMLElement[];
 
@@ -97,14 +99,14 @@ const Index = () => {
         if (e.key === "ArrowDown" || e.key === " ") {
           if (currentSection < sections.length - 1) {
             const nextSection = document.querySelectorAll(
-              "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
+              "section#hero-section, section#realms-section, section#about-section, section#testimonials-section, section#pricing-section",
             )[currentSection + 1];
             nextSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
         } else if (e.key === "ArrowUp") {
           if (currentSection > 0) {
             const prevSection = document.querySelectorAll(
-              "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
+              "section#hero-section, section#realms-section, section#about-section, section#testimonials-section, section#pricing-section",
             )[currentSection - 1];
             prevSection?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
@@ -120,7 +122,7 @@ const Index = () => {
     if (!mainRef.current) return;
 
     const allSections = document.querySelectorAll(
-      "section#hero-section, section#realms-section, section#about-section, section#testimonials-section",
+      "section#hero-section, section#realms-section, section#about-section, section#testimonials-section, section#pricing-section",
     );
     const targetSection = allSections[index] as HTMLElement;
     if (!targetSection) return;
@@ -200,7 +202,8 @@ const Index = () => {
         section#hero-section,
         section#realms-section,
         section#about-section,
-        section#testimonials-section {
+        section#testimonials-section,
+        section#pricing-section {
           scroll-snap-align: start;
           scroll-snap-stop: always;
           position: relative;
@@ -209,7 +212,8 @@ const Index = () => {
 
         section#hero-section::after,
         section#realms-section::after,
-        section#about-section::after {
+        section#about-section::after,
+        section#testimonials-section::after {
           content: '';
           position: absolute;
           bottom: 0;
@@ -221,7 +225,7 @@ const Index = () => {
           box-shadow: 0 0 15px hsla(43, 74%, 53%, 0.4), 0 2px 8px hsla(0, 0%, 0%, 0.3);
         }
 
-        section#testimonials-section::after {
+        section#pricing-section::after {
           display: none;
         }
 
@@ -248,6 +252,9 @@ const Index = () => {
 
         {/* Section 4: Testimonials */}
         <Testimonials />
+
+        {/* Section 5: Pricing */}
+        <Pricing />
       </main>
     </>
   );
