@@ -43,9 +43,12 @@ const gates: GateData[] = [
 const gateOrder = gates.map((g) => g.id);
 const theme = getChapterTheme(6);
 
+// Plain text version of story for TTS
+const storyText = `穿越所有試煉後，你終於來到了最後的聖殿。這裡是整合神殿——Algorithmia 文明的終點，也是所有知識匯聚的地方。牆壁上刻滿了你在旅途中見過的所有符文，它們現在以全新的方式組合在一起。一位年邁的守殿者站在中央，他的眼中既有智慧也有悲傷。「歡迎來到整合神殿。」「你已經走了很長的路。時間複雜度、排序、樹、圖、決策策略——這些都是我們文明的精華。」「但在這裡，你將學習最後的秘密：如何將所有知識融合為一。」「以及...我們文明為何消亡的真相。」`;
+
 const Chapter6Hub = () => {
   const navigate = useNavigate();
-  const [showStoryDialog, setShowStoryDialog] = useState(false);
+  const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showLoreDialog, setShowLoreDialog] = useState(false);
 
   const {
@@ -139,6 +142,8 @@ const Chapter6Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《終章——文明的遺言》"
+      storyText={storyText}
+      autoPlayTTS={true}
       completionTitle="整合神殿已被征服"
       completionMessage={completionMessage}
     >

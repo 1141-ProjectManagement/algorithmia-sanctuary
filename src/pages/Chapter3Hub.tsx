@@ -51,9 +51,12 @@ const gates: GateData[] = [
 const gateOrder = gates.map((g) => g.id);
 const theme = getChapterTheme(3);
 
+// Plain text version of story for TTS
+const storyText = `穿越秩序神殿的大門後，景色驟然改變。你不再面對簡單的線性世界。眼前是一片古老的樹林，樹木彼此相連，形成了複雜的網絡。樹枝向四面八方延伸，樹根深深扎入地下。一位長者現身。他的聲音在樹林中迴盪。「歡迎來到迴聲神殿。」「你已經掌握了線性的秩序。但現實遠比一條直線複雜。」「在這裡，知識以樹的形式生長。每個節點都有父親與孩子。每條路徑都代表著不同的邏輯分支。」「要深入 Algorithmia 的秘密，你必須學會在樹的世界中導航。」`;
+
 const Chapter3Hub = () => {
   const navigate = useNavigate();
-  const [showStoryDialog, setShowStoryDialog] = useState(false);
+  const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showLoreDialog, setShowLoreDialog] = useState(false);
 
   const {
@@ -147,6 +150,8 @@ const Chapter3Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《權力經——階層篇》"
+      storyText={storyText}
+      autoPlayTTS={true}
       completionTitle="迴聲神殿已被征服"
       completionMessage={completionMessage}
     >

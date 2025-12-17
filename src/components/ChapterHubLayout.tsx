@@ -1,12 +1,13 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Sparkles, Scroll, BookOpen, CheckCircle2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getChapterTheme, ChapterTheme } from "@/config/chapterThemes";
+import { getChapterTheme } from "@/config/chapterThemes";
+import { useTTS } from "@/hooks/useTTS";
+import { TTSControls } from "@/components/TTSControls";
 
 interface ChapterHubLayoutProps {
   // Chapter Info
@@ -28,6 +29,10 @@ interface ChapterHubLayoutProps {
   storyContent: ReactNode;
   loreContent: ReactNode;
   loreTitle?: string;
+  
+  // TTS
+  storyText?: string; // Plain text version for TTS
+  autoPlayTTS?: boolean;
   
   // Completion
   completionTitle?: string;
@@ -52,6 +57,8 @@ const ChapterHubLayout = ({
   storyContent,
   loreContent,
   loreTitle = "古籍碎片",
+  storyText,
+  autoPlayTTS = true,
   completionTitle,
   completionMessage,
   children,
@@ -59,11 +66,53 @@ const ChapterHubLayout = ({
   const navigate = useNavigate();
   const progressPercentage = (completedCount / totalGates) * 100;
   const theme = getChapterTheme(chapterNumber);
+  const hasAutoPlayed = useRef(false);
+
+  const {
+    speak,
+    stop,
+    isSpeaking,
+    isLoading,
+    speed,
+    setSpeed,
+  } = useTTS({ defaultSpeed: 1.5 });
+
+  // Auto-play TTS when story dialog opens
+  useEffect(() => {
+    if (showStoryDialog && storyText && autoPlayTTS && !hasAutoPlayed.current) {
+      hasAutoPlayed.current = true;
+      // Small delay to ensure dialog is rendered
+      const timer = setTimeout(() => {
+        speak(storyText);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [showStoryDialog, storyText, autoPlayTTS, speak]);
+
+  // Stop TTS when dialog closes
+  useEffect(() => {
+    if (!showStoryDialog) {
+      stop();
+    }
+  }, [showStoryDialog, stop]);
+
+  const handleDialogClose = (open: boolean) => {
+    if (!open) {
+      stop();
+    }
+    setShowStoryDialog(open);
+  };
+
+  const handleReplay = () => {
+    if (storyText) {
+      speak(storyText);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Opening Story Dialog */}
-      <Dialog open={showStoryDialog} onOpenChange={setShowStoryDialog}>
+      <Dialog open={showStoryDialog} onOpenChange={handleDialogClose}>
         <DialogContent 
           className="max-w-2xl max-h-[80vh] bg-card/95 backdrop-blur-sm"
           style={{ borderColor: `${theme.accentColor}30` }}
@@ -80,14 +129,28 @@ const ChapterHubLayout = ({
               第{chapterNumber}章開場故事
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea className="max-h-[60vh] pr-4">
+          
+          {/* TTS Controls */}
+          {storyText && (
+            <TTSControls
+              isSpeaking={isSpeaking}
+              isLoading={isLoading}
+              speed={speed}
+              onSpeedChange={setSpeed}
+              onStop={stop}
+              onReplay={handleReplay}
+              accentColor={theme.accentColor}
+            />
+          )}
+          
+          <ScrollArea className="max-h-[50vh] pr-4">
             <div className="space-y-6 text-foreground/90 leading-relaxed">
               {storyContent}
             </div>
           </ScrollArea>
           <div className="flex justify-end pt-4">
             <Button 
-              onClick={() => setShowStoryDialog(false)} 
+              onClick={() => handleDialogClose(false)} 
               style={{ 
                 background: `linear-gradient(135deg, ${theme.gradientFrom}, ${theme.gradientTo})`,
               }}

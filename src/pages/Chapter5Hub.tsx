@@ -43,9 +43,12 @@ const gates: GateData[] = [
 const gateOrder = gates.map((g) => g.id);
 const theme = getChapterTheme(5);
 
+// Plain text version of story for TTS
+const storyText = `穿越織徑神殿後，你來到了一個完全不同的空間。這裡沒有具體的結構，沒有明確的道路。整個殿堂是由無數個閃爍的決策點組成的——每個決策點都有多個選擇，每個選擇都通往不同的未來。一位穿著白袍的智者出現在你面前。她的眼神深邃而平靜。「歡迎來到抉擇神殿。」「在前面的冒險中，你學會了測量、排序、構建結構、導航網絡。但你還沒有真正面對最困難的問題——如何做出最佳決策。」「貪心策略有時有效，有時失敗。動態規劃總是正確，但代價高昂。回溯能窮舉一切，但速度緩慢。」「這裡沒有單一的『正確答案』。只有適應不同場景的『最優選擇』。」`;
+
 const Chapter5Hub = () => {
   const navigate = useNavigate();
-  const [showStoryDialog, setShowStoryDialog] = useState(false);
+  const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showLoreDialog, setShowLoreDialog] = useState(false);
 
   const {
@@ -140,6 +143,8 @@ const Chapter5Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《最優性悖論》第五卷"
+      storyText={storyText}
+      autoPlayTTS={true}
       completionTitle="抉擇神殿已被征服"
       completionMessage={completionMessage}
     >

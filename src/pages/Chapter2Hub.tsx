@@ -51,9 +51,12 @@ const gates: GateData[] = [
 const gateOrder = gates.map((g) => g.id);
 const theme = getChapterTheme(2);
 
+// Plain text version of story for TTS
+const storyText = `穿過啟程之殿的大門，你進入了秩序神殿。這裡與之前的遺跡截然不同。牆壁展現著從混亂到有序的壯美變化——一端是雜亂無章的色彩碎片，另一端是井然有序的彩虹光譜。一位優雅而嚴厲的守殿者現身。她的聲音帶著絕對的權威。「歡迎來到秩序神殿。」「在這裡，混亂會被轉化為秩序。這不是選擇，而是必然。」「排序是一切力量的基礎。掌握它，你將能駕馭數據的力量；掌握不了，你將被混亂吞沒。」「你準備好了嗎？」`;
+
 export default function Chapter2Hub() {
   const navigate = useNavigate();
-  const [showStoryDialog, setShowStoryDialog] = useState(false);
+  const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showLoreDialog, setShowLoreDialog] = useState(false);
   
   const {
@@ -147,6 +150,8 @@ export default function Chapter2Hub() {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《秩序紀年誌》第二卷"
+      storyText={storyText}
+      autoPlayTTS={true}
       completionTitle="時序神殿已被征服"
       completionMessage={completionMessage}
     >
