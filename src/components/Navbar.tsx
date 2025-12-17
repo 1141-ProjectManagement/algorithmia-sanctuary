@@ -1,26 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Sparkles, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AuthModal } from "@/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
 import { useAudioContext } from "@/contexts/AudioContext";
+import { useSubscription } from "@/hooks/useSubscription";
 
 interface NavbarProps {
   currentSection: number;
   onNavigate: (index: number) => void;
 }
-
-const navItems = [
-  {
-    label: "Introduction",
-    section: 0,
-    ariaLabel: "Navigate to hero introduction",
-  },
-  { label: "Realms", section: 1, ariaLabel: "Navigate to seven temples" },
-  { label: "About", section: 2, ariaLabel: "Navigate to about section" },
-  { label: "Pricing", section: 4, ariaLabel: "Navigate to pricing section" },
-];
 
 const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -28,6 +18,22 @@ const Navbar = ({ currentSection, onNavigate }: NavbarProps) => {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { profile, isAuthenticated, logout } = useAuth();
   const { playClick } = useAudioContext();
+  const { isPremium } = useSubscription();
+
+  // Filter out Pricing for premium users
+  const navItems = useMemo(() => {
+    const items = [
+      { label: "Introduction", section: 0, ariaLabel: "Navigate to hero introduction" },
+      { label: "Realms", section: 1, ariaLabel: "Navigate to seven temples" },
+      { label: "About", section: 2, ariaLabel: "Navigate to about section" },
+    ];
+    
+    if (!isPremium) {
+      items.push({ label: "Pricing", section: 4, ariaLabel: "Navigate to pricing section" });
+    }
+    
+    return items;
+  }, [isPremium]);
 
   useEffect(() => {
     const handleScroll = () => {
