@@ -19,6 +19,14 @@ export const SPEED_OPTIONS = [0.7, 0.85, 1, 1.1, 1.2] as const;
 const CACHE_PREFIX = "tts_cache_";
 const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
 
+// Clear all TTS cache entries
+export const clearTTSCache = (): number => {
+  const keys = Object.keys(localStorage).filter((k) => k.startsWith(CACHE_PREFIX));
+  keys.forEach((k) => localStorage.removeItem(k));
+  console.log(`TTS: Cleared ${keys.length} cached audio entries`);
+  return keys.length;
+};
+
 // Generate cache key from text and speed
 const getCacheKey = (text: string, speed: number): string => {
   const hash = text.split("").reduce((acc, char) => {
