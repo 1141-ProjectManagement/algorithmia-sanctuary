@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
 import { Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSubscription } from "@/hooks/useSubscription";
-import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface PaywallOverlayProps {
   title?: string;
@@ -13,19 +12,10 @@ const PaywallOverlay = ({
   title = "此內容僅限冒險家會員",
   description = "解鎖完整 6 章 28 關卡，開啟你的演算法探險之旅"
 }: PaywallOverlayProps) => {
-  const { startCheckout } = useSubscription();
-  const { toast } = useToast();
+  const navigate = useNavigate();
 
-  const handleUpgrade = async () => {
-    try {
-      await startCheckout();
-    } catch (error) {
-      toast({
-        title: "無法開始結帳",
-        description: error instanceof Error ? error.message : "請稍後再試",
-        variant: "destructive",
-      });
-    }
+  const handleUpgrade = () => {
+    navigate("/", { state: { scrollTo: "pricing" } });
   };
 
   return (

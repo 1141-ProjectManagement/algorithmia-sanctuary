@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Realms from "@/components/Realms";
 import About from "@/components/About";
@@ -15,6 +16,7 @@ const Index = () => {
   const sectionsRef = useRef<HTMLElement[]>([]);
   const mainRef = useRef<HTMLElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const location = useLocation();
   
   const {
     bgmPlaying,
@@ -164,6 +166,15 @@ const Index = () => {
       }, 1200);
     });
   };
+
+  useEffect(() => {
+    if (location.state && location.state.scrollTo === "pricing") {
+      // Small timeout to ensure DOM is ready and layout is stable
+      setTimeout(() => {
+        navigateToSection(4);
+      }, 100);
+    }
+  }, [location]);
 
   return (
     <>
