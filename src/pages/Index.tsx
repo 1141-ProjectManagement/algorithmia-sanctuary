@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import Hero from "@/components/Hero";
 import Realms from "@/components/Realms";
@@ -9,7 +9,7 @@ import ScrollNav from "@/components/ScrollNav";
 import Navbar from "@/components/Navbar";
 import { AudioControls } from "@/components/AudioControls";
 import { useAudioContext } from "@/contexts/AudioContext";
-const sections = ["Introduction", "Realms", "About", "Testimonials", "Pricing"];
+import { useSubscription } from "@/hooks/useSubscription";
 
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
@@ -17,6 +17,7 @@ const Index = () => {
   const mainRef = useRef<HTMLElement>(null);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
+  const { isPremium } = useSubscription();
   
   const {
     bgmPlaying,
@@ -27,7 +28,15 @@ const Index = () => {
     setVolume,
     playClick,
   } = useAudioContext();
-  // Intersection Observer for accurate section tracking
+
+  // Dynamic sections based on premium status
+  const sections = useMemo(() => {
+    const base = ["Introduction", "Realms", "About", "Testimonials"];
+    if (!isPremium) {
+      base.push("Pricing");
+    }
+    return base;
+  }, [isPremium]);
   useEffect(() => {
     const observerOptions = {
       root: null,
@@ -264,8 +273,8 @@ const Index = () => {
         {/* Section 4: Testimonials */}
         <Testimonials />
 
-        {/* Section 5: Pricing */}
-        <Pricing />
+        {/* Section 5: Pricing (hidden for premium users) */}
+        {!isPremium && <Pricing />}
       </main>
     </>
   );
