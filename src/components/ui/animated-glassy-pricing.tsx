@@ -8,11 +8,12 @@ const CheckIcon = ({ className }: { className?: string }) => (
 );
 
 const ShaderCanvas = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const glProgramRef = useRef<WebGLProgram | null>(null);
   const glBgColorLocationRef = useRef<WebGLUniformLocation | null>(null);
   const glRef = useRef<WebGLRenderingContext | null>(null);
-  const [backgroundColor, setBackgroundColor] = useState([0, 0, 0]); // Dark theme default
+  const [backgroundColor, setBackgroundColor] = useState([0, 0, 0]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -44,13 +45,14 @@ const ShaderCanvas = () => {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+    
     const gl = canvas.getContext('webgl');
     if (!gl) { console.error("WebGL not supported"); return; }
     glRef.current = gl;
 
     const vertexShaderSource = `attribute vec2 aPosition; void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }`;
-    // Modified shader with gold/amber color theme
     const fragmentShaderSource = `
       precision highp float;
       uniform float iTime;
@@ -76,7 +78,6 @@ const ShaderCanvas = () => {
         mask += paintCircle(uv,center,radius-.018,.01).r;
         mask += paintCircle(uv,center,radius+.018,.005).r;
         vec2 v=rotate2d(iTime)*uv;
-        // Gold/amber gradient instead of cyan
         vec3 foregroundColor=vec3(0.83 + v.x * 0.1, 0.69 - v.y * 0.1, 0.22 + v.x * v.y * 0.1);
         vec3 color=mix(uBackgroundColor,foregroundColor,mask);
         color=mix(color,vec3(1.),paintCircle(uv,center,radius,.003).r);
@@ -117,27 +118,48 @@ const ShaderCanvas = () => {
     gl.uniform3fv(glBgColorLocationRef.current, new Float32Array(backgroundColor));
 
     let animationFrameId: number;
+    let currentWidth = 0;
+    let currentHeight = 0;
+
     const render = (time: number) => {
+      if (currentWidth === 0 || currentHeight === 0) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
       gl.uniform1f(iTimeLoc, time * 0.001);
       gl.uniform2f(iResLoc, canvas.width, canvas.height);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       animationFrameId = requestAnimationFrame(render);
     };
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-    };
-    handleResize();
-    window.addEventListener('resize', handleResize);
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width === 0 || height === 0) return;
+        
+        currentWidth = width;
+        currentHeight = height;
+        const dpr = Math.min(window.devicePixelRatio, 2);
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+    });
+    resizeObserver.observe(container);
+
     animationFrameId = requestAnimationFrame(render);
+
     return () => {
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 -z-10 w-full h-full" />;
+  return (
+    <div ref={containerRef} className="absolute inset-0 -z-10 overflow-hidden">
+      <canvas ref={canvasRef} className="block w-full h-full" />
+    </div>
+  );
 };
 
 export interface PricingCardProps {
