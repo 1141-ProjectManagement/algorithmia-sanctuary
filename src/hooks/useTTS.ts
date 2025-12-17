@@ -14,7 +14,7 @@ interface UseTTSReturn {
   setSpeed: (speed: number) => void;
 }
 
-export const SPEED_OPTIONS = [1, 1.25, 1.5, 1.75, 2] as const;
+export const SPEED_OPTIONS = [0.7, 0.85, 1, 1.1, 1.2] as const;
 
 const CACHE_PREFIX = "tts_cache_";
 const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -85,7 +85,7 @@ const setCachedAudio = (key: string, base64: string): void => {
   }
 };
 
-export const useTTS = ({ defaultSpeed = 1.5 }: UseTTSOptions = {}): UseTTSReturn => {
+export const useTTS = ({ defaultSpeed = 1 }: UseTTSOptions = {}): UseTTSReturn => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
