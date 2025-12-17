@@ -80,6 +80,69 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_events: {
+        Row: {
+          event_type: string
+          id: string
+          payload: Json | null
+          processed_at: string
+          stripe_event_id: string
+          user_id: string | null
+        }
+        Insert: {
+          event_type: string
+          id?: string
+          payload?: Json | null
+          processed_at?: string
+          stripe_event_id: string
+          user_id?: string | null
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          processed_at?: string
+          stripe_event_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string
+          id: string
+          purchased_at: string | null
+          status: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id: string | null
+          stripe_payment_intent_id: string | null
+          tier: Database["public"]["Enums"]["subscription_tier"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          purchased_at?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          purchased_at?: string | null
+          status?: Database["public"]["Enums"]["subscription_status"]
+          stripe_customer_id?: string | null
+          stripe_payment_intent_id?: string | null
+          tier?: Database["public"]["Enums"]["subscription_tier"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -88,7 +151,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      subscription_status: "active" | "cancelled" | "past_due" | "expired"
+      subscription_tier: "explorer" | "adventurer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -215,6 +279,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_status: ["active", "cancelled", "past_due", "expired"],
+      subscription_tier: ["explorer", "adventurer"],
+    },
   },
 } as const
