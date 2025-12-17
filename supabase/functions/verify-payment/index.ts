@@ -49,10 +49,53 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.retrieve(session_id);
     logStep("Session retrieved", { 
       status: session.payment_status,
-      customerId: session.customer 
+      customerId: session.customer,
+      sessionUserId: session.metadata?.user_id
     });
 
+    // SECURITY: Validate session belongs to the requesting user
+    if (!session.metadata?.user_id || session.metadata.user_id !== user.id) {
+      logStep("Session ownership validation failed", {
+        sessionUserId: session.metadata?.user_id,
+        requestingUserId: user.id
+      });
+      return new Response(JSON.stringify({ error: "Invalid session" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403,
+      });
+    }
+
+    // SECURITY: Verify session is recent (prevent old session replay)
+    const sessionAge = Date.now() - (session.created * 1000);
+    const MAX_SESSION_AGE = 30 * 60 * 1000; // 30 minutes
+    if (sessionAge > MAX_SESSION_AGE) {
+      logStep("Session expired", { sessionAge, maxAge: MAX_SESSION_AGE });
+      return new Response(JSON.stringify({ error: "Session expired" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
     if (session.payment_status === "paid") {
+      // Check if this session was already processed (idempotency)
+      const { data: existingEvent } = await supabaseClient
+        .from("subscription_events")
+        .select("id")
+        .eq("stripe_event_id", session_id)
+        .single();
+
+      if (existingEvent) {
+        logStep("Session already processed", { sessionId: session_id });
+        return new Response(JSON.stringify({ 
+          success: true, 
+          tier: "adventurer",
+          message: "Payment already verified"
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 200,
+        });
+      }
+
       // Update subscription in database
       const { error: upsertError } = await supabaseClient
         .from("subscriptions")
@@ -72,6 +115,16 @@ serve(async (req) => {
         logStep("Database update error", { error: upsertError.message });
         throw new Error("Failed to update subscription");
       }
+
+      // Record this session as processed for idempotency
+      await supabaseClient
+        .from("subscription_events")
+        .insert({
+          stripe_event_id: session_id,
+          event_type: "checkout.session.completed",
+          user_id: user.id,
+          payload: { session_id, payment_status: session.payment_status }
+        });
 
       logStep("Subscription upgraded to adventurer", { userId: user.id });
 
