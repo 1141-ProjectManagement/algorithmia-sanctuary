@@ -1,4 +1,4 @@
-import { Volume2, VolumeX, Loader2, RotateCcw } from "lucide-react";
+import { Volume2, VolumeX, Loader2, RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -7,6 +7,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { clearTTSCache } from "@/hooks/useTTS";
+import { useToast } from "@/hooks/use-toast";
 
 interface TTSControlsProps {
   isSpeaking: boolean;
@@ -35,6 +37,16 @@ export const TTSControls = ({
   onReplay,
   accentColor = "hsl(var(--primary))",
 }: TTSControlsProps) => {
+  const { toast } = useToast();
+
+  const handleClearCache = () => {
+    const count = clearTTSCache();
+    toast({
+      title: "快取已清除",
+      description: `已刪除 ${count} 個音訊快取`,
+    });
+  };
+
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg bg-background/50 backdrop-blur-sm border border-border/50">
       {/* Speaking indicator */}
@@ -92,6 +104,17 @@ export const TTSControls = ({
             ))}
           </SelectContent>
         </Select>
+
+        {/* Clear cache button */}
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={handleClearCache}
+          className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
+          title="清除音訊快取"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </Button>
       </div>
     </div>
   );
