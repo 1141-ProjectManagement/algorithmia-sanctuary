@@ -49,7 +49,7 @@ const Pricing = () => {
   return (
     <section
       id="pricing-section"
-      className="min-h-screen relative overflow-hidden"
+      className="min-h-screen relative"
     >
       <motion.div
         initial={{ opacity: 0 }}

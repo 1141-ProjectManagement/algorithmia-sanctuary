@@ -159,7 +159,7 @@ const ShaderCanvas = () => {
   }, []);
 
   return (
-    <div ref={containerRef} className="absolute inset-0 -z-10 overflow-hidden">
+    <div ref={containerRef} className="absolute inset-0 z-0">
       <canvas ref={canvasRef} className="block w-full h-full" />
     </div>
   );
@@ -236,7 +236,7 @@ export const ModernPricingPage = ({
   showAnimatedBackground = true,
 }: ModernPricingPageProps) => {
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen w-full flex items-center justify-center">
       {showAnimatedBackground && <ShaderCanvas />}
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
