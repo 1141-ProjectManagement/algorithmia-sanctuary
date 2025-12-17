@@ -77,7 +77,16 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    
+    // Sanitize error messages - don't expose internal details
+    let safeMessage = "An error occurred processing your payment request";
+    if (error instanceof Error) {
+      if (errorMessage.includes("not authenticated")) {
+        safeMessage = "Authentication required";
+      }
+    }
+    
+    return new Response(JSON.stringify({ error: safeMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

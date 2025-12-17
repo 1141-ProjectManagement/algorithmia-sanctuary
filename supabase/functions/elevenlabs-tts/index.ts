@@ -51,11 +51,27 @@ serve(async (req) => {
 
     if (!ELEVENLABS_API_KEY) {
       console.error("ELEVENLABS_API_KEY is not configured");
-      throw new Error("ELEVENLABS_API_KEY is not configured");
+      throw new Error("TTS service configuration error");
     }
+
+    // Input validation with length limits
+    const MAX_TEXT_LENGTH = 5000;
+    const MIN_TEXT_LENGTH = 1;
 
     if (!text || typeof text !== "string") {
       throw new Error("Text is required");
+    }
+
+    const trimmedText = text.trim()
+      .replace(/[\x00-\x1F\x7F-\x9F]/g, '') // Remove control characters
+      .replace(/\s+/g, ' '); // Normalize whitespace
+
+    if (trimmedText.length < MIN_TEXT_LENGTH) {
+      throw new Error("Text is too short");
+    }
+
+    if (trimmedText.length > MAX_TEXT_LENGTH) {
+      throw new Error(`Text exceeds maximum length of ${MAX_TEXT_LENGTH} characters`);
     }
 
     const voiceId = "Qbw4VpyUrHEG7NigKzty";
@@ -100,9 +116,23 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("TTS error:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    
+    // Sanitize error messages - only return safe messages to client
+    let safeMessage = "An error occurred processing your request";
+    if (error instanceof Error) {
+      const msg = error.message;
+      // Allow through specific user-friendly error messages
+      if (msg.includes("Text is required") || 
+          msg.includes("Text is too short") ||
+          msg.includes("exceeds maximum length") ||
+          msg === "Unauthorized" ||
+          msg === "Missing authorization header") {
+        safeMessage = msg;
+      }
+    }
+    
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: safeMessage }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },

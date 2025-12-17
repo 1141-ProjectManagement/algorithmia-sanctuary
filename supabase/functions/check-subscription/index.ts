@@ -33,7 +33,8 @@ serve(async (req) => {
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     
     if (userError) {
-      throw new Error(`Authentication error: ${userError.message}`);
+      logStep("Auth error", { error: userError.message });
+      throw new Error("Authentication failed");
     }
     
     const user = userData.user;
@@ -51,7 +52,7 @@ serve(async (req) => {
 
     if (subError) {
       logStep("Database error", { error: subError.message });
-      throw new Error(`Database error: ${subError.message}`);
+      throw new Error("Failed to check subscription status");
     }
 
     if (!subscription) {
@@ -85,7 +86,20 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    
+    // Sanitize error messages
+    let safeMessage = "An error occurred checking subscription";
+    if (error instanceof Error) {
+      const msg = error.message;
+      if (msg === "Authentication failed" || 
+          msg === "No authorization header provided" ||
+          msg === "User not authenticated" ||
+          msg === "Failed to check subscription status") {
+        safeMessage = msg;
+      }
+    }
+    
+    return new Response(JSON.stringify({ error: safeMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
