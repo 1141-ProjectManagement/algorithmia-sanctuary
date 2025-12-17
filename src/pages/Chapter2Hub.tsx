@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSubscription } from "@/hooks/useSubscription";
 import { useChapterProgress } from "@/hooks/useChapterProgress";
 import ChapterHubLayout from "@/components/ChapterHubLayout";
 import GateCard, { GateData } from "@/components/GateCard";
@@ -57,7 +58,14 @@ const storyText = `穿過啟程之殿的大門，你進入了秩序神殿。這�
 
 export default function Chapter2Hub() {
   const navigate = useNavigate();
-  const [showStoryDialog, setShowStoryDialog] = useState(true);
+  const { canAccessChapter, isLoading } = useSubscription();
+  const [showStoryDialog, setShowStoryDialog] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && canAccessChapter(2)) {
+      setShowStoryDialog(true);
+    }
+  }, [isLoading, canAccessChapter]);
   const [showLoreDialog, setShowLoreDialog] = useState(false);
   
   const {
