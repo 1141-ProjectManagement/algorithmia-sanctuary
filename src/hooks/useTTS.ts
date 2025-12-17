@@ -16,6 +16,75 @@ interface UseTTSReturn {
 
 export const SPEED_OPTIONS = [1, 1.25, 1.5, 1.75, 2] as const;
 
+const CACHE_PREFIX = "tts_cache_";
+const CACHE_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+// Generate cache key from text and speed
+const getCacheKey = (text: string, speed: number): string => {
+  const hash = text.split("").reduce((acc, char) => {
+    return ((acc << 5) - acc + char.charCodeAt(0)) | 0;
+  }, 0);
+  return `${CACHE_PREFIX}${hash}_${speed}`;
+};
+
+// Convert blob to base64
+const blobToBase64 = (blob: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
+// Convert base64 to blob
+const base64ToBlob = (base64: string): Blob => {
+  const parts = base64.split(",");
+  const mimeMatch = parts[0].match(/:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : "audio/mpeg";
+  const bstr = atob(parts[1]);
+  const n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  for (let i = 0; i < n; i++) {
+    u8arr[i] = bstr.charCodeAt(i);
+  }
+  return new Blob([u8arr], { type: mime });
+};
+
+// Get cached audio
+const getCachedAudio = (key: string): string | null => {
+  try {
+    const cached = localStorage.getItem(key);
+    if (!cached) return null;
+    
+    const { data, timestamp } = JSON.parse(cached);
+    if (Date.now() - timestamp > CACHE_MAX_AGE) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+};
+
+// Save audio to cache
+const setCachedAudio = (key: string, base64: string): void => {
+  try {
+    const cacheEntry = JSON.stringify({
+      data: base64,
+      timestamp: Date.now(),
+    });
+    localStorage.setItem(key, cacheEntry);
+  } catch (e) {
+    // Storage quota exceeded - clear old TTS cache entries
+    console.warn("localStorage quota exceeded, clearing TTS cache");
+    Object.keys(localStorage)
+      .filter((k) => k.startsWith(CACHE_PREFIX))
+      .forEach((k) => localStorage.removeItem(k));
+  }
+};
+
 export const useTTS = ({ defaultSpeed = 1.5 }: UseTTSOptions = {}): UseTTSReturn => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -53,25 +122,41 @@ export const useTTS = ({ defaultSpeed = 1.5 }: UseTTSOptions = {}): UseTTSReturn
         audioUrlRef.current = null;
       }
 
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({ text, speed }),
-        }
-      );
+      const cacheKey = getCacheKey(text, speed);
+      let audioBlob: Blob;
+      
+      // Check cache first
+      const cachedBase64 = getCachedAudio(cacheKey);
+      if (cachedBase64) {
+        console.log("TTS: Using cached audio");
+        audioBlob = base64ToBlob(cachedBase64);
+      } else {
+        console.log("TTS: Fetching from API");
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ text, speed }),
+          }
+        );
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || `TTS request failed: ${response.status}`);
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `TTS request failed: ${response.status}`);
+        }
+
+        audioBlob = await response.blob();
+        
+        // Cache the audio
+        const base64 = await blobToBase64(audioBlob);
+        setCachedAudio(cacheKey, base64);
       }
 
-      const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
       audioUrlRef.current = audioUrl;
 
