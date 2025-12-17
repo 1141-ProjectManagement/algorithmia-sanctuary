@@ -37,12 +37,12 @@ serve(async (req) => {
         },
         body: JSON.stringify({
           text,
-          model_id: "eleven_v3",
+          model_id: "eleven_multilingual_v2",
           output_format: "mp3_44100_128",
           voice_settings: {
-            stability: 0.5, // Natural
+            stability: 0.5,
             similarity_boost: 0.75,
-            speed: speed,
+            speed: Math.min(Math.max(speed, 0.7), 1.2), // Clamp to valid range 0.7-1.2
           },
         }),
       }
