@@ -66,9 +66,12 @@ const theme = getChapterTheme(1);
 // Map gate IDs without hyphen for database storage
 const gateIdToDbId = (gateId: string) => gateId.replace("-", "");
 
+// Plain text version of story for TTS
+const storyText = `你站在一座古老神殿的入口處。巨大的石柱上刻滿了神秘的符文，空氣中瀰漫著遠古的氣息。這裡是起源聖殿——Algorithmia 文明的起點。所有的知識都從這裡開始。一位蒼老的守殿者從陰影中走出，他的眼中閃爍著智慧的光芒。「歡迎，年輕的探索者。」「在這裡，你將學習演算法的基礎——時間的測量、數據的容器、順序的秘密。」「這些看似簡單的概念，卻是一切高級技術的根基。」「準備好開始你的旅程了嗎？」`;
+
 const Chapter1Hub = () => {
   const navigate = useNavigate();
-  const [showStoryDialog, setShowStoryDialog] = useState(false);
+  const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showLoreDialog, setShowLoreDialog] = useState(false);
   
   const {
@@ -162,6 +165,8 @@ const Chapter1Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《創世紀錄》第一卷"
+      storyText={storyText}
+      autoPlayTTS={true}
       completionTitle="起源聖殿已被征服"
       completionMessage={completionMessage}
     >

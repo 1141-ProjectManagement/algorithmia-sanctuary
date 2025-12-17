@@ -51,9 +51,12 @@ const gates: GateData[] = [
 const gateOrder = gates.map((g) => g.id);
 const theme = getChapterTheme(4);
 
+// Plain text version of story for TTS
+const storyText = `走出迴聲神殿，景色再次變化。你不再面對整齊的樹林，而是一個錯綜複雜的網絡空間。無數的節點懸浮在虛空中，每個節點都用光線與其他節點相連。這些連接線互相交織，形成了一個密集而美麗的網絡。一位穿著長袍的網絡守護者緩緩走來。她的聲音帶著哲學家的深邃。「歡迎來到織徑神殿。」「在前面的冒險中，你掌握了線性和樹形的世界。但現實遠比樹更複雜——在這裡，一切都可以連接一切。」「圖沒有根，沒有方向，甚至可能有環。」「在這個迷宮般的世界中，找到路徑不再是簡單的遍歷，而是全局視野的展現。」`;
+
 const Chapter4Hub = () => {
   const navigate = useNavigate();
-  const [showStoryDialog, setShowStoryDialog] = useState(false);
+  const [showStoryDialog, setShowStoryDialog] = useState(true);
   const [showLoreDialog, setShowLoreDialog] = useState(false);
 
   const {
@@ -147,6 +150,8 @@ const Chapter4Hub = () => {
       storyContent={storyContent}
       loreContent={loreContent}
       loreTitle="古籍碎片：《網絡紀元錄》第四卷"
+      storyText={storyText}
+      autoPlayTTS={true}
       completionTitle="織徑神殿已被征服"
       completionMessage={completionMessage}
     >
