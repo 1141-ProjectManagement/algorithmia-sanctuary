@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ScrollNav from "@/components/ScrollNav";
 import { useAudioContext } from "@/contexts/AudioContext";
+import { AITutorButton } from "@/components/AITutor";
 
 interface GatePageLayoutProps {
   children: ReactNode;
@@ -151,6 +152,9 @@ const GatePageLayout = ({
           onNavigate={onNavigate}
         />
       )}
+
+      {/* AI Tutor Button */}
+      <AITutorButton context={title} />
     </div>
   );
 };
