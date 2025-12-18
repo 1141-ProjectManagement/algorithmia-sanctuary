@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { Send, Trash2, Sparkles, Loader2 } from "lucide-react";
+import { Send, Trash2, Sparkles, Loader2, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,6 +10,159 @@ interface AITutorChatProps {
   context?: string;
   onClose: () => void;
 }
+
+// Quick prompts based on context keywords
+const QUICK_PROMPTS: Record<string, string[]> = {
+  // Chapter 1 - Basics
+  "Big O": [
+    "什麼是時間複雜度？",
+    "O(n) 和 O(n²) 有什麼差別？",
+    "如何判斷演算法的效率？",
+  ],
+  "陣列": [
+    "陣列和鏈結串列有什麼不同？",
+    "什麼時候該用陣列？",
+    "如何遍歷陣列？",
+  ],
+  "堆疊": [
+    "堆疊的 LIFO 是什麼意思？",
+    "堆疊有哪些實際應用？",
+    "如何用堆疊實作括號配對？",
+  ],
+  "佇列": [
+    "佇列的 FIFO 是什麼意思？",
+    "佇列和堆疊有什麼差別？",
+    "什麼時候該用佇列？",
+  ],
+  "線性搜尋": [
+    "線性搜尋的時間複雜度是多少？",
+    "線性搜尋有什麼優缺點？",
+    "如何優化線性搜尋？",
+  ],
+  // Chapter 2 - Sorting & Searching
+  "泡泡": [
+    "泡泡排序怎麼運作？",
+    "泡泡排序的時間複雜度？",
+    "為什麼泡泡排序效率不高？",
+  ],
+  "分治": [
+    "什麼是分治法？",
+    "Merge Sort 怎麼運作？",
+    "Quick Sort 的 pivot 怎麼選？",
+  ],
+  "二元搜尋": [
+    "二元搜尋為什麼要先排序？",
+    "二元搜尋的時間複雜度？",
+    "如何處理 mid overflow？",
+  ],
+  "雜湊": [
+    "什麼是雜湊表？",
+    "如何處理雜湊碰撞？",
+    "雜湊表的時間複雜度？",
+  ],
+  "滑動視窗": [
+    "什麼是滑動視窗技巧？",
+    "滑動視窗適合什麼問題？",
+    "如何決定視窗大小？",
+  ],
+  // Chapter 3 - Trees
+  "遍歷": [
+    "前序、中序、後序有什麼差別？",
+    "什麼時候用哪種遍歷？",
+    "如何用迴圈實作遍歷？",
+  ],
+  "BST": [
+    "什麼是二元搜尋樹？",
+    "BST 的搜尋效率是多少？",
+    "BST 可能退化成什麼？",
+  ],
+  "堆積": [
+    "什麼是堆積資料結構？",
+    "Max Heap 和 Min Heap 差別？",
+    "堆積排序怎麼運作？",
+  ],
+  "Huffman": [
+    "Huffman 編碼是什麼？",
+    "為什麼用貪婪法建樹？",
+    "如何計算壓縮率？",
+  ],
+  "雙指針": [
+    "什麼是雙指針技巧？",
+    "快慢指針怎麼用？",
+    "雙指針適合什麼問題？",
+  ],
+  // Chapter 4 - Graphs
+  "BFS": [
+    "BFS 怎麼運作？",
+    "BFS 和 DFS 有什麼差別？",
+    "BFS 適合找最短路徑嗎？",
+  ],
+  "MST": [
+    "什麼是最小生成樹？",
+    "Kruskal 和 Prim 差別？",
+    "MST 有什麼應用？",
+  ],
+  "Dijkstra": [
+    "Dijkstra 演算法怎麼運作？",
+    "為什麼不能處理負權邊？",
+    "時間複雜度是多少？",
+  ],
+  "拓撲": [
+    "什麼是拓撲排序？",
+    "如何偵測環？",
+    "拓撲排序有什麼應用？",
+  ],
+  "Floyd": [
+    "Floyd-Warshall 怎麼運作？",
+    "和 Dijkstra 有什麼差別？",
+    "時間複雜度是多少？",
+  ],
+  // Chapter 5 - Advanced
+  "貪婪": [
+    "什麼是貪婪演算法？",
+    "貪婪法什麼時候有效？",
+    "如何證明貪婪解是最佳？",
+  ],
+  "動態規劃": [
+    "什麼是動態規劃？",
+    "如何找出狀態轉移方程？",
+    "DP 和遞迴有什麼關係？",
+  ],
+  "回溯": [
+    "什麼是回溯法？",
+    "回溯和 DFS 有什麼關係？",
+    "如何剪枝優化？",
+  ],
+  // Chapter 6 - Synthesis
+  "Union-Find": [
+    "什麼是 Union-Find？",
+    "路徑壓縮怎麼做？",
+    "Union-Find 有什麼應用？",
+  ],
+  "位元": [
+    "什麼是位元運算？",
+    "XOR 有什麼特性？",
+    "位元運算有什麼應用？",
+  ],
+  // Default prompts
+  default: [
+    "這個演算法的時間複雜度是多少？",
+    "可以給我一個簡單的例子嗎？",
+    "這在實際應用中怎麼用？",
+  ],
+};
+
+// Get quick prompts based on context
+const getQuickPrompts = (context?: string): string[] => {
+  if (!context) return QUICK_PROMPTS.default;
+  
+  for (const [keyword, prompts] of Object.entries(QUICK_PROMPTS)) {
+    if (context.includes(keyword)) {
+      return prompts;
+    }
+  }
+  return QUICK_PROMPTS.default;
+};
 
 export const AITutorChat = ({ context, onClose }: AITutorChatProps) => {
   const [input, setInput] = useState("");
@@ -25,6 +178,15 @@ export const AITutorChat = ({ context, onClose }: AITutorChatProps) => {
     fetchRemainingQueries,
     isUnlimited,
   } = useAITutor({ context });
+
+  // Get context-aware quick prompts
+  const quickPrompts = useMemo(() => getQuickPrompts(context), [context]);
+
+  // Handle quick prompt click
+  const handleQuickPrompt = (prompt: string) => {
+    if (isLoading || (remainingQueries === 0 && !isUnlimited)) return;
+    sendMessage(prompt);
+  };
 
   // Fetch remaining queries on mount
   useEffect(() => {
@@ -132,7 +294,7 @@ export const AITutorChat = ({ context, onClose }: AITutorChatProps) => {
         {/* Messages */}
         <ScrollArea className="h-[350px] p-4" ref={scrollRef}>
           {messages.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-center px-4">
+            <div className="h-full flex flex-col items-center justify-center text-muted-foreground text-center px-2">
               <Sparkles className="w-10 h-10 text-primary/50 mb-3" />
               <p className="text-sm font-medium">你好！我是 AI 助教</p>
               <p className="text-xs mt-1 opacity-70">
@@ -143,6 +305,29 @@ export const AITutorChat = ({ context, onClose }: AITutorChatProps) => {
                   📚 當前主題：{context}
                 </p>
               )}
+              
+              {/* Quick Prompts */}
+              <div className="mt-4 w-full">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-2">
+                  <Lightbulb className="w-3.5 h-3.5" />
+                  <span>快速提問</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {quickPrompts.map((prompt, i) => (
+                    <motion.button
+                      key={i}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.1 }}
+                      onClick={() => handleQuickPrompt(prompt)}
+                      disabled={isLoading || (remainingQueries === 0 && !isUnlimited)}
+                      className="text-left text-xs px-3 py-2 bg-muted/50 hover:bg-muted rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {prompt}
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             messages.map(renderMessage)
