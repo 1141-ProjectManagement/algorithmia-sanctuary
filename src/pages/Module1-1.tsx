@@ -9,6 +9,7 @@ import ScrollNav from "@/components/ScrollNav";
 import TeachBlock from "@/components/module1-1/TeachBlock";
 import DemoBlock from "@/components/module1-1/DemoBlock";
 import TestBlock from "@/components/module1-1/TestBlock";
+import { AITutorButton } from "@/components/AITutor";
 import stoneTablet from "@/assets/stone-tablet.jpg";
 import type { SectionType } from "@/lib/auth";
 
@@ -353,6 +354,9 @@ const Module1_1 = ({ onSectionComplete, onGateComplete, returnPath = "/" }: Modu
           </motion.div>
         </div>
       </section>
+
+      {/* AI Tutor Button */}
+      <AITutorButton context="尺規神殿 - Big O 時間複雜度" />
     </div>
   );
 };
