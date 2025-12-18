@@ -1,108 +1,169 @@
-專案開發報告：Algorithmia Expedition (演算法遠征)
+# 專案開發計畫與執行報告：Algorithmia Expedition (演算法遠征)
 
-1. 專案提案 (Project Proposal)
-   名稱：Algorithmia Expedition - 演算法遠征 標語：踏入演算法的神秘殿堂，探索古老文明遺留的智慧碎片。
+## 0. 專案執行摘要 (Executive Summary)
 
-本專案旨在解決傳統演算法學習枯燥、抽象且缺乏動力的問題。透過將演算法概念轉化為沈浸式的冒險遊戲，使用者在探索古文明遺跡的過程中，自然而然地理解並掌握複雜的計算邏輯。平台結合了互動式 3D 視覺化教學、即時程式碼演練與遊戲化進度系統，打造前所未有的學習體驗。
+**Algorithmia Expedition** 是一個創新的演算法學習平台，旨在透過沈浸式的「Mystic Sci-Fi」視覺風格與遊戲化機制，將枯燥的資料結構與演算法轉化為一場古文明探險。本專案整合了 React 18、Three.js、Supabase 與生成式 AI 技術，提供互動式視覺化教學、即時測驗與 AI 助教指導。本報告詳述了從創意設計到技術實踐的完整管理計畫。
 
-2. 專案創意 (Project Creativity)
-   概念具象化：將抽象的演算法（如排序、搜尋、圖論）比喻為古代機關與魔法。例如，「泡沫排序」是如同氣泡般浮升的元素，「二元搜尋」是精準定位星圖的技藝。
-   互動式視覺與 3D 體驗：由 React Three Fiber 驅動的 3D 場景，讓使用者不只是閱讀文字或看影片，而是親手「操作」演算法。
-   雙重敘事線：設有「初次通關」與「二周目」劇情，鼓勵重複遊玩與深入理解，模擬像《黑帝斯》或《尼爾》般的敘事深度。
-   四階段學習法：獨創 Story (情境) -> Knowledge (知識) -> Demo (演示) -> Practice (實戰) 的關卡結構，確保學習成效。
-3. 專案故事 (Project Story)
-   使用者扮演一名「探索者 (Explorer)」，來到一個因「計算失衡」而殞落的高科技古文明——Algorithmia。這個文明曾經利用演算法的力量建立了輝煌的數位烏托邦，但最終因為過度優化與邏輯崩潰而毀滅。
+---
 
-探索者必須穿越六大神殿（章節）：
+## 1. 專案願景與目標 (Project Vision & Objectives)
 
-起源聖殿 (Origins)：理解時間與空間的基礎（複雜度）。
-秩序神殿 (Order)：重整混亂的萬物（排序與搜尋）。
-迴聲神殿 (Echoes)：探索遞迴與樹狀結構的奧秘。
-織徑神殿 (Paths)：連結孤立的節點（圖論）。
-抉擇神殿 (Choices)：在無數可能性中做出最優解（動態規劃、貪婪）。
-整合神殿 (Unity)：面對最終的系統整合挑戰。
-只有解開所有謎題，修復失落的邏輯，才能揭開文明毀滅的真相，或許...避免現代世界重蹈覆徹。
+### 1.1 核心問題 (Problem Statement)
 
-4. 專案商業模式 (Business Model)
-   本專案採用 Freemium (免費增值) 訂閱模式，旨在降低入門門檻同時維持高品質內容的開發。
+傳統演算法教學普遍面臨「過於抽象」、「缺乏即時回饋」以及「學習曲線過於陡峭」等痛點，導致學習者容易在中途產生挫折感。
 
-方案名稱 價格 (月付/年付) 目標客群 包含權益
-探索者 (Explorer) 免費 初學者、觀望用戶 • 解鎖第 1 章 (起源聖殿)
-• 基礎 3D 視覺化體驗
-• 社群討論區存取權
-冒險家 (Adventurer) NT$ 399 / 月 進階學習者、轉職者 • 解鎖全章節 (1-6 章)
-• 進階互動式練習題
-• 學習進度追蹤儀表板
-• 獲得「資深冒險家」數位徽章
-演算法大師 (Master) NT$ 3,990 / 終身 專業開發者、教育機構 • 終身存取權 (含未來更新)
-• 優先體驗新功能
-• 專屬 Code Review 服務 (AI 輔助)
-• 企業級面試題庫解鎖
-• 下載離線學習教材
-註：價格為範例估算，實際依市場策略調整。
+### 1.2 解決方案與目標
 
-5. 專案設計系統 (Design System)
-   本專案採用現代與古典融合的 "Mystic Sci-Fi" 風格，結合 shadcn/ui 的簡潔與自定義的魔法特效。
+- **具象化學習**：利用互動式 3D 演示（如「沙漏水晶」象徵時間複雜度），將抽象邏輯實體化。
+- **沈浸式敘事**：透過「起源聖殿」、「秩序神殿」等六大章節的敘事線，引導用戶循序漸進完成挑戰。
+- **即時 AI 輔助**：整合 AI 助教，提供個人化的答疑與指導，模擬一對一導師體驗。
+- **提高完課率**：結合成就系統與進度追蹤（Dashboard），激發學習動力與成就感。
 
-色彩計畫 (Color Palette)：
-主色調 (Primary): hsl(var(--primary)) - 神祕的深藍/紫色系，象徵深奧的知識。
-強調色 (Accent): 金色/琥珀色 - 象徵解鎖的智慧與寶藏 (如 Pricing 卡片的金色光影)。
-背景色 (Background): 深沈的黑曜石色與羊皮紙質感，適應長時間閱讀的 Dark/Light Mode。
-字體系統 (Typography)：
-標題：使用襯線體 (Cinzel) 營造史詩感與古典氣息。
-內文/程式碼：使用高易讀性的無襯線體 (Inter) 與等寬字體，確保學習體驗。
-UI 組件庫：基於 shadcn/ui 與 Radix UI，確保無障礙 (Accessibility) 與高度可客製化。大量的 Glassmorphism (毛玻璃) 效果，營造高科技與魔法交織的氛圍。
-動效設計：使用 Framer Motion 製作流暢的過場與微互動 (Micro-interactions)，Three.js 負責核心算法的可視化演繹。6. 專案軟體架構 (Software Architecture)
-採用現代化前端單頁應用 (SPA) 架構，強調效能與可維護性。
+---
 
-目錄結構：
-src/stores: 全域狀態管理 (Global State)。
-src/components/gate: 關卡核心邏輯模組，實現高內聚低耦合。
-src/pages: 路由頁面，對應各章節與功能區。
-src/config: 全域設定與主題配置。
-核心模組與設計模式：
-Store Pattern (Zustand): 管理跨組件狀態 (如使用者當前關卡、已解鎖成就)。
-Custom Hooks: 抽離業務邏輯 (如 useGateProgress, useCodeExecution)。
-Render Props / Compound Components: 在 UI 組件中提供高度靈活性。7. 前後端技術介紹 (Tech Stack)
-前端 (Frontend)
-框架: React 18.3 + Vite (極速開發體驗與構建)。
-語言: TypeScript 5.0 (強型別保證程式碼品質)。
-樣式: Tailwind CSS 3.4 (Utility-first CSS) + Tailwindcss-animate。
-3D 與動畫:
-React Three Fiber (Three.js): 處理 3D 場景與粒子效果。
-Framer Motion: 處理 UI 轉場與豐富的互動動畫。
-狀態管理: Zustand (輕量級 Redux 替代方案)。
-資料獲取: TanStack Query (React Query) (Server state 管理與快取)。
-路由: React Router 6。
-後端與雲端 (Backend & Cloud)
-BaaS 平台: Supabase (開源 Firebase 替代品)。
-Database: PostgreSQL (強大的關聯式資料庫)。
-Auth: 整合 Google OAuth 與 Email 登入。
-Realtime: 支援即時數據更新 (如排行榜、多人協作，未來規劃)。
-部署: Vercel (前端) + Supabase Cloud (後端)。
-開發工具
-套件管理: Bun (高效能 JavaScript Runtime & Package Manager)。
-代碼規範: ESLint, Prettier。
-版本控制: Git。8. 專案製作費用 (Estimated Development Costs)
-以下估算基於台灣軟體開發市場行情，假設由一支 3-4 人的小型敏捷團隊進行為期 4-6 個月的開發 MVP (最小可行性產品)。
+## 2. 範疇規劃與功能架構 (Scope & WBS)
 
-項目 內容描述 預估工時 預估費用 (NTD)
-PM 與企劃 需求分析、遊戲腳本設計、關卡流程規劃 160 hrs $150,000 - $250,000
-UI/UX 設計 介面設計、3D 模型與材質、Design System 240 hrs $250,000 - $400,000
-前端開發 React 架構、互動邏輯、3D 整合、RWD 480 hrs $500,000 - $800,000
-後端開發 資料庫設計、API 串接、Auth、金流串接 160 hrs $150,000 - $300,000
-測試與部署 QA 測試、效能優化、CI/CD 架設 80 hrs $80,000 - $150,000
-總計 約 4-6 個月 $1,130,000 - $1,900,000
-註：實際費用視團隊資歷、外包或自建、以及具體功能細節而定。伺服器營運成本 (Supabase/Vercel) 另計，初期約 $1,000 - $3,000 NTD/月。
+### 2.1 功能範疇
 
-9. 專案後續發展 (Future Roadmap)
-   階段一：社群與競賽 (Q3)
-   建置「演算法競技場 (Arena)」，讓玩家即時 PK 演算法效率。
-   全球排行榜系統。
-   階段二：內容擴充 (Q4)
-   新增「量子神殿 (Quantum Temple)」探討量子演算法入門。
-   支援多語言程式碼 (Python, C++, Java) 切換。
-   階段三：行動裝置適配 (Next Year Q1)
-   開發 PWA 或 React Native 版本，讓學習隨身帶著走。
-   階段四：職涯接軌 (Next Year Q2)
-   與科技公司合作，推出「企業認證關卡」，通過即可獲得面試機會 (Recruitment integration)。
+- **基礎探索 (Explorer)**：支援第一章《起源聖殿》全功能體驗。
+- **核心學習系統**：
+  - **Story (敘事)**：利用 TTS 技術朗讀古老卷軸，建立情境感。
+  - **Knowledge (知識)**：結構化圖文教學，奠定理論基礎。
+  - **Demo (演示)**：互動式視覺化工具，親手操作演算法邏輯。
+  - **Challenge (挑戰)**：多樣化測驗題型，驗證學習成效。
+- **進階功能 (Adventurer/Premium)**：
+  - 全章節解鎖 (1-6 章)。
+  - 個人化進度儀表板 (Progress Dashboard)。
+  - AI 助教即時對話系統。
+  - 沈浸式語音導覽 (TTS)。
+
+### 2.2 關卡章節規劃
+
+1.  **起源聖殿 (Origins)**：Big O 時間複雜度、基礎資料結構 (Array, Stack, Queue)。
+2.  **秩序神殿 (Order)**：排序與搜尋。
+3.  **迴聲神殿 (Echoes)**：遞迴與分治。
+4.  **織徑神殿 (Paths)**：圖論 (BFS/DFS, Dijkstra, MST)。
+5.  **抉擇神殿 (Choices)**：貪婪算法與動態規劃 (DP)。
+6.  **整合神殿 (Unity)**：進階資料結構 (Union-Find) 與綜合實戰。
+
+---
+
+## 3. 專案創意與敘事設定 (Creative Concept & Lore)
+
+- **概念設定**：將演算法比喻為控制「Algorithmia」文明平衡的神秘力量。
+- **視覺風格**：**Mystic Sci-Fi**。結合古代遺跡（石板、卷軸）與未來感科技（光感特效、UI 粒子）。
+- **使用者角色**：扮演「探索者 (Explorer)」，受守殿者引導修復受損的邏輯機關。
+
+---
+
+## 4. 專案商業模式 (Business Model)
+
+採用 **Freemium (免費增值)** 服務。
+
+| 方案名稱                | 定價策略     | 核心權益                                     |
+| :---------------------- | :----------- | :------------------------------------------- |
+| **探索者 (Explorer)**   | 免費         | 解鎖第 1 章內容、社群討論區參與權。          |
+| **冒險家 (Adventurer)** | NT$ 299 / 月 | 全章節 access、AI 助教、進度分析、TTS 語音。 |
+| **演算法大師 (Master)** | 企業洽談     | 多用戶管理、客製化課程模組、優先技術支援。   |
+
+---
+
+## 5. 設計系統 (Design System)
+
+### 5.1 品牌視覺
+
+- **Typography**：標題採用 `Cinzel` (營造史詩感)，內文採用 `Inter` (確保易讀性)。
+- **Color Palette**：
+  - **Primary (Temple Gold)**: `hsl(43, 74%, 53%)` - 代表智慧與發現。
+  - **Background (Obsidian)**: `hsl(240, 10%, 4%)` - 深邃的探險氛圍。
+  - **Accent (Magic Glow)**: 依章節變化的光影色 (藍、紫、綠、紅)。
+- **UI Components**：基於 `shadcn/ui` 與 `Radix UI`，結合高度自定義的 Glassmorphism 效果。
+
+---
+
+## 6. 技術架構與開發堆疊 (Technical Architecture)
+
+### 6.1 前端架構
+
+- **核心框架**：React 18.3 + Vite。
+- **狀態管理**：Zustand (全域進度與設定) + React Context (音訊、訂閱狀態)。
+- **互動動畫**：Framer Motion (UI 轉場) + React Three Fiber (3D 演示)。
+- **資料獲取**：TanStack Query。
+
+### 6.2 後端與基礎設施
+
+- **BaaS**：Supabase。
+  - **Auth**：Google OAuth 整合。
+  - **Database**：PostgreSQL (存儲用戶進度、AI 使用量)。
+  - **Edge Functions**：處理 Stripe 支付與 OpenAI API (AI 助教) 串接。
+- **部署**：Vercel (CI/CD)。
+
+### 6.3 關鍵整合
+
+- **AI 助教**：OpenAI GPT-4o 流式響應 (Streaming Respons)。
+- **TTS**：Web Speech API / Cloud TTS。
+
+---
+
+## 7. 專案資源與預算管理 (Resources & Budget)
+
+### 7.1 人力配置 (4-6 個月 MVP 開發週期)
+
+- **PM/Scrum Master** (1員)：需求管理、關卡企劃。
+- **UI/UX Designer** (1員)：3D 材質與介面視覺。
+- **Full-stack Developer** (2員)：前端互動邏輯、後端整合。
+
+### 7.2 開發預算估算
+
+| 項目                       | 預算幅度 (NTD)                 | 佔比     |
+| :------------------------- | :----------------------------- | :------- |
+| 人事成本                   | $1,200,000 - $1,700,000        | 85%      |
+| 基礎設施 (Supabase/OpenAI) | $50,000 - $100,000             | 5%       |
+| 市場行銷與內容製作         | $100,000 - $200,000            | 10%      |
+| **總計**                   | **約 $1,350,000 - $2,000,000** | **100%** |
+
+---
+
+## 8. 品質保證與風險管理 (Quality & Risks)
+
+### 8.1 品質指標 (QA)
+
+- **效能目標**：Lighthouse 評分 > 90 (FCP < 1.5s)。
+- **無障礙性**：符合 WCAG 2.1 AA 標準，支援全鍵盤操作。
+
+### 8.2 風險應對
+
+| 風險類型     | 描述                          | 應對策略                                            |
+| :----------- | :---------------------------- | :-------------------------------------------------- |
+| **技術風險** | 3D 場景渲染導致低端設備卡頓。 | 實施 Level of Detail (LOD) 優化與 Canvas 降級機制。 |
+| **內容風險** | 演算法邏輯解釋出現學術爭議。  | 邀請演算法學者審核，並建立即時勘誤與 AI 回饋。      |
+| **營運風險** | OpenAI API 成本失控。         | 設置用戶每日額度 (Quotas) 並引入中轉緩存。          |
+
+---
+
+## 9. 階段性開發路線圖 (Development Roadmap)
+
+### Q1：基礎建設與第一章 (已完成)
+
+- 完成 Core Logic、Design System、Chapter 1 內容、Supabase 整合。
+
+### Q2：內容擴張與 AI 進化
+
+- 完成第 2-4 章開發。
+- 優化 AI 助教的上下文分析能力。
+
+### Q3：社交、競爭與完整版
+
+- 開發「演算法競技場 (Arena)」多人在線對比。
+- 全 6 章節上線，開啟全方位市場推廣。
+
+### Q4：跨平台與生態
+
+- PWA 適配與原生 App 評估。
+- 開放「創作者模式」，允許用戶設計自己的演算法關卡。
+
+---
+
+## 10. 結語
+
+本專案不只是教學工具，更是一件結合科技與藝術的互動作品。我們深信，最好的學習方式是參與。Algorithmia Expedition 將重新定義程式學習的體驗，讓每個人都能享受掌握演算法的樂趣。
